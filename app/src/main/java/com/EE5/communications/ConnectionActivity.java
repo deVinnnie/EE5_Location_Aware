@@ -24,7 +24,6 @@ import java.util.ArrayList;
 
 public class ConnectionActivity extends ActionBarActivity {
     private Connection connection;
-    private ArrayList<String> history = new ArrayList<String>();
     private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private Button btnConnect;
     private Button btnDisconnect;
@@ -33,10 +32,46 @@ public class ConnectionActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_position);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String deviceId = IDGenerator.generate(sharedPref);
         Client.currentDevice = new Device(deviceId);
+        ArrayAdapter<String> arrayAdapter;
+
+
+
+        //Hook up event listeners.
+        //This connects the click on a button to the right method for execution.
+        this.btnConnect = (Button) findViewById(R.id.buttonConnect);
+        this.btnConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                connect();
+            }
+        });
+
+        this.btnDisconnect = (Button) findViewById(R.id.buttonDisconnect);
+        this.btnDisconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                disconnect();
+            }
+        });
+        this.btnDisconnect.setEnabled(false);
+
+        GlobalResources global = GlobalResources.getInstance();
+        if(global.getConnection() != null){
+            this.connection = global.getConnection();
+            arrayAdapter = this.connection.getHistoryAdapter();
+            this.btnConnect.setEnabled(false);
+            this.btnDisconnect.setEnabled(true);
+        }
+        else {
+            arrayAdapter = new ArrayAdapter<String>(this, R.layout.list_item, new ArrayList<String>());
+        }
+
+        ListView lstConnectionHistory = (ListView) findViewById(R.id.lst_connectionHistory);
+        lstConnectionHistory.setAdapter(arrayAdapter);
 
         //Load Preferences
         this.loadPreferences();
@@ -48,30 +83,11 @@ public class ConnectionActivity extends ActionBarActivity {
             }
         };
         sharedPref.registerOnSharedPreferenceChangeListener(prefListener);
+    }
 
-        //Hook up event listeners.
-        //This connects the click on a button to the right method for execution.
-        this.btnConnect = (Button) findViewById(R.id.buttonConnect);
-        this.btnConnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Start timer.
-                connect();
-            }
-        });
-
-        this.btnDisconnect = (Button) findViewById(R.id.buttonDisconnect);
-        this.btnDisconnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                disconnect();
-
-            }
-        });
-        this.btnDisconnect.setEnabled(false);
-
-        ListView lstConnectionHistory = (ListView) findViewById(R.id.lst_connectionHistory);
-        lstConnectionHistory.setAdapter(new ArrayAdapter<String>(this, R.layout.list_item, history));
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        //outState.putSerializable("someExpensiveObject", 1);
     }
 
     private void loadPreferences(){
@@ -100,6 +116,10 @@ public class ConnectionActivity extends ActionBarActivity {
 
         this.btnConnect.setEnabled(false);
         this.btnDisconnect.setEnabled(true);
+
+        /*Intent intent = new Intent(this, ImageManipulationsActivity.class);
+        startActivity(intent);*/
+        finish();
     }
 
     public void disconnect(){

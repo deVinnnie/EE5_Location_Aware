@@ -106,4 +106,8 @@ public abstract class Client extends AsyncTask<Void, String, Void> {
     public SocketTaskType getSocketTaskType() {
         return socketTaskType;
     }
+
+    public ArrayAdapter getHistoryAdapter(){
+        return this.historyAdapter;
+    }
 }
