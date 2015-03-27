@@ -20,7 +20,7 @@
         </activity>
 
         <activity
-            android:name="com.EE5.communications_test.PositionActivity"
+            android:name=".communications.ConnectionActivity"
             android:label="@string/title_activity_position" >
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -31,7 +31,7 @@
             android:label="Settings" >
         </activity>
         <activity
-            android:name="com.EE5.communications_test.ServerActivity"
+            android:name=".communications.ServerActivity"
             android:label="@string/title_activity_server" >
         </activity>
     </application>

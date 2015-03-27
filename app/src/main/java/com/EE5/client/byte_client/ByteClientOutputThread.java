@@ -5,21 +5,13 @@ import android.util.Log;
 import com.EE5.client.AbstractClientOutputThread;
 import com.EE5.client.Client;
 import com.EE5.client.LatencyTest;
-import com.EE5.client.Transmitter;
-import com.EE5.server.data.Device;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class ByteClientOutputThread extends AbstractClientOutputThread implements Transmitter{
-    private Device device;
+public class ByteClientOutputThread extends AbstractClientOutputThread{
     private DataOutputStream od;
-
-    /*public ByteClientOutputThread(Socket socket, Client client)throws IOException {
-        super("OutputThread", socket, client);
-        od = new DataOutputStream(socket.getOutputStream());
-    }*/
 
     public ByteClientOutputThread(OutputStream out, Client client) {
         super(out, client);
@@ -46,11 +38,11 @@ public class ByteClientOutputThread extends AbstractClientOutputThread implement
             wait();
         }
         while (keepRunning()) {
-            if (this.device != null) {
+            if (this.getDevice() != null) {
                 LatencyTest.startTime = System.nanoTime();
-                od.writeDouble(this.device.getPosition().getX());
-                od.writeDouble(this.device.getPosition().getY());
-                od.writeDouble(this.device.getPosition().getRotation());
+                od.writeDouble(this.getDevice().getPosition().getX());
+                od.writeDouble(this.getDevice().getPosition().getY());
+                od.writeDouble(this.getDevice().getPosition().getRotation());
                 od.flush();
 
                 synchronized (this) {
@@ -68,13 +60,5 @@ public class ByteClientOutputThread extends AbstractClientOutputThread implement
         oos.close();*/
 
         Log.i("Connection", "[ OK ] Outputstream closed.");
-    }
-
-    public void setDevice(Device device) {
-        this.device = device;
-        synchronized (this) {
-            //Notify that new message has arrived.
-            notify();
-        }
     }
 }

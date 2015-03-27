@@ -1,4 +1,4 @@
-package com.EE5.communications_test.connection;
+package com.EE5.communications.connection;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -11,13 +11,9 @@ import com.EE5.server.socketTask.SocketTaskType;
 
 import java.util.Set;
 
-public class BluetoothConnection implements Connection{
-    private ArrayAdapter<String> historyAdapter;
-    private SocketTaskType socketTaskType;
-
-    public BluetoothConnection(ArrayAdapter<String> historyAdapter, SocketTaskType socketTaskType){
-        this.historyAdapter = historyAdapter;
-        this.socketTaskType = socketTaskType;
+public class BluetoothConnection extends Connection{
+    public BluetoothConnection(int sampleRate, ArrayAdapter<String> historyAdapter, SocketTaskType socketTaskType){
+        super(sampleRate, historyAdapter, socketTaskType);
     }
 
     @Override
@@ -27,11 +23,12 @@ public class BluetoothConnection implements Connection{
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Set bondendDevices = mBluetoothAdapter.getBondedDevices();
         Object[] deviceArray = bondendDevices.toArray();
-        BluetoothDevice mmDevice = (BluetoothDevice) deviceArray[0];
+        BluetoothDevice mmDevice = (BluetoothDevice) deviceArray[0]; //Get the first paired device.
+        //TODO: Choose Bluetooth Device.
 
         Log.i("Devices",mmDevice.getAddress());
 
-        Client client = new BluetoothClient(mutex, historyAdapter, socketTaskType,  mmDevice);
+        Client client = new BluetoothClient(mutex, this.getHistoryAdapter(), this.getSocketTaskType(),  mmDevice);
         client.execute();
 
         Log.i("Connection","[ Blocked ] Waiting for connection...");

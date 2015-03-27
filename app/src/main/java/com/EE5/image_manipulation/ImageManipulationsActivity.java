@@ -1,8 +1,8 @@
 package com.EE5.image_manipulation;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,8 +14,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.EE5.R;
-import com.EE5.communications_test.PositionActivity;
-import com.EE5.communications_test.ServerActivity;
+import com.EE5.communications.ConnectionActivity;
+import com.EE5.communications.ServerActivity;
 import com.EE5.preferences.SettingsActivity;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ImageManipulationsActivity extends Activity implements CvCameraViewListener2 {
+public class ImageManipulationsActivity extends ActionBarActivity implements CvCameraViewListener2 {
     private static final String  TAG                 = "OCVSample::Activity";
     private static final String  TAG2                 = "Running Time";
 
@@ -214,7 +214,7 @@ public class ImageManipulationsActivity extends Activity implements CvCameraView
         useAsServer.setIntent(serverIntent);
 
         //Option to start as client.
-        Intent clientIntent = new Intent(this, PositionActivity.class);
+        Intent clientIntent = new Intent(this, ConnectionActivity.class);
         MenuItem useAsClient = menu.findItem(R.id.action_use_as_client);
         useAsClient.setIntent(clientIntent);
 

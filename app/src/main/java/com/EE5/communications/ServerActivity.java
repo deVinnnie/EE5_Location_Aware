@@ -1,4 +1,4 @@
-package com.EE5.communications_test;
+package com.EE5.communications;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -123,6 +123,7 @@ public class ServerActivity extends ActionBarActivity{
 
         return super.onOptionsItemSelected(item);
     }
+
 
     public void updateList(){
         ListView lstServerConnections = (ListView) findViewById(R.id.lst_server_connections);

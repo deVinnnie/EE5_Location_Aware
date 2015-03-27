@@ -5,16 +5,13 @@ import android.util.Log;
 import com.EE5.client.AbstractClientOutputThread;
 import com.EE5.client.Client;
 import com.EE5.client.LatencyTest;
-import com.EE5.client.Transmitter;
-import com.EE5.server.data.Device;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-public class ObjectClientOutputThread extends AbstractClientOutputThread implements Transmitter {
+public class ObjectClientOutputThread extends AbstractClientOutputThread {
     private ObjectOutputStream oos;
-    private Device device;
 
     public ObjectClientOutputThread(OutputStream out, Client client)throws IOException {
         super(out, client);
@@ -35,14 +32,14 @@ public class ObjectClientOutputThread extends AbstractClientOutputThread impleme
     public void transmit()throws IOException, InterruptedException{
         Log.i("Connection", "[ OK ] Sending positions");
         while (keepRunning()) {
-            if (this.device != null) {
+            if (this.getDevice() != null) {
                 LatencyTest.startTime = System.nanoTime();
                 oos.reset();
                 //Very Important!!!!!!!!!!
                 //ObjectOutputSteam keeps some sort of cache,
                 // the result is that when writing the same (updated) object multiple times,
                 // the old version is used.
-                oos.writeObject(this.device);
+                oos.writeObject(this.getDevice());
                 oos.flush();
 
                 synchronized (this) {
@@ -60,13 +57,5 @@ public class ObjectClientOutputThread extends AbstractClientOutputThread impleme
         oos.close();
 
         Log.i("Connection", "[ OK ] Outputstream closed.");
-    }
-
-    public void setDevice(Device device) {
-        this.device = device;
-        synchronized (this) {
-            //Notify that new message has arrived.
-            notify();
-        }
     }
 }

@@ -1,4 +1,4 @@
-package com.EE5.communications_test;
+package com.EE5.util;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
