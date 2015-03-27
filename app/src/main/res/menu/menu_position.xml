@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.EE5.communications_test.PositionActivity">
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100"/>
+    <item android:id="@+id/action_use_as_server" android:title="@string/action_use_as_server"
+        android:orderInCategory="100"/>
+</menu>

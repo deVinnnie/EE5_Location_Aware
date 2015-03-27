@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100"/>
+    <item android:id="@+id/action_use_as_server" android:title="@string/action_use_as_server"
+        android:orderInCategory="100"/>
+    <item android:id="@+id/action_use_as_client" android:title="@string/use_as_client"
+        android:orderInCategory="100"/>
+</menu>
