@@ -31,6 +31,7 @@ public class TCPConnection extends Connection{
                 e.printStackTrace();
             }
         }
+        this.setClient(client);
         return client;
     }
 }

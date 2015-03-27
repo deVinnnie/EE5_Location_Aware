@@ -41,6 +41,7 @@ public class BluetoothConnection extends Connection{
             }
         }
         Log.i("Connection","[ OK ] Continued.");
+        this.setClient(client);
         return client;
     }
 }
