@@ -1,13 +1,11 @@
 package com.EE5.communications;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -73,16 +71,7 @@ public class ConnectionActivity extends ActionBarActivity {
         this.btnDisconnect.setEnabled(false);
 
         ListView lstConnectionHistory = (ListView) findViewById(R.id.lst_connectionHistory);
-        TextView txt = new TextView(this.getApplicationContext());
-        txt.setTextColor(0);
-        lstConnectionHistory.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, history) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                TextView textView = (TextView) super.getView(position, convertView, parent);
-                textView.setTextColor(Color.BLACK);
-                return textView;
-            }
-        });
+        lstConnectionHistory.setAdapter(new ArrayAdapter<String>(this, R.layout.list_item, history));
     }
 
     private void loadPreferences(){

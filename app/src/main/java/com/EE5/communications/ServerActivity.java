@@ -1,7 +1,6 @@
 package com.EE5.communications;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,8 +11,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,16 +35,8 @@ public class ServerActivity extends ActionBarActivity{
         setContentView(R.layout.activity_server);
 
         Log.i("Server", "Creating Server Activity");
-
         ListView lstServerConnections = (ListView) findViewById(R.id.lst_server_connections);
-        lstServerConnections.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, connectedDevices) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                TextView textView = (TextView) super.getView(position, convertView, parent);
-                textView.setTextColor(Color.BLACK);
-                return textView;
-            }
-        });
+        lstServerConnections.setAdapter(new ArrayAdapter<String>(this, R.layout.list_item, connectedDevices));
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
