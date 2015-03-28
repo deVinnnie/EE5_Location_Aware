@@ -67,6 +67,12 @@ public abstract class Connection {
         timerHandler.removeCallbacks(timerRunnable);
     }
 
+    public void disconnect(){
+        this.getClient().quit();
+        ((AbstractClientOutputThread) this.getClient().getClientOutputThread()).setDevice(null);
+        this.stopPolling();
+    }
+
     //<editor-fold desc="Getters/Setters">
     public Client getClient() {
         return client;

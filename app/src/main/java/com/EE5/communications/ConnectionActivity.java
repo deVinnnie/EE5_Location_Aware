@@ -12,7 +12,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.EE5.R;
-import com.EE5.client.AbstractClientOutputThread;
 import com.EE5.client.Client;
 import com.EE5.client.IDGenerator;
 import com.EE5.communications.connection.Connection;
@@ -23,7 +22,6 @@ import com.EE5.util.GlobalResources;
 import java.util.ArrayList;
 
 public class ConnectionActivity extends ActionBarActivity {
-    private Connection connection;
     private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private Button btnConnect;
     private Button btnDisconnect;
@@ -37,8 +35,6 @@ public class ConnectionActivity extends ActionBarActivity {
         String deviceId = IDGenerator.generate(sharedPref);
         Client.currentDevice = new Device(deviceId);
         ArrayAdapter<String> arrayAdapter;
-
-
 
         //Hook up event listeners.
         //This connects the click on a button to the right method for execution.
@@ -60,13 +56,16 @@ public class ConnectionActivity extends ActionBarActivity {
         this.btnDisconnect.setEnabled(false);
 
         GlobalResources global = GlobalResources.getInstance();
+        //If a connection is not yet made it will be null.
         if(global.getConnection() != null){
-            this.connection = global.getConnection();
-            arrayAdapter = this.connection.getHistoryAdapter();
+            //Retrieve the arrayAdapter used previously and later pass it through to the ListView.
+            //The ListView will then display the (old) data present in the ArrayAdapter.
+            arrayAdapter = global.getConnection().getHistoryAdapter();
             this.btnConnect.setEnabled(false);
             this.btnDisconnect.setEnabled(true);
         }
         else {
+            //Generate a new ArrayAdapter when the connection is yet to be made.
             arrayAdapter = new ArrayAdapter<String>(this, R.layout.list_item, new ArrayList<String>());
         }
 
@@ -106,7 +105,7 @@ public class ConnectionActivity extends ActionBarActivity {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         ArrayAdapter<String> arrayAdapter = (ArrayAdapter<String>)((ListView) findViewById(R.id.lst_connectionHistory)).getAdapter();
-        this.connection = ConnectionFactory.produce(arrayAdapter, sharedPref);
+        Connection connection = ConnectionFactory.produce(arrayAdapter, sharedPref);
         connection.connect();
         GlobalResources.getInstance().setConnection(connection);
 
@@ -123,9 +122,8 @@ public class ConnectionActivity extends ActionBarActivity {
     }
 
     public void disconnect(){
-        this.connection.getClient().quit();
-        ((AbstractClientOutputThread) connection.getClient().getClientOutputThread()).setDevice(null);
-        connection.stopPolling();
+        Connection connection = GlobalResources.getInstance().getConnection();
+        connection.disconnect();
         this.btnConnect.setEnabled(true);
         this.btnDisconnect.setEnabled(false);
     }
