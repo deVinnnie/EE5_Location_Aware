@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.EE5.R;
 import com.EE5.client.Client;
@@ -17,6 +18,7 @@ import com.EE5.client.IDGenerator;
 import com.EE5.communications.connection.Connection;
 import com.EE5.communications.connection.ConnectionFactory;
 import com.EE5.server.data.Device;
+import com.EE5.util.ConnectionException;
 import com.EE5.util.GlobalResources;
 
 import java.util.ArrayList;
@@ -100,25 +102,30 @@ public class ConnectionActivity extends ActionBarActivity {
 
     //<editor-fold desc="Connection">
     public void connect(){
-        Log.i("PositionActivity", "[ BUSY ] Connecting...");
-        Log.i("PositionActivity", "[ BUSY ] Creating Client...");
+        try {
+            Log.i("PositionActivity", "[ BUSY ] Connecting...");
+            Log.i("PositionActivity", "[ BUSY ] Creating Client...");
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        ArrayAdapter<String> arrayAdapter = (ArrayAdapter<String>)((ListView) findViewById(R.id.lst_connectionHistory)).getAdapter();
-        Connection connection = ConnectionFactory.produce(arrayAdapter, sharedPref);
-        connection.connect();
-        GlobalResources.getInstance().setConnection(connection);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            ArrayAdapter<String> arrayAdapter = (ArrayAdapter<String>)((ListView) findViewById(R.id.lst_connectionHistory)).getAdapter();
+            Connection connection = ConnectionFactory.produce(arrayAdapter, sharedPref, this.getApplicationContext());
 
-        Log.i("PositionActivity", "[ OK ] Connection Setup.");
-        connection.startPolling();
-        Log.i("PositionActivity", "[ OK ] Started Polling.");
+            connection.connect();
 
-        this.btnConnect.setEnabled(false);
-        this.btnDisconnect.setEnabled(true);
+            GlobalResources.getInstance().setConnection(connection);
 
-        /*Intent intent = new Intent(this, ImageManipulationsActivity.class);
-        startActivity(intent);*/
-        finish();
+            Log.i("PositionActivity", "[ OK ] Connection Setup.");
+            connection.startPolling();
+            Log.i("PositionActivity", "[ OK ] Started Polling.");
+
+            this.btnConnect.setEnabled(false);
+            this.btnDisconnect.setEnabled(true);
+
+            finish();
+        } catch (ConnectionException e) {
+            CharSequence text = "Connection failed\n"+e.getMessage();
+            Toast.makeText(this.getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void disconnect(){

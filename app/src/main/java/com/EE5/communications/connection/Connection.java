@@ -1,6 +1,8 @@
 package com.EE5.communications.connection;
 
+import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import com.EE5.client.AbstractClientOutputThread;
@@ -10,9 +12,11 @@ import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.server.data.Device;
 import com.EE5.server.data.Position;
 import com.EE5.server.socketTask.SocketTaskType;
+import com.EE5.util.ConnectionException;
 
 public abstract class Connection {
     private Client client;
+    private Context context;
 
     /**
      * Rate at which the position is sent to the server.
@@ -51,13 +55,14 @@ public abstract class Connection {
 
     public Connection(){}
 
-    public Connection(int sampleRate, ArrayAdapter<String> historyAdapter, SocketTaskType socketTaskType){
+    public Connection(int sampleRate, ArrayAdapter<String> historyAdapter, SocketTaskType socketTaskType, Context context){
         this.sampleRate = sampleRate;
         this.historyAdapter = historyAdapter;
         this.socketTaskType = socketTaskType;
+        this.context = context;
     }
 
-    public abstract Client connect();
+    public abstract Client connect() throws ConnectionException;
 
     public void startPolling(){
         timerHandler.postDelayed(timerRunnable, this.sampleRate);
@@ -114,5 +119,32 @@ public abstract class Connection {
         this.currentPosition = currentPosition;
     }
 
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
     //</editor-fold>
+
+    protected void waitForConnection(Client client, Object mutex) throws ConnectionException {
+        client.execute();
+
+        Log.i("Connection", "[ Blocked ] Waiting for connection...");
+        synchronized (mutex) {
+            //Avoid sending packets while the connection is still being established.
+            try {
+                mutex.wait(); //Notified when client.start() has ended.
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.i("Connection", "[ OK ] Continued.");
+        if(!client.isConnected()){
+            throw new ConnectionException("Connection failed.");
+        }
+
+        this.setClient(client);
+    }
 }
