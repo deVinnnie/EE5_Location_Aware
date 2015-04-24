@@ -71,11 +71,14 @@ public class ByteSocketTask extends SocketTask {
                 double x4 = id.readDouble();
                 double y4 = id.readDouble();
 
+                double angle = id.readDouble();
+
                 PatternCoordinator pattern = new PatternCoordinator(
                         new Point(x1,y1),
                         new Point(x2,y2),
                         new Point(x3,y3),
-                        new Point(x4,y4)
+                        new Point(x4,y4),
+                        angle
                 );
 
                 //Log.i("Position", "" + "(" + posX + "," + posY  +"," + rotation + ")");
@@ -111,6 +114,8 @@ public class ByteSocketTask extends SocketTask {
 
                         od.writeDouble(pc.getNum4().x);
                         od.writeDouble(pc.getNum4().y);
+
+                        od.writeDouble(pc.getAngle());
                     }
                 }
 

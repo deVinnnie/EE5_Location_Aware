@@ -67,12 +67,6 @@
                     android:id="@+id/y_axis"
                     android:layout_gravity="center" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="top"
-                    android:id="@+id/textView3"
-                    android:layout_gravity="left|top" />
             </FrameLayout>
 
             <FrameLayout

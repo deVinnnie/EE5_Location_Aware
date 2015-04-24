@@ -81,7 +81,12 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
     TextView tx_y2;
     TextView rotate;
 
+    double ra;
+
     int distance;
+    int distance2;
+    boolean setupflag;
+
     ImageView iv;
     private MenuItem mItemPreviewRGBA;
     private MenuItem mItemPreviewCanny;
@@ -99,7 +104,8 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             new Point(1,1),
             new Point(1,1),
             new Point(1,1),
-            new Point(1,1)
+            new Point(1,1),
+            0.00
     );
     //Change later to non-static variable.
 
@@ -114,6 +120,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");
         super.onCreate(savedInstanceState);
+        distance2 = 0;
 
         //Read out preferences
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -139,7 +146,8 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         btn_get.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //iv.setImageMatrix();
+                rotate.setText(String.valueOf(distance2));
+                tx_y1.setText(String.valueOf(ra));
             }
         });
 
@@ -165,6 +173,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.image_manipulations_activity_surface_view);
         mOpenCvCameraView.setCameraIndex(this.camera);
+        //mOpenCvCameraView.setCameraIndex(0);
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
@@ -329,7 +338,8 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                             new Point(1, 1),
                             new Point(1, 1),
                             new Point(1, 1),
-                            new Point(1, 1)
+                            new Point(1, 1),
+                            0.00
                     );
                 }
                 break;
@@ -344,7 +354,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         return rgba;
     }
 
-    public int patternDetection(Mat rgba, Mat gray2) {
+    public PatternCoordinator patternDetection(Mat rgba, Mat gray2) {
         double extra_angle = 0;
 
         long startTime = System.currentTimeMillis();
@@ -353,108 +363,151 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         List<MatOfPoint> contour = new ArrayList<MatOfPoint>();
         Mat hierarchys = new Mat();
 
-        //Imgproc.threshold(gray2, mIntermediateMat, 80, 255,Imgproc.THRESH_BINARY);
-        Imgproc.threshold(gray2, mIntermediateMat, 80, 255, Imgproc.THRESH_OTSU);
+        Imgproc.threshold(gray2, mIntermediateMat, 80, 255,Imgproc.THRESH_BINARY);
+        //Imgproc.threshold(gray2, mIntermediateMat, 80, 255, Imgproc.THRESH_OTSU);
         //Imgproc.Canny(mIntermediateMat, mIntermediateMat, 80, 90);                           //mIntermediateMat is a Mat format variable in field
 
         Imgproc.findContours(mIntermediateMat, contour, hierarchys, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-        List<MatOfPoint> con_in_range = getContoursBySize(distance, contour);
+        List<MatOfPoint> con_in_range;
+        List<MatOfPoint> squareContours;
+        List<MatOfPoint> pContour;
 
-        List<MatOfPoint> squareContours =  getContoursSquare2(con_in_range);
-        List<MatOfPoint> pContour = findPattern(squareContours);
+        MatOfPoint squ_in  = new MatOfPoint();
+        MatOfPoint squ_out = new MatOfPoint();
 
-        Point innerCenter = new Point();
-        Point outterCenter = new Point();
 
-        RotatedRect NewMtx1 = new RotatedRect();
-        RotatedRect NewMtx2 = new RotatedRect();
-
-        MatOfPoint2f appo = new MatOfPoint2f();
-        MatOfPoint2f appo2 = new MatOfPoint2f();
-        if (pContour.size() == 2) {
-            appo = new MatOfPoint2f(pContour.get(1).toArray());
-            appo2 = new MatOfPoint2f(pContour.get(0).toArray());
-            NewMtx1 = Imgproc.minAreaRect(appo);
-            NewMtx2 = Imgproc.minAreaRect(appo2);
-            innerCenter = NewMtx1.center;
-            outterCenter = NewMtx2.center;
-        }
-
-        List<MatOfPoint> appro_con = new ArrayList<MatOfPoint>();
-        appro_con.add(new MatOfPoint(appo.toArray()));
-
-        Imgproc.cvtColor(mIntermediateMat, rgba, Imgproc.COLOR_GRAY2BGRA, 4);
-
-        //Imgproc.drawContours(rgba, contour, -1, orange, 4);
-        //Imgproc.drawContours(rgba,outterContours,-1,new Scalar(120,120,255),4);
-        //Imgproc.drawContours(rgba, squareContours, -1, light_blue, 4);
-        //Original:Imgproc.drawContours(rgba, pContour, -1, light_green, 4);
-        //Imgproc.drawContours(rgba, pContour, -1, light_green, 2);
-        Imgproc.drawContours(rgba, pContour, 0, light_green, 2);
-
-        //Core.line(rgba, innerCenter, outterCenter, orange, 2);
-        Point a = new Point(NewMtx2.boundingRect().x, NewMtx2.boundingRect().y);
-        Point b = new Point(NewMtx2.boundingRect().x + NewMtx2.boundingRect().width, NewMtx2.boundingRect().y + NewMtx2.boundingRect().height);
-        //Core.rectangle(rgba, a, b, dark_blue,3);
-        Point a2 = new Point(NewMtx1.boundingRect().x, NewMtx1.boundingRect().y);
-        Point b2 = new Point(NewMtx1.boundingRect().x + NewMtx1.boundingRect().width, NewMtx1.boundingRect().y + NewMtx1.boundingRect().height);
-        //Core.rectangle(rgba, a2, b2, dark_blue,3);
-
-        double x1,x2,y1,y2;
-        x1 = innerCenter.x;
-        x2 = outterCenter.x;
-        y1 = innerCenter.y;
-        y2 = outterCenter.y;
-        double k = (y2-y1)/(x1-x2);
-
-        if((k<-1)|(k>1)){
-            if(y2>=y1) {
-                extra_angle = 180;
+        if(setupflag == false) {
+            con_in_range = getContoursBySize(distance2, contour);
+            squareContours = getContoursSquare2(con_in_range);
+            pContour = findPattern(squareContours);
+            if (pContour.size() == 2) {
+                squ_out = pContour.get(1);
+                squ_in = pContour.get(0);
+                ra = Imgproc.contourArea(squ_out)/Imgproc.contourArea(squ_in);
+                if((ra>3)&(ra<7)){
+                    setupflag = true;
+                    distance2 = distance2 + 5;
+                }
+                else{
+                    setupflag = false;
+                }
             }
-            else{
-                extra_angle = 0;
-            }
-        }
-        else if((-1<k)|(k<1)){
-            if(x1>=x2) {
-                extra_angle = 270 ;
-            }
-            else {
-                extra_angle = 90;
-            }
-        }
-
-        String kk = "k is ("+String.valueOf(k)+")";
-        Core.putText(rgba,kk,new Point(50,400),   Core.FONT_HERSHEY_SIMPLEX,1,light_blue);
-        String angle = "rotate angle is ("+String.valueOf(NewMtx2.angle+90+extra_angle)+")";
-        Core.putText(rgba,angle,new Point(50,500),   Core.FONT_HERSHEY_SIMPLEX,1,light_blue);
-
-        long stopTime = System.currentTimeMillis();
-
-        String sss = String.valueOf(stopTime - startTime);
-        //Log.i(TAG2, "spend_time for one frame = " + sss + " ms");
-        //Log.i(TAG,"The coordinator is = " + sss);
-
-        if (pContour.size() == 2) {
-            Point[] vertices = new Point[4];
-
-            //.points() will place the 4 corner points into vertices.
-            NewMtx2.points(vertices);
-
-            String rect = "";
-            for(int i = 0; i < vertices.length; i++){
-                rect += "("+vertices[i].x + "," + vertices[i].y+")\n";
-            }
-
-            ImageManipulationsActivity.patternCoordinator = new PatternCoordinator(
-                    vertices[0],
-                    vertices[1],
-                    vertices[2],
-                    vertices[3]
+            distance2 = distance2 + 5;
+            PatternCoordinator pc = new PatternCoordinator(
+                    new Point(1,1),
+                    new Point(1,1),
+                    new Point(1,1),
+                    new Point(1,1),
+                    0.00
             );
+            return pc;
         }
+        else {
 
-        return 0;
+            con_in_range = getContoursBySize(distance2, contour);
+            squareContours = getContoursSquare2(con_in_range);
+
+            //squareContours =  getContoursSquare2(contour);
+            pContour = findPattern(squareContours);
+
+
+            Point innerCenter = new Point();
+            Point outterCenter = new Point();
+
+            RotatedRect NewMtx1 = new RotatedRect();
+            RotatedRect NewMtx2 = new RotatedRect();
+
+            MatOfPoint2f appo = new MatOfPoint2f();
+            MatOfPoint2f appo2 = new MatOfPoint2f();
+            if (pContour.size() == 2) {
+                appo = new MatOfPoint2f(pContour.get(0).toArray());
+                appo2 = new MatOfPoint2f(pContour.get(1).toArray());
+                NewMtx1 = Imgproc.minAreaRect(appo);
+                NewMtx2 = Imgproc.minAreaRect(appo2);
+                innerCenter = NewMtx2.center;
+                outterCenter = NewMtx1.center;
+            }
+
+            List<MatOfPoint> appro_con = new ArrayList<MatOfPoint>();
+            appro_con.add(new MatOfPoint(appo.toArray()));
+
+            Imgproc.cvtColor(mIntermediateMat, rgba, Imgproc.COLOR_GRAY2BGRA, 4);
+
+            //Imgproc.drawContours(rgba, contour, -1, orange, 4);
+            //Imgproc.drawContours(rgba,outterContours,-1,new Scalar(120,120,255),4);
+            Imgproc.drawContours(rgba, squareContours, -1, orange, 4);
+            //Original:Imgproc.drawContours(rgba, pContour, -1, light_green, 4);
+            //Imgproc.drawContours(rgba, pContour, -1, light_green, 2);
+            //Imgproc.drawContours(rgba, pContour, 0, light_green, 2);
+
+            //Core.line(rgba, innerCenter, outterCenter, orange, 2);
+            Point a = new Point(NewMtx2.boundingRect().x, NewMtx2.boundingRect().y);
+            Point b = new Point(NewMtx2.boundingRect().x + NewMtx2.boundingRect().width, NewMtx2.boundingRect().y + NewMtx2.boundingRect().height);
+            Core.rectangle(rgba, a, b, dark_blue,3);
+            Point a2 = new Point(NewMtx1.boundingRect().x, NewMtx1.boundingRect().y);
+            Point b2 = new Point(NewMtx1.boundingRect().x + NewMtx1.boundingRect().width, NewMtx1.boundingRect().y + NewMtx1.boundingRect().height);
+            Core.rectangle(rgba, a2, b2, dark_blue,3);
+
+            double x1, x2, y1, y2;
+            x1 = innerCenter.x;
+            x2 = outterCenter.x;
+            y1 = innerCenter.y;
+            y2 = outterCenter.y;
+            double k = (y2 - y1) / (x1 - x2);
+
+            if ((k < -1) | (k > 1)) {
+                if (y2 >= y1) {
+                    extra_angle = 180;
+                } else {
+                    extra_angle = 0;
+                }
+            } else if ((-1 < k) | (k < 1)) {
+                if (x1 >= x2) {
+                    extra_angle = 270;
+                } else {
+                    extra_angle = 90;
+                }
+            }
+
+            double finalangle =NewMtx2.angle+90+extra_angle;
+
+            String kk = "k is (" + String.valueOf(k) + ")";
+            Core.putText(rgba, kk, new Point(50, 400), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+            String angle = "rotate angle is (" + String.valueOf(finalangle) + ")";
+            Core.putText(rgba, angle, new Point(50, 500), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+
+            //Core.putText(rgba, String.valueOf(pContour.size()), new Point(50, 550), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+            //Core.putText(rgba, String.valueOf(innerCenter.x)+" "+innerCenter.y, new Point(50, 600), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+            //Core.putText(rgba, String.valueOf(outterCenter.x)+" "+outterCenter.y, new Point(50, 650), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+
+            long stopTime = System.currentTimeMillis();
+
+            String sss = String.valueOf(stopTime - startTime);
+            //Log.i(TAG2, "spend_time for one frame = " + sss + " ms");
+            //Log.i(TAG,"The coordinator is = " + sss);
+
+            if (pContour.size() == 2) {
+                Point[] vertices = new Point[4];
+
+                //.points() will place the 4 corner points into vertices.
+                NewMtx2.points(vertices);
+
+                String rect = "";
+                for (int i = 0; i < vertices.length; i++) {
+                    rect += "(" + vertices[i].x + "," + vertices[i].y + ")\n";
+                }
+
+                ImageManipulationsActivity.patternCoordinator = new PatternCoordinator(
+                        vertices[0],
+                        vertices[1],
+                        vertices[2],
+                        vertices[3],
+                        finalangle
+                );
+            }
+            PatternCoordinator pc = new PatternCoordinator(a,b,a2,b2,finalangle);
+            return pc;
+        }
     }
 
     public List<MatOfPoint> getContoursBySize(int dis, List<MatOfPoint> contour) {
@@ -463,7 +516,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         Iterator<MatOfPoint> each = contour.iterator();
         while (each.hasNext()) {
             MatOfPoint contours = each.next();
-            if ((Imgproc.contourArea(contours) < dis * 400) & (Imgproc.contourArea(contours) > dis * 10)) {
+            if ((Imgproc.contourArea(contours) < dis * 600) & (Imgproc.contourArea(contours) > dis * 20)) {
                 con_in_range.add(contours);
             }
         }
