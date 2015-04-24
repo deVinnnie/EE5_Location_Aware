@@ -2,6 +2,7 @@ package com.EE5.image_manipulation;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -129,6 +130,11 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
 
         boolean backfacingCamera = sharedPref.getBoolean("camera", false);
         this.camera = (backfacingCamera) ? 0 : 1;
+
+        if(Camera.getNumberOfCameras()<2){
+            this.camera = 0;
+            //Use rear facing camera if there is no front facing camera.
+        }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
