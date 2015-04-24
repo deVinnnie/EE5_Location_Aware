@@ -1,10 +1,12 @@
 package com.EE5.image_manipulation;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -19,9 +21,11 @@ import android.widget.TextView;
 import com.EE5.R;
 import com.EE5.communications.ConnectionActivity;
 import com.EE5.communications.ServerActivity;
+import com.EE5.math.Calc;
 import com.EE5.preferences.SettingsActivity;
 import com.EE5.server.Server;
 import com.EE5.util.GlobalResources;
+import com.EE5.util.Point3D;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -41,12 +45,15 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class ImageManipulationsActivity extends ActionBarActivity implements CvCameraViewListener2 {
+    private int camera = 1; //0 backfacing, 1=frontfacing.
+
     public static final int VIEW_MODE_RGBA = 0;
     public static int viewMode = VIEW_MODE_RGBA;
     public static final int VIEW_MODE_CANNY = 2;
@@ -107,6 +114,15 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");
         super.onCreate(savedInstanceState);
+
+        //Read out preferences
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        double pattern_width = Double.parseDouble(sharedPref.getString("pattern_size", "11.75")); //Second param is default value.
+        this.calc = new Calc(pattern_width);
+
+        boolean backfacingCamera = sharedPref.getBoolean("camera", false);
+        this.camera = (backfacingCamera) ? 0 : 1;
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.image_manipulations_surface_view);
@@ -148,7 +164,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
 
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.image_manipulations_activity_surface_view);
-        //mOpenCvCameraView.setCameraIndex(1);
+        mOpenCvCameraView.setCameraIndex(this.camera);
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
@@ -230,7 +246,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         }
     }
 
-
     Handler handler = new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
@@ -244,6 +259,9 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         }
     };
 
+    private Calc calc = new Calc();
+
+
     public void updateServerPositions(){
         Server server = GlobalResources.getInstance().getServer();
         if(server != null) {
@@ -251,10 +269,17 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             for (Map.Entry<String, PatternCoordinator> entry : server.getConnectedDevices().getPatternMap().entrySet()) {
                 String id = entry.getKey();
                 PatternCoordinator pc = entry.getValue();
+
                 list +="" + id + "\n(" + Math.round(pc.getNum1().x) + "," + Math.round(pc.getNum1().y) + ")  ("
                         + Math.round(pc.getNum2().x) + "," + Math.round(pc.getNum2().y) + ")  ("
                         + Math.round(pc.getNum3().x) + "," + Math.round(pc.getNum3().y) + ")  ("
                         + Math.round(pc.getNum4().x) + "," + Math.round(pc.getNum4().y) + ")\n";
+
+                Point3D point = calc.calculate(pc);
+                DecimalFormat df = new DecimalFormat("#.##");
+
+                list += "x:"+df.format(point.getX())+"; y:" + df.format(point.getY()) +"; z:" + df.format(point.getZ());
+                list+="\n";
             }
 
             TextView server_display = (TextView) findViewById(R.id.server_display);

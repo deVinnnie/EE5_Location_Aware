@@ -50,6 +50,18 @@
         android:dialogTitle="Choose a data handling type please"
         android:entries="@array/socket_task_types"
         android:entryValues="@array/socket_task_settings"
+     />
+
+    <EditTextPreference
+        android:key="pattern_size"
+        android:title="Width of Pattern"
+        android:inputType="numberDecimal"
+        android:defaultValue="11.75"
         />
+
+    <SwitchPreference
+        android:key="camera"
+        android:title="Backfacing Camera"
+        android:defaultValue="false"/>
 
 </PreferenceScreen>
