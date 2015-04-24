@@ -2,6 +2,9 @@ package com.EE5.image_manipulation;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +20,8 @@ import com.EE5.R;
 import com.EE5.communications.ConnectionActivity;
 import com.EE5.communications.ServerActivity;
 import com.EE5.preferences.SettingsActivity;
+import com.EE5.server.Server;
+import com.EE5.util.GlobalResources;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -39,7 +44,7 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
 
 public class ImageManipulationsActivity extends ActionBarActivity implements CvCameraViewListener2 {
     public static final int VIEW_MODE_RGBA = 0;
@@ -105,7 +110,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.image_manipulations_surface_view);
-
 
         tx_x1 = (TextView) findViewById(R.id.x_axis);
         tx_x2 = (TextView) findViewById(R.id.x_axis2);
@@ -226,6 +230,40 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         }
     }
 
+
+    Handler handler = new Handler(Looper.getMainLooper()){
+        @Override
+        public void handleMessage(Message msg) {
+                /*if(msg.what==0){
+                    ServerActivity.this.updateList();
+                }*/
+            if(msg.what==1){
+                ImageManipulationsActivity.this.updateServerPositions();
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    public void updateServerPositions(){
+        Server server = GlobalResources.getInstance().getServer();
+        if(server != null) {
+            String list="";
+            for (Map.Entry<String, PatternCoordinator> entry : server.getConnectedDevices().getPatternMap().entrySet()) {
+                String id = entry.getKey();
+                PatternCoordinator pc = entry.getValue();
+                list +="" + id + "\n(" + Math.round(pc.getNum1().x) + "," + Math.round(pc.getNum1().y) + ")  ("
+                        + Math.round(pc.getNum2().x) + "," + Math.round(pc.getNum2().y) + ")  ("
+                        + Math.round(pc.getNum3().x) + "," + Math.round(pc.getNum3().y) + ")  ("
+                        + Math.round(pc.getNum4().x) + "," + Math.round(pc.getNum4().y) + ")\n";
+            }
+
+            TextView server_display = (TextView) findViewById(R.id.server_display);
+            server_display.setText(list);
+        }
+
+
+    }
+
     public void onCameraViewStarted(int width, int height) {
         mIntermediateMat = new Mat();
         mSize0 = new Size();
@@ -272,6 +310,12 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                 break;
         }
         //Imgproc.resize(rgba,rgba,new Size(352,288));
+        Message msg = handler.obtainMessage();
+        msg.what = 1;
+        msg.obj = null;
+        msg.arg1 = 0;
+        handler.sendMessage(msg);
+
         return rgba;
     }
 

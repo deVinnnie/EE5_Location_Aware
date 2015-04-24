@@ -1,4 +1,6 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -30,7 +32,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="x_axis     "
+                    android:text="x_axis"
                     android:id="@+id/x_axis"
                     android:layout_gravity="center" />
             </FrameLayout>
@@ -42,7 +44,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="x_axis     "
+                    android:text="x_axis"
                     android:id="@+id/x_axis2"
                     android:layout_gravity="center" />
 
@@ -75,8 +77,7 @@
 
             <FrameLayout
                 android:layout_width="70dp"
-                android:layout_height="40dp"
-                >
+                android:layout_height="40dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -148,6 +149,15 @@
             android:id="@+id/imageView"
             android:layout_gravity="right"
             android:layout_weight="1.32" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/server_display"
+            android:layout_height="500px"
+            android:textColor="#0AA"
+            android:text=""/>
+
     </FrameLayout>
+
 
 </LinearLayout>

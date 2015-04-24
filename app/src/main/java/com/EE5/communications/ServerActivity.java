@@ -19,9 +19,11 @@ import com.EE5.R;
 import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.server.BluetoothServer;
 import com.EE5.server.Server;
+import com.EE5.server.ServerPassThrough;
 import com.EE5.server.TCPServer;
 import com.EE5.server.data.Position;
 import com.EE5.server.socketTask.SocketTaskType;
+import com.EE5.util.GlobalResources;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -77,6 +79,11 @@ public class ServerActivity extends ActionBarActivity{
             txtIPAddress.setText("Server IP = " + ip);
         }
         this.server.start();
+        GlobalResources.getInstance().setServer(this.server);
+
+        //Also store the values of this device on the server.
+        ServerPassThrough passThrough = new ServerPassThrough();
+        passThrough.startPolling();
     }
 
     private void updatePositionsList() {

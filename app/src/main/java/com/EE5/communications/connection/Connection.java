@@ -37,7 +37,6 @@ public abstract class Connection {
             try {
                 PatternCoordinator pc = ImageManipulationsActivity.patternCoordinator;
                 currentPosition = new Position(pc.getNum1().x, pc.getNum1().y, currentPosition.getRotation(), currentPosition.getHeight());
-                Log.i("HLMLKJ", "42");
                 Device device = Client.currentDevice;
                 device.setPosition(currentPosition);
                 device.setPattern(pc);

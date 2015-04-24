@@ -1,6 +1,7 @@
 package com.EE5.util;
 
 import com.EE5.communications.connection.Connection;
+import com.EE5.server.Server;
 
 /**
  * Contains objects that need to be available to all Activities.
@@ -12,6 +13,8 @@ public class GlobalResources {
     private static GlobalResources instance;
 
     public Connection connection;
+    public Server server;
+    //public String id;
 
     // The constructor is private so that it can only be called from within the class.
     private GlobalResources(){}
@@ -31,5 +34,14 @@ public class GlobalResources {
     public void setConnection(Connection connection) {
         this.connection = connection;
     }
+
+    public Server getServer() {
+        return server;
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
+    }
+
     //</editor-fold>
 }
