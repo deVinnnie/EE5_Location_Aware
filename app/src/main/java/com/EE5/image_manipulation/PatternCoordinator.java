@@ -14,12 +14,14 @@ public class PatternCoordinator implements Serializable{
     Point num2;
     Point num3;
     Point num4;
+    double angle;
 
-    public PatternCoordinator(Point num1,Point num2,Point num3,Point num4){
+    public PatternCoordinator(Point num1,Point num2,Point num3,Point num4,double angle){
         this.num1=num1;
         this.num2=num2;
         this.num3=num3;
         this.num4=num4;
+        this.angle = angle;
     }
 
     public Point getNum1() {
@@ -38,6 +40,10 @@ public class PatternCoordinator implements Serializable{
         return num4;
     }
 
+    public double getAngle() {
+        return angle;
+    }
+
     public void setNum1(Point num1) {
         this.num1 = num1;
     }
@@ -52,5 +58,9 @@ public class PatternCoordinator implements Serializable{
 
     public void setNum4(Point num4) {
         this.num4 = num4;
+    }
+
+    public void setAngle(double angle) {
+        this.angle = angle;
     }
 }
