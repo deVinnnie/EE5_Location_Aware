@@ -45,7 +45,6 @@ public class TCPClient extends Client {
         try {
             this.socket = new Socket();
             this.socket.connect(new InetSocketAddress(ip, port), 3000);
-
             boolean result = this.socket.isConnected();
 
             if (result) {
@@ -59,18 +58,13 @@ public class TCPClient extends Client {
                 this.setIsStart(true);
                 this.getClientInputThread().start();
                 this.getClientOutputThread().start();
-            } else {
-                Log.i("Connection", "Connection failed.");
             }
-            synchronized (this.getMutex()) {
-                this.getMutex().notify();
+            else {
+                Log.i("Connection", "Connection failed.");
             }
             return result;
         }
         catch (Exception e) {
-            synchronized (this.getMutex()) {
-                this.getMutex().notify();
-            }
             throw new ConnectionException(e.getMessage(), e);
         }
     }

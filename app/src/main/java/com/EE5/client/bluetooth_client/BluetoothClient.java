@@ -77,11 +77,6 @@ public class BluetoothClient extends Client {
                 Log.i("Connection", "Connection failed.");
                 result = false;
             }
-            Log.i("Connection", "[ BUSY ] Preparing to release lock.");
-            synchronized (this.getMutex()) {
-                this.getMutex().notify();
-                Log.i("Connection","[ OK ] Released lock");
-            }
             return result;
         }
         catch (Exception e) {
@@ -93,7 +88,7 @@ public class BluetoothClient extends Client {
     public void quit(){
         super.quit();
         try {
-            if(mmSocket !=null) {
+            if(mmSocket != null) {
                 this.mmSocket.close();
             }
         } catch (IOException e) {

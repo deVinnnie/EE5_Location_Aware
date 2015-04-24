@@ -40,9 +40,22 @@ public class ByteClientOutputThread extends AbstractClientOutputThread{
         while (keepRunning()) {
             if (this.getDevice() != null) {
                 LatencyTest.startTime = System.nanoTime();
-                od.writeDouble(this.getDevice().getPosition().getX());
+
+                /*od.writeDouble(this.getDevice().getPosition().getX());
                 od.writeDouble(this.getDevice().getPosition().getY());
-                od.writeDouble(this.getDevice().getPosition().getRotation());
+                od.writeDouble(this.getDevice().getPosition().getRotation());*/
+                od.writeDouble(this.getDevice().getPattern().getNum1().x);
+                od.writeDouble(this.getDevice().getPattern().getNum1().y);
+
+                od.writeDouble(this.getDevice().getPattern().getNum2().x);
+                od.writeDouble(this.getDevice().getPattern().getNum2().y);
+
+                od.writeDouble(this.getDevice().getPattern().getNum3().x);
+                od.writeDouble(this.getDevice().getPattern().getNum3().y);
+
+                od.writeDouble(this.getDevice().getPattern().getNum4().x);
+                od.writeDouble(this.getDevice().getPattern().getNum4().y);
+
                 od.flush();
 
                 synchronized (this) {

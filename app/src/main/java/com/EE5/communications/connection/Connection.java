@@ -36,10 +36,11 @@ public abstract class Connection {
         public void run() {
             try {
                 PatternCoordinator pc = ImageManipulationsActivity.patternCoordinator;
-                currentPosition = new Position(pc.getNum2().x, pc.getNum2().y, currentPosition.getRotation(), currentPosition.getHeight());
-
+                currentPosition = new Position(pc.getNum1().x, pc.getNum1().y, currentPosition.getRotation(), currentPosition.getHeight());
+                Log.i("HLMLKJ", "42");
                 Device device = Client.currentDevice;
                 device.setPosition(currentPosition);
+                device.setPattern(pc);
                 ((AbstractClientOutputThread) client.getClientOutputThread()).setDevice(device);
 
                 /*TextView txtIPAddress = (TextView) findViewById(R.id.txtPosition);
@@ -131,7 +132,7 @@ public abstract class Connection {
     protected void waitForConnection(Client client, Object mutex) throws ConnectionException {
         client.execute();
 
-        Log.i("Connection", "[ Blocked ] Waiting for connection...");
+        Log.i("Connection", "[ Blocked ] Waiting for connection to be established.");
         synchronized (mutex) {
             //Avoid sending packets while the connection is still being established.
             try {
@@ -140,10 +141,12 @@ public abstract class Connection {
                 e.printStackTrace();
             }
         }
-        Log.i("Connection", "[ OK ] Continued.");
+
         if(!client.isConnected()){
-            throw new ConnectionException("Connection failed.");
+            throw new ConnectionException("Connection failed. Client is not connected.");
         }
+
+        Log.i("Connection", "[ OK ]");
 
         this.setClient(client);
     }

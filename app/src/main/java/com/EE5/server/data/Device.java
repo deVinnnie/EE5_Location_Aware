@@ -1,5 +1,7 @@
 package com.EE5.server.data;
 
+import com.EE5.image_manipulation.PatternCoordinator;
+
 import java.io.Serializable;
 
 public class Device implements Serializable{
@@ -10,6 +12,7 @@ public class Device implements Serializable{
      */
     private String id;
     private Position position;
+    private PatternCoordinator pattern;
 
     public Device(String id) {
         this.id = id;
@@ -29,6 +32,14 @@ public class Device implements Serializable{
 
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    public PatternCoordinator getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(PatternCoordinator pattern) {
+        this.pattern = pattern;
     }
 
     @Override

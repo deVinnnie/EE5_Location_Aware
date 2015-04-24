@@ -34,9 +34,9 @@ public abstract class Client extends AsyncTask<Void, String, Void> {
 
     private boolean isConnected = false;
 
-    public Client(){
+    /*public Client(){
         mutex = null;
-    }
+    }*/
 
     public Client(Object mutex, ArrayAdapter<String> historyAdapter, SocketTaskType socketTaskType,Context context){
         this.mutex = mutex;
@@ -45,23 +45,12 @@ public abstract class Client extends AsyncTask<Void, String, Void> {
         this.context = context;
     }
 
-    public Object getMutex(){
-        return this.mutex;
-    }
-
     /**
-     *
+     * Initiates the connection.
      * @return True when connection successful, false when failed.
      * @throws IOException
      */
     public abstract boolean start() throws ConnectionException;
-
-    public AbstractClientThread getClientInputThread() {
-        return this.clientInputThread;
-    }
-    public AbstractClientThread getClientOutputThread() {
-        return this.clientOutputThread;
-    }
 
     public void setIsStart(boolean isStart) {
         this.getClientInputThread().setKeepRunning(isStart);
@@ -77,12 +66,18 @@ public abstract class Client extends AsyncTask<Void, String, Void> {
         this.publishProgress(string);
     }
 
+    /**Methods Of Async Task*/
+    //<editor-fold desc="Async Task">
     @Override
     protected Void doInBackground(Void... voids) {
         try {
             this.isConnected = this.start();
-        /*} catch (IOException e) {
-            this.exception = e;*/
+            Log.i("Connection", "[ BUSY ] Preparing to release lock.");
+            //The notify must be done _AFTER_ 'isConnected' is assigned.
+            synchronized (this.getMutex()) {
+                this.getMutex().notify();
+                Log.i("Connection","[ OK ] Released lock");
+            }
         } catch (ConnectionException e) {
             this.exception = e;
         }
@@ -94,7 +89,7 @@ public abstract class Client extends AsyncTask<Void, String, Void> {
         super.onPostExecute(aVoid);
         if(this.exception != null) {
             this.exception.printStackTrace();
-            Toast.makeText(this.context, this.exception.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.context, "Client End:"+this.exception.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -107,6 +102,12 @@ public abstract class Client extends AsyncTask<Void, String, Void> {
         super.onProgressUpdate(values);
         historyAdapter.insert(values[0], 0);
         historyAdapter.notifyDataSetChanged();
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Getters & Setters">
+    public Object getMutex(){
+        return this.mutex;
     }
 
     public void setClientInputThread(AbstractClientThread clientInputThread) {
@@ -129,4 +130,11 @@ public abstract class Client extends AsyncTask<Void, String, Void> {
         return isConnected;
     }
 
+    public AbstractClientThread getClientInputThread() {
+        return this.clientInputThread;
+    }
+    public AbstractClientThread getClientOutputThread() {
+        return this.clientOutputThread;
+    }
+    //</editor-fold>
 }

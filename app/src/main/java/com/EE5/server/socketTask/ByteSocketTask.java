@@ -2,8 +2,11 @@ package com.EE5.server.socketTask;
 
 import android.util.Log;
 
+import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.server.Server;
 import com.EE5.server.data.Position;
+
+import org.opencv.core.Point;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -53,19 +56,37 @@ public class ByteSocketTask extends SocketTask {
 
             //Keep reading from socket.
             while(true){
-                double posX = id.readDouble();
+                /*double posX = id.readDouble();
                 double posY = id.readDouble();
-                double rotation = id.readDouble();
+                double rotation = id.readDouble();*/
+                double x1 = id.readDouble();
+                double y1 = id.readDouble();
 
-                Log.i("Position", "" + "(" + posX + "," + posY  +"," + rotation + ")");
+                double x2 = id.readDouble();
+                double y2 = id.readDouble();
 
-                Position position = new Position(posX, posY, rotation,0);
-                this.getServer().getDevices().getMap().put(uuid,position);
+                double x3 = id.readDouble();
+                double y3 = id.readDouble();
+
+                double x4 = id.readDouble();
+                double y4 = id.readDouble();
+
+                PatternCoordinator pattern = new PatternCoordinator(
+                        new Point(x1,y1),
+                        new Point(x2,y2),
+                        new Point(x3,y3),
+                        new Point(x4,y4)
+                );
+
+                //Log.i("Position", "" + "(" + posX + "," + posY  +"," + rotation + ")");
+
+                //Position position = new Position(posX, posY, rotation,0);
+                this.getServer().getDevices().getPatternMap().put(uuid,pattern);
                 //Iterate over all devices and send the stored position over the current connection.
-                for (Map.Entry<String, Position> entry : this.getServer().getDevices().getMap().entrySet())
+                for (Map.Entry<String, PatternCoordinator> entry : this.getServer().getDevices().getPatternMap().entrySet())
                 {
                     //Send position when the device is not the originating device.
-                    if(!entry.getKey().equals(uuid)) {
+                   /* if(!entry.getKey().equals(uuid)) {
                         Log.i("ID", entry.getKey());
                         od.writeUTF(entry.getKey());
                         Position pos = entry.getValue();
@@ -73,6 +94,23 @@ public class ByteSocketTask extends SocketTask {
                         od.writeDouble(pos.getX());
                         od.writeDouble(pos.getY());
                         od.writeDouble(pos.getRotation());
+                    }*/
+                    if(!entry.getKey().equals(uuid)) {
+                        Log.i("ID", entry.getKey());
+                        od.writeUTF(entry.getKey());
+                        PatternCoordinator pc = entry.getValue();
+
+                        od.writeDouble(pc.getNum1().x);
+                        od.writeDouble(pc.getNum1().y);
+
+                        od.writeDouble(pc.getNum2().x);
+                        od.writeDouble(pc.getNum2().y);
+
+                        od.writeDouble(pc.getNum3().x);
+                        od.writeDouble(pc.getNum3().y);
+
+                        od.writeDouble(pc.getNum4().x);
+                        od.writeDouble(pc.getNum4().y);
                     }
                 }
 

@@ -23,6 +23,14 @@ import com.EE5.util.GlobalResources;
 
 import java.util.ArrayList;
 
+/**
+ * Presents the user with a 'Connect with Client' button.
+ * Clicking this magic button will make a connection
+ * to the device acting as server (Provided the correct settings are given).
+ *
+ * After a successful connection it will send the Application back to the MainActivity.
+ *
+ */
 public class ConnectionActivity extends ActionBarActivity {
     private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private Button btnConnect;
@@ -123,7 +131,7 @@ public class ConnectionActivity extends ActionBarActivity {
 
             finish();
         } catch (ConnectionException e) {
-            CharSequence text = "Connection failed\n"+e.getMessage();
+            CharSequence text = "[ConnectionActivity] Connection failed\n"+e.getMessage();
             Toast.makeText(this.getApplicationContext(), text, Toast.LENGTH_SHORT).show();
         }
     }

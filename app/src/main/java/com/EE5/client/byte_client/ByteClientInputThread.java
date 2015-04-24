@@ -33,9 +33,21 @@ public class ByteClientInputThread extends AbstractClientInputThread {
                     }
                     else {
                         Log.i("Device", device);
-                        double x = id.readDouble();
+                        /*double x = id.readDouble();
                         double y = id.readDouble();
-                        double rot = id.readDouble();
+                        double rot = id.readDouble();*/
+
+                        double x1 = id.readDouble();
+                        double y1 = id.readDouble();
+
+                        double x2 = id.readDouble();
+                        double y2 = id.readDouble();
+
+                        double x3 = id.readDouble();
+                        double y3 = id.readDouble();
+
+                        double x4 = id.readDouble();
+                        double y4 = id.readDouble();
                     }
                 }
                 long timeDif = LatencyTest.getLatency();
@@ -45,10 +57,8 @@ public class ByteClientInputThread extends AbstractClientInputThread {
             }
         }
         catch(EOFException ex){
-
         }
         catch(Exception ex){
-
         }
 
         try {
