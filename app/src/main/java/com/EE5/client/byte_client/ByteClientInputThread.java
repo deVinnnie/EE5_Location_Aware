@@ -5,6 +5,10 @@ import android.util.Log;
 import com.EE5.client.AbstractClientInputThread;
 import com.EE5.client.Client;
 import com.EE5.client.LatencyTest;
+import com.EE5.image_manipulation.PatternCoordinator;
+import com.EE5.util.GlobalResources;
+
+import org.opencv.core.Point;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -48,6 +52,15 @@ public class ByteClientInputThread extends AbstractClientInputThread {
 
                         double x4 = id.readDouble();
                         double y4 = id.readDouble();
+
+                        PatternCoordinator pc = new PatternCoordinator(
+                                new Point(x1,y1),
+                                new Point(x2,y2),
+                                new Point(x3,y3),
+                                new Point(x4,y4)
+                        );
+
+                        GlobalResources.getInstance().getDevices().getPatternMap().put(device, pc);
                     }
                 }
                 long timeDif = LatencyTest.getLatency();

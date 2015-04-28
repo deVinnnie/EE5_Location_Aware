@@ -2,6 +2,7 @@ package com.EE5.util;
 
 import com.EE5.communications.connection.Connection;
 import com.EE5.server.Server;
+import com.EE5.server.data.DeviceList;
 
 /**
  * Contains objects that need to be available to all Activities.
@@ -15,6 +16,7 @@ public class GlobalResources {
     public Connection connection;
     public Server server;
     //public String id;
+    public DeviceList devices = new DeviceList();
 
     // The constructor is private so that it can only be called from within the class.
     private GlobalResources(){}
@@ -43,5 +45,12 @@ public class GlobalResources {
         this.server = server;
     }
 
+    public DeviceList getDevices() {
+        return devices;
+    }
+
+    public void setDevices(DeviceList devices) {
+        this.devices = devices;
+    }
     //</editor-fold>
 }
