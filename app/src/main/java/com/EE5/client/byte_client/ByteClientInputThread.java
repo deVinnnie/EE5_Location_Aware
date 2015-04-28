@@ -53,11 +53,14 @@ public class ByteClientInputThread extends AbstractClientInputThread {
                         double x4 = id.readDouble();
                         double y4 = id.readDouble();
 
+                        double angle = id.readDouble();
+
                         PatternCoordinator pc = new PatternCoordinator(
                                 new Point(x1,y1),
                                 new Point(x2,y2),
                                 new Point(x3,y3),
-                                new Point(x4,y4)
+                                new Point(x4,y4),
+                                angle
                         );
 
                         GlobalResources.getInstance().getDevices().getPatternMap().put(device, pc);

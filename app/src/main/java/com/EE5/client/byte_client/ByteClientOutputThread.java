@@ -56,6 +56,8 @@ public class ByteClientOutputThread extends AbstractClientOutputThread{
                 od.writeDouble(this.getDevice().getPattern().getNum4().x);
                 od.writeDouble(this.getDevice().getPattern().getNum4().y);
 
+                od.writeDouble(this.getDevice().getPattern().getAngle());
+
                 od.flush();
 
                 synchronized (this) {
