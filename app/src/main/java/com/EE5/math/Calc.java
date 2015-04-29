@@ -3,28 +3,62 @@ package com.EE5.math;
 import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.util.Point3D;
 
+/**
+ * Computes the x,y,z coordinates of the device using the outline of the detected pattern.
+ */
 public class Calc {
-    double xa,xb,xc,xd,xA,xB,xC,xD,ya,yb,yc,yd,yA,yB,yC,yD;
-    double distance;//the vertical dimension between cemeral and 2 dimension code
+    //Defines the corner points of the pattern.
+    double xa,xb,xc,xd;
+    double ya,yb,yc,yd;
+
+    //Defines the corner points of the entire image.
+    double xA,xB,xC,xD;
+    double yA,yB,yC,yD;
+
+    //The vertical distance between the camera and the pattern.
+    double distance;
+
     double length;//the length that cemaral captured
 
     double wide;//the wide that cameral captured
-    double size = 11.75;//the real size of 2 dimention code
-    double X,Y,Z1,Z2,Z;
-    double xe,ye,xE,yE;
 
+    //The real life size of the pattern in cm.
+    double size = 11.75;
+
+
+    /**
+     * Assumes a default image size of 640px x 480px
+     */
     public Calc() {
-    }
-
-    public Calc(double size) {
-        this.size = size;
         xA=0;yA=0;
         xB=480;yB=0;
         xC=0;yC=640;
         xD=480;yD=640;
     }
 
+    /**
+     *
+     * @param size The real life size of the pattern in cm (The length of one of the sides of the square)
+     *             Size is in fact a misleading name, as it could be misinterpreted as the area of the square.
+     *
+     *  @param width Width in pixels of the image.
+     *  @param height Height in pixels of the image.
+     */
+     public Calc(double size, double width, double height) {
+        this(); //Call Default Constructor.
+        this.size = size;
+
+        //Assume the following values for the image size.
+        xB = width;
+        yC = height;
+        xD = width;
+        yD = height;
+    }
+
     public Point3D calculate(PatternCoordinator pattern){
+        double X,Y,Z1,Z2,Z;
+        double xe,ye,xE,yE;
+
         this.xa = pattern.getNum1().x;
         this.ya = pattern.getNum1().y;
         this.xb = pattern.getNum2().x;
@@ -68,14 +102,14 @@ public class Calc {
                 double testx = Math.abs(xd-xd1)*fovx/480;
         System.out.println("testy is: "+testy);
         System.out.println("testx is: "+testx);*/
-        System.out.println("the coordinate in x direction is: "+X);
+       /* System.out.println("the coordinate in x direction is: "+X);
         System.out.println("the coordinate in y direction is: "+Y);
         System.out.println("the coordinate in z direction is: "+Z1);
         System.out.println("the coordinate in z2 direction is: "+Z2);
         System.out.println("the rotation of the picture is: "+phipict);
         System.out.println("the coordinate in fovx direction is: "+fovx);
         System.out.println("the coordinate in fovy direction is: "+fovy);
-        System.out.println("rate is: " +rate);
+        System.out.println("rate is: " +rate);*/
 
         return new Point3D(X,Y,Z1);
     }

@@ -58,6 +58,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
     public static final int VIEW_MODE_RGBA = 0;
     public static int viewMode = VIEW_MODE_RGBA;
     public static final int VIEW_MODE_CANNY = 2;
+
     private static final String TAG = "OCVSample::Activity";
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -110,10 +111,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
     );
     //Change later to non-static variable.
 
-    public ImageManipulationsActivity() {
-        Log.i(TAG, "Instantiated new " + ""/*this.getClass()*/);
-    }
-
     /**
      * Called when the activity is first created.
      */
@@ -126,7 +123,14 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         //Read out preferences
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         double pattern_width = Double.parseDouble(sharedPref.getString("pattern_size", "11.75")); //Second param is default value.
-        this.calc = new Calc(pattern_width);
+
+        //Derive the image size.
+        Camera camera=Camera.open();
+        Camera.Parameters params = camera.getParameters();
+        Camera.Size imageSize = params.getPictureSize();
+        camera.release();
+        Log.i("ImageSize", imageSize.width + " " +  imageSize.height);
+        this.calc = new Calc(pattern_width, imageSize.width, imageSize.height);
 
         boolean backfacingCamera = sharedPref.getBoolean("camera", false);
         this.camera = (backfacingCamera) ? 0 : 1;
@@ -176,10 +180,8 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             }
         });
 
-
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.image_manipulations_activity_surface_view);
         mOpenCvCameraView.setCameraIndex(this.camera);
-        //mOpenCvCameraView.setCameraIndex(0);
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
@@ -216,7 +218,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         //Each Item is defined with with an intent specifying the class name of the corresponding activity.
         //Clicks on a menu item are handled in the onOptionsItemsSelected method.
 
-        //Links to the Preferences screen.
+        //Link to the Preferences screen.
         Intent prefsIntent = new Intent(this, SettingsActivity.class);
         MenuItem preferences = menu.findItem(R.id.action_settings);
         preferences.setIntent(prefsIntent);
@@ -237,6 +239,8 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
+
+        //First check if Canny or RGBA was clicked.
         if (item == mItemPreviewRGBA) {
             viewMode = VIEW_MODE_RGBA;
             return true;
@@ -246,12 +250,9 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             return true;
         }
 
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        //Now check the other options...
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             startActivity(item.getIntent());
             return true;
@@ -264,9 +265,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
     Handler handler = new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
-                /*if(msg.what==0){
-                    ServerActivity.this.updateList();
-                }*/
             if(msg.what==1){
                 ImageManipulationsActivity.this.updateServerPositions();
             }
@@ -277,10 +275,19 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
     private Calc calc = new Calc();
 
 
+    /**
+     * Refreshes the overlay text using the latest positions.
+     */
     public void updateServerPositions(){
         Server server = GlobalResources.getInstance().getServer();
+
+        //Only execute this code when running as server.
         if(server != null) {
-            String list="";
+            String list=""; //Temporary variable for building the text for the TextView overlay.
+
+            Point3D serverPosition = calc.calculate(ImageManipulationsActivity.patternCoordinator); //Calculate the position of the server, needed for further calculations.
+
+            //Iterate over all devices and save relevant information to TextView.
             for (Map.Entry<String, PatternCoordinator> entry : server.getConnectedDevices().getPatternMap().entrySet()) {
                 String id = entry.getKey();
                 PatternCoordinator pc = entry.getValue();
@@ -291,17 +298,34 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                         + Math.round(pc.getNum4().x) + "," + Math.round(pc.getNum4().y) + ")\n";
 
                 Point3D point = calc.calculate(pc);
-                DecimalFormat df = new DecimalFormat("#.##");
+                DecimalFormat df = new DecimalFormat("#.##"); //Round to two decimal places.
 
                 list += "x:"+df.format(point.getX())+"; y:" + df.format(point.getY()) +"; z:" + df.format(point.getZ());
                 list+="\n";
+
+                //Calculate the distance from the server to each of the devices.
+                //Uses formula for Euclidean distance in 3 dimensions:
+                // distance = √ ( (x2-x1)² + (y2-y1)² + (z2-z1)² )
+                double distance = Math.sqrt(
+                            Math.pow(
+                                    (point.getX()-serverPosition.getX()),2
+                            )
+                            +
+                            Math.pow(
+                                    (point.getY()-serverPosition.getY()),2
+                            )
+                            +
+                            Math.pow(
+                                    (point.getZ()-serverPosition.getZ()),2
+                            )
+                );
+
+                list+="distance="+distance;
             }
 
             TextView server_display = (TextView) findViewById(R.id.server_display);
             server_display.setText(list);
         }
-
-
     }
 
     public void onCameraViewStarted(int width, int height) {
@@ -338,9 +362,11 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                 break;
 
             case ImageManipulationsActivity.VIEW_MODE_CANNY:
-                patternDetection(rgba2, gray2);
-                if (patternCoordinator == null) {
-                    patternCoordinator = new PatternCoordinator(
+                pattern = patternDetection(rgba2, gray2);
+                ImageManipulationsActivity.patternCoordinator = pattern;
+
+                if (ImageManipulationsActivity.patternCoordinator == null) {
+                    ImageManipulationsActivity.patternCoordinator = new PatternCoordinator(
                             new Point(1, 1),
                             new Point(1, 1),
                             new Point(1, 1),
@@ -381,7 +407,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         MatOfPoint squ_in  = new MatOfPoint();
         MatOfPoint squ_out = new MatOfPoint();
 
-
         if(setupflag == false) {
             con_in_range = getContoursBySize(distance2, contour);
             squareContours = getContoursSquare2(con_in_range);
@@ -415,7 +440,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
 
             //squareContours =  getContoursSquare2(contour);
             pContour = findPattern(squareContours);
-
 
             Point innerCenter = new Point();
             Point outterCenter = new Point();
@@ -492,7 +516,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             //Log.i(TAG2, "spend_time for one frame = " + sss + " ms");
             //Log.i(TAG,"The coordinator is = " + sss);
 
-            if (pContour.size() == 2) {
+            /*if (pContour.size() == 2) {
                 Point[] vertices = new Point[4];
 
                 //.points() will place the 4 corner points into vertices.
@@ -510,7 +534,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                         vertices[3],
                         finalangle
                 );
-            }
+            }*/
             PatternCoordinator pc = new PatternCoordinator(a,b,a2,b2,finalangle);
             return pc;
         }
@@ -575,8 +599,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                     point_top = p;
                     point_right = p;
                     point_left = p;
-
-
                 }
                 else {
                     if (p.x >= point_right.x) {
@@ -633,7 +655,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         }
         return squareContours;
     }
-
 
     MatOfPoint getContoursOutter(List<MatOfPoint> squareContour ){
         MatOfPoint outterCon = new MatOfPoint();
