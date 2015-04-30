@@ -2,11 +2,8 @@ package com.EE5.server.socketTask;
 
 import android.util.Log;
 
-import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.server.Server;
 import com.EE5.server.data.Position;
-
-import org.opencv.core.Point;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -64,10 +61,12 @@ public class PrimitiveSocketTask extends SocketTask {
 
             //Keep reading from socket.
             while(true){
-                /*double posX = id.readDouble();
-                double posY = id.readDouble();
-                double rotation = id.readDouble();*/
-                double x1 = id.readDouble();
+                double x = id.readDouble();
+                double y = id.readDouble();
+                double z = id.readDouble();
+                double rotation = id.readDouble();
+
+                /*double x1 = id.readDouble();
                 double y1 = id.readDouble();
 
                 double x2 = id.readDouble();
@@ -87,28 +86,30 @@ public class PrimitiveSocketTask extends SocketTask {
                         new Point(x3,y3),
                         new Point(x4,y4),
                         angle
-                );
+                );*/
 
                 //Log.i("Position", "" + "(" + posX + "," + posY  +"," + rotation + ")");
 
-                //Position position = new Position(posX, posY, rotation,0);
-                this.getServer().getDevices().getPatternMap().put(uuid,pattern);
+                Position position = new Position(x, y, rotation,z);
+                this.getServer().getDevices().getMap().put(uuid,position);
                 //Iterate over all devices and send the stored position over the current connection.
-                for (Map.Entry<String, PatternCoordinator> entry : this.getServer().getDevices().getPatternMap().entrySet())
+                for (Map.Entry<String, Position> entry : this.getServer().getDevices().getMap().entrySet())
                 {
                     //Send position when the device is not the originating device.
-                   /* if(!entry.getKey().equals(uuid)) {
+                    if(!entry.getKey().equals(uuid)) {
                         Log.i("ID", entry.getKey());
                         od.writeUTF(entry.getKey());
                         Position pos = entry.getValue();
 
                         od.writeDouble(pos.getX());
                         od.writeDouble(pos.getY());
+                        od.writeDouble(pos.getHeight());
                         od.writeDouble(pos.getRotation());
-                    }*/
-                    if(!entry.getKey().equals(uuid)) {
+                    }
+                    /*if(!entry.getKey().equals(uuid)) {
                         Log.i("ID", entry.getKey());
                         od.writeUTF(entry.getKey());
+
                         PatternCoordinator pc = entry.getValue();
 
                         od.writeDouble(pc.getNum1().x);
@@ -124,7 +125,7 @@ public class PrimitiveSocketTask extends SocketTask {
                         od.writeDouble(pc.getNum4().y);
 
                         od.writeDouble(pc.getAngle());
-                    }
+                    }*/
                 }
 
                 this.getServer().alertify(1,null, 1);

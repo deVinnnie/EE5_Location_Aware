@@ -14,6 +14,10 @@ public class Device implements Serializable{
     private Position position;
     private PatternCoordinator pattern;
 
+    public Device(){
+        this.id = "001";
+    }
+
     public Device(String id) {
         this.id = id;
     }

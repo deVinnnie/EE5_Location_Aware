@@ -20,11 +20,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.EE5.R;
+import com.EE5.client.IDGenerator;
 import com.EE5.communications.ConnectionActivity;
 import com.EE5.communications.ServerActivity;
 import com.EE5.math.Calc;
 import com.EE5.preferences.SettingsActivity;
 import com.EE5.server.Server;
+import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
 import com.EE5.util.Point3D;
 
@@ -132,6 +134,10 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         double pattern_width = Double.parseDouble(sharedPref.getString("pattern_size", "11.75")); //Second param is default value.
 
+        //Set device ID:
+        String id = IDGenerator.generate(sharedPref);
+        GlobalResources.getInstance().getDevice().setId(id);
+
         //Derive the image size.
         Camera camera=Camera.open();
         Camera.Parameters params = camera.getParameters();
@@ -159,6 +165,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         rotate = (TextView) findViewById(R.id.angle);
 
         iv = (ImageView) findViewById(R.id.imageView);
+        /*iv.setVisibility(false);*/
 
         Button btn_get = (Button) findViewById(R.id.btn_get);
         btn_get.setOnClickListener(new View.OnClickListener() {
@@ -285,28 +292,30 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
      * Refreshes the overlay text using the latest positions.
      */
     public void updateServerPositions(){
+        Point3D devicePosition = calc.calculate(ImageManipulationsActivity.patternCoordinator); //Calculate the position of this device.
+        GlobalResources.getInstance().getDevice().setPosition(
+                new Position(devicePosition.getX(), devicePosition.getY(), patternCoordinator.getAngle(), devicePosition.getZ())
+        );
+
         Server server = GlobalResources.getInstance().getServer();
 
         //Only execute this code when running as server.
         if(server != null) {
             String list=""; //Temporary variable for building the text for the TextView overlay.
 
-            Point3D serverPosition = calc.calculate(ImageManipulationsActivity.patternCoordinator); //Calculate the position of the server, needed for further calculations.
-
             //Iterate over all devices and save relevant information to TextView.
-            for (Map.Entry<String, PatternCoordinator> entry : server.getConnectedDevices().getPatternMap().entrySet()) {
+            for (Map.Entry<String, Position> entry : server.getConnectedDevices().getMap().entrySet()) {
                 String id = entry.getKey();
-                PatternCoordinator pc = entry.getValue();
+                Position position = entry.getValue();
 
-                list +="" + id + "\n(" + Math.round(pc.getNum1().x) + "," + Math.round(pc.getNum1().y) + ")  ("
+                /*list +="" + id + "\n(" + Math.round(pc.getNum1().x) + "," + Math.round(pc.getNum1().y) + ")  ("
                         + Math.round(pc.getNum2().x) + "," + Math.round(pc.getNum2().y) + ")  ("
                         + Math.round(pc.getNum3().x) + "," + Math.round(pc.getNum3().y) + ")  ("
-                        + Math.round(pc.getNum4().x) + "," + Math.round(pc.getNum4().y) + ")\n";
+                        + Math.round(pc.getNum4().x) + "," + Math.round(pc.getNum4().y) + ")\n";*/
 
-                Point3D point = calc.calculate(pc);
                 DecimalFormat df = new DecimalFormat("#.##"); //Round to two decimal places.
 
-                list += "x:"+df.format(point.getX())+"; y:" + df.format(point.getY()) +"; z:" + df.format(point.getZ());
+                list += "x:"+df.format(position.getX())+"; y:" + df.format(position.getY()) +"; z:" + df.format(position.getHeight()) + "; rot:" + df.format(position.getRotation());
                 list+="\n";
 
                 //Calculate the distance from the server to each of the devices.
@@ -314,15 +323,15 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                 // distance = √ ( (x2-x1)² + (y2-y1)² + (z2-z1)² )
                 double distance = Math.sqrt(
                             Math.pow(
-                                    (point.getX()-serverPosition.getX()),2
+                                    (position.getX()-devicePosition.getX()),2
                             )
                             +
                             Math.pow(
-                                    (point.getY()-serverPosition.getY()),2
+                                    (position.getY()-devicePosition.getY()),2
                             )
                             +
                             Math.pow(
-                                    (point.getZ()-serverPosition.getZ()),2
+                                    (position.getHeight()-devicePosition.getZ()),2
                             )
                 );
 

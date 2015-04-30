@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.EE5.R;
-import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.server.BluetoothServer;
 import com.EE5.server.Server;
 import com.EE5.server.ServerPassThrough;
@@ -90,13 +89,13 @@ public class ServerActivity extends ActionBarActivity{
         ListView lstServerConnections = (ListView) findViewById(R.id.lst_server_connections);
         ArrayAdapter adapter = (ArrayAdapter<String>) lstServerConnections.getAdapter();
         adapter.clear();
-        /*for (Map.Entry<String, Position> entry : this.server.getConnectedDevices().getMap().entrySet())
+        for (Map.Entry<String, Position> entry : this.server.getConnectedDevices().getMap().entrySet())
         {
             String id = entry.getKey();
             Position pos = entry.getValue();
-            adapter.insert(""+id+"\n("+pos.getX()+","+pos.getY()+","+pos.getRotation()+","+pos.getHeight()+")", 0);
-        }*/
-        for (Map.Entry<String, PatternCoordinator> entry : this.server.getConnectedDevices().getPatternMap().entrySet())
+            adapter.insert(""+id+"\n(x:"+pos.getX()+",y:"+pos.getY()+",rot:"+pos.getRotation()+",z:"+pos.getHeight()+")", 0);
+        }
+        /*for (Map.Entry<String, PatternCoordinator> entry : this.server.getConnectedDevices().getPatternMap().entrySet())
         {
             String id = entry.getKey();
             PatternCoordinator pc = entry.getValue();
@@ -105,7 +104,7 @@ public class ServerActivity extends ActionBarActivity{
                     +Math.round(pc.getNum3().x)+","+Math.round(pc.getNum3().y)+")  ("
                     +Math.round(pc.getNum4().x)+","+Math.round(pc.getNum4().y)+")"
                     , 0);
-        }
+        }*/
         ((ArrayAdapter) lstServerConnections.getAdapter()).notifyDataSetChanged();
     }
 

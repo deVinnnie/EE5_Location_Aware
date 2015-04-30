@@ -5,17 +5,14 @@ import android.util.Log;
 import com.EE5.client.AbstractClientInputThread;
 import com.EE5.client.Client;
 import com.EE5.client.LatencyTest;
-import com.EE5.image_manipulation.PatternCoordinator;
+import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
-
-import org.opencv.core.Point;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
-//TODO: Rename class to something more suitable.
 public class PrimitiveClientInputThread extends AbstractClientInputThread {
     private DataInputStream id;
 
@@ -38,11 +35,12 @@ public class PrimitiveClientInputThread extends AbstractClientInputThread {
                     }
                     else {
                         Log.i("Device", device);
-                        /*double x = id.readDouble();
+                        double x = id.readDouble();
                         double y = id.readDouble();
-                        double rot = id.readDouble();*/
+                        double z = id.readDouble();
+                        double rotation = id.readDouble();
 
-                        double x1 = id.readDouble();
+                        /*double x1 = id.readDouble();
                         double y1 = id.readDouble();
 
                         double x2 = id.readDouble();
@@ -62,9 +60,9 @@ public class PrimitiveClientInputThread extends AbstractClientInputThread {
                                 new Point(x3,y3),
                                 new Point(x4,y4),
                                 angle
-                        );
+                        );*/
 
-                        GlobalResources.getInstance().getDevices().getPatternMap().put(device, pc);
+                        GlobalResources.getInstance().getDevices().getMap().put(device, new Position(x,y,rotation, z));
                     }
                 }
                 long timeDif = LatencyTest.getLatency();

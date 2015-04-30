@@ -2,6 +2,7 @@ package com.EE5.util;
 
 import com.EE5.communications.connection.Connection;
 import com.EE5.server.Server;
+import com.EE5.server.data.Device;
 import com.EE5.server.data.DeviceList;
 
 /**
@@ -15,7 +16,15 @@ public class GlobalResources {
 
     public Connection connection;
     public Server server;
-    //public String id;
+
+    /**
+     * Information about THIS device.
+     */
+    public Device device = new Device();
+
+    /**
+     * Only Positions of other Devices.
+     */
     public DeviceList devices = new DeviceList();
 
     // The constructor is private so that it can only be called from within the class.
@@ -51,6 +60,14 @@ public class GlobalResources {
 
     public void setDevices(DeviceList devices) {
         this.devices = devices;
+    }
+
+    public Device getDevice() {
+        return device;
+    }
+
+    public void setDevice(Device device) {
+        this.device = device;
     }
     //</editor-fold>
 }

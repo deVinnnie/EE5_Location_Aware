@@ -28,6 +28,9 @@ public abstract class Client extends AsyncTask<Void, String, Void> {
     private SocketTaskType socketTaskType;
     private Context context;
 
+    /**
+     * @deprecated
+     */
     public static Device currentDevice;
 
     /**

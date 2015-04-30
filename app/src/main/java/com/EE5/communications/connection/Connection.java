@@ -7,12 +7,11 @@ import android.widget.ArrayAdapter;
 
 import com.EE5.client.AbstractClientOutputThread;
 import com.EE5.client.Client;
-import com.EE5.image_manipulation.ImageManipulationsActivity;
-import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.server.data.Device;
 import com.EE5.server.data.Position;
 import com.EE5.server.socketTask.SocketTaskType;
 import com.EE5.util.ConnectionException;
+import com.EE5.util.GlobalResources;
 
 public abstract class Connection {
     private Client client;
@@ -35,11 +34,12 @@ public abstract class Connection {
         @Override
         public void run() {
             try {
-                PatternCoordinator pc = ImageManipulationsActivity.patternCoordinator;
-                currentPosition = new Position(pc.getNum1().x, pc.getNum1().y, currentPosition.getRotation(), currentPosition.getHeight());
-                Device device = Client.currentDevice;
-                device.setPosition(currentPosition);
-                device.setPattern(pc);
+                Device device = GlobalResources.getInstance().getDevice();
+                /*currentPosition =
+                currentPosition = new Position(pc.getNum1().x, pc.getNum1().y, currentPosition.getRotation(), currentPosition.getHeight());*/
+                //Device device = Client.currentDevice;
+                /*device.setPosition(currentPosition);
+                device.setPattern(pc);*/
                 ((AbstractClientOutputThread) client.getClientOutputThread()).setDevice(device);
 
                 /*TextView txtIPAddress = (TextView) findViewById(R.id.txtPosition);

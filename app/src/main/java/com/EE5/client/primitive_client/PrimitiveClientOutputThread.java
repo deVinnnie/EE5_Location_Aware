@@ -41,10 +41,12 @@ public class PrimitiveClientOutputThread extends AbstractClientOutputThread{
             if (this.getDevice() != null) {
                 LatencyTest.startTime = System.nanoTime();
 
-                /*od.writeDouble(this.getDevice().getPosition().getX());
+                od.writeDouble(this.getDevice().getPosition().getX());
                 od.writeDouble(this.getDevice().getPosition().getY());
-                od.writeDouble(this.getDevice().getPosition().getRotation());*/
-                od.writeDouble(this.getDevice().getPattern().getNum1().x);
+                od.writeDouble(this.getDevice().getPosition().getHeight());
+                od.writeDouble(this.getDevice().getPosition().getRotation());
+
+                /*od.writeDouble(this.getDevice().getPattern().getNum1().x);
                 od.writeDouble(this.getDevice().getPattern().getNum1().y);
 
                 od.writeDouble(this.getDevice().getPattern().getNum2().x);
@@ -57,7 +59,7 @@ public class PrimitiveClientOutputThread extends AbstractClientOutputThread{
                 od.writeDouble(this.getDevice().getPattern().getNum4().y);
 
                 od.writeDouble(this.getDevice().getPattern().getAngle());
-
+*/
                 od.flush();
 
                 synchronized (this) {
