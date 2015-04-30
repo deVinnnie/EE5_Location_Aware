@@ -194,7 +194,8 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         });
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.image_manipulations_activity_surface_view);
-        mOpenCvCameraView.setCameraIndex(this.camera);
+        //mOpenCvCameraView.setCameraIndex(this.camera);
+        mOpenCvCameraView.setCameraIndex(0);
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
@@ -479,7 +480,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                 appo = new MatOfPoint2f(pContour.get(0).toArray());
                 NewMtx1 = Imgproc.minAreaRect(appo);
                 outterCenter = NewMtx1.center;
-
                 appo2 = new MatOfPoint2f(pContour.get(1).toArray());
                 NewMtx2 = Imgproc.minAreaRect(appo2);
                 innerCenter = NewMtx2.center;
@@ -503,6 +503,18 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             Point a = new Point(NewMtx2.boundingRect().x, NewMtx2.boundingRect().y);
             Point b = new Point(NewMtx2.boundingRect().x + NewMtx2.boundingRect().width, NewMtx2.boundingRect().y + NewMtx2.boundingRect().height);
             Core.rectangle(rgba, a, b, dark_blue,3);
+
+            Point out[] = new Point[4];
+            NewMtx2.points(out);
+
+            String out_point1 ="point 1 is ("+ String.valueOf(out[0].x)+","+ String.valueOf(out[0].y)+")";
+            String out_point2 ="point 2 is ("+ String.valueOf(out[1].x)+","+ String.valueOf(out[1].y)+")";
+            String out_point3 ="point 3 is ("+ String.valueOf(out[2].x)+","+ String.valueOf(out[2].y)+")";
+            String out_point4 ="point 4 is ("+ String.valueOf(out[3].x)+","+ String.valueOf(out[3].y)+")";
+            Core.putText(rgba, out_point1, out[0], Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+            Core.putText(rgba, out_point2, out[1], Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+            Core.putText(rgba, out_point3, out[2], Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+            Core.putText(rgba, out_point4, out[3], Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
 
             //Inner
             Point a2 = new Point(NewMtx1.boundingRect().x, NewMtx1.boundingRect().y);
@@ -566,7 +578,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                         finalangle
                 );
             }*/
-            PatternCoordinator pc = new PatternCoordinator(a,b,a2,b2,finalangle);
+            PatternCoordinator pc = new PatternCoordinator(out[0],out[1],out[2],out[3],finalangle);
             return pc;
         }
     }
