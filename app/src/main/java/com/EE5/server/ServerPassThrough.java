@@ -24,6 +24,7 @@ public class ServerPassThrough {
 
                 Server server = GlobalResources.getInstance().getServer();
                 server.getDevices().getPatternMap().put("0001", pc);
+                server.getDevices().getMap().put("0001", GlobalResources.getInstance().getDevice().getPosition());
             } catch (Exception e) {
                 e.printStackTrace();
             }
