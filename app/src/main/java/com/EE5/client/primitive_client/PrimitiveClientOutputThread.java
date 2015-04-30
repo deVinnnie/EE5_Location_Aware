@@ -1,4 +1,4 @@
-package com.EE5.client.byte_client;
+package com.EE5.client.primitive_client;
 
 import android.util.Log;
 
@@ -10,10 +10,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class ByteClientOutputThread extends AbstractClientOutputThread{
+public class PrimitiveClientOutputThread extends AbstractClientOutputThread{
     private DataOutputStream od;
 
-    public ByteClientOutputThread(OutputStream out, Client client) {
+    public PrimitiveClientOutputThread(OutputStream out, Client client) {
         super(out, client);
     }
 

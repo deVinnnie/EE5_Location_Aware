@@ -1,4 +1,4 @@
-package com.EE5.client.byte_client;
+package com.EE5.client.primitive_client;
 
 import android.util.Log;
 
@@ -16,10 +16,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 //TODO: Rename class to something more suitable.
-public class ByteClientInputThread extends AbstractClientInputThread {
+public class PrimitiveClientInputThread extends AbstractClientInputThread {
     private DataInputStream id;
 
-    public ByteClientInputThread(InputStream in, Client client) {
+    public PrimitiveClientInputThread(InputStream in, Client client) {
         super(in, client);
     }
 

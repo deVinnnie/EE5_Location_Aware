@@ -24,13 +24,13 @@ import java.util.Map;
  * PrimitiveSocketTask uses the DataInputStream and DataOutputStream classes.
  * It chunks each part of the data and sends it as a primitive data type.
  */
-public class ByteSocketTask extends SocketTask {
+public class PrimitiveSocketTask extends SocketTask {
 
-    public ByteSocketTask(Socket socket, Server server) throws IOException {
+    public PrimitiveSocketTask(Socket socket, Server server) throws IOException {
         super(socket, server);
     }
 
-    public ByteSocketTask(InputStream in, OutputStream out, Server server){
+    public PrimitiveSocketTask(InputStream in, OutputStream out, Server server){
         super(in, out, server);
     }
 

@@ -13,7 +13,7 @@ public class SocketTaskFactory {
                 task = new ObjectSocketTask(i, o, server);
                 break;
             case PRIMITIVE_DATA:
-                task = new ByteSocketTask(i,o,server);
+                task = new PrimitiveSocketTask(i,o,server);
                 break;
             default:
                 task = new ObjectSocketTask(i,o,server);

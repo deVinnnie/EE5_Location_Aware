@@ -1,7 +1,7 @@
 package com.EE5.client;
 
-import com.EE5.client.byte_client.ByteClientInputThread;
-import com.EE5.client.byte_client.ByteClientOutputThread;
+import com.EE5.client.primitive_client.PrimitiveClientInputThread;
+import com.EE5.client.primitive_client.PrimitiveClientOutputThread;
 import com.EE5.client.object.ObjectClientInputThread;
 import com.EE5.client.object.ObjectClientOutputThread;
 import com.EE5.server.socketTask.SocketTaskType;
@@ -26,10 +26,10 @@ public class ClientThreadFactory {
                 outputThread = new ObjectClientOutputThread(o, client);
                 break;
             case PRIMITIVE_DATA:
-                outputThread = new ByteClientOutputThread(o, client);
+                outputThread = new PrimitiveClientOutputThread(o, client);
                 break;
             default:
-                outputThread = new ByteClientOutputThread(o, client);
+                outputThread = new PrimitiveClientOutputThread(o, client);
                 break;
         }
         return outputThread;
@@ -42,10 +42,10 @@ public class ClientThreadFactory {
                 inputThread = new ObjectClientInputThread(i, client);
                 break;
             case PRIMITIVE_DATA:
-                inputThread = new ByteClientInputThread(i, client);
+                inputThread = new PrimitiveClientInputThread(i, client);
                 break;
             default:
-                inputThread = new ByteClientInputThread(i, client);
+                inputThread = new PrimitiveClientInputThread(i, client);
                 break;
         }
         return inputThread;
