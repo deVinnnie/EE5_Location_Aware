@@ -15,16 +15,19 @@ public class Calc {
     double xA,xB,xC,xD;
     double yA,yB,yC,yD;
 
-    //The vertical distance between the camera and the pattern.
+    /**
+     * The vertical distance between the camera and the pattern.
+     */
     double distance;
 
     double length;//the length that cemaral captured
 
     double wide;//the wide that cameral captured
 
-    //The real life size of the pattern in cm.
+    /**
+     * The real life size of the pattern in cm.
+     */
     double size = 11.75;
-
 
     /**
      * Assumes a default image size of 640px x 480px
@@ -38,23 +41,30 @@ public class Calc {
 
     /**
      *
-     * @param size The real life size of the pattern in cm (The length of one of the sides of the square)
+     *  @param size The real life size of the pattern in cm (The length of one of the sides of the square)
      *             Size is in fact a misleading name, as it could be misinterpreted as the area of the square.
      *
      *  @param width Width in pixels of the image.
      *  @param height Height in pixels of the image.
      */
      public Calc(double size, double width, double height) {
-        this(); //Call Default Constructor.
-        this.size = size;
+         this(); //Call Default Constructor.
 
-        //Assume the following values for the image size.
-        xB = width;
-        yC = height;
-        xD = width;
-        yD = height;
+         this.size = size;
+
+         this.xB = width;
+         this.yC = height;
+         this.xD = width;
+         this.yD = height;
     }
 
+    /**
+     * Calculate the x,y and z coordinates of the device.
+     * Position (0,0,0) is when the pattern is in the centre. (?)
+     *
+     * @param pattern Corner points of the pattern.
+     * @return A new point representing the position of the device.
+     */
     public Point3D calculate(PatternCoordinator pattern){
         double X,Y,Z1,Z2,Z;
         double xe,ye,xE,yE;
@@ -80,8 +90,10 @@ public class Calc {
         wide=98.5;  //unit is cm*/
         xe=(xa+xd)/2;
         ye=(ya+yd)/2;
-        /* int xe1 = (xa1+xd1)/2;
-        int ye1 = (ya1+yd1)/2;*/
+        /*
+        int xe1 = (xa1+xd1)/2;
+        int ye1 = (ya1+yd1)/2;
+        */
         xE=(xA+xD)/2;
         yE=(yA+yD)/2;
 
@@ -95,14 +107,19 @@ public class Calc {
         //Y=Math.sqrt(Math.pow(xe-xE,2)+Math.pow(ye-yE,2));
         //X=((Z*Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2))*0.5)/distance)*(xb+xc-xB-xC)/(xB-xC); //the distance in X axis
         //Y=((Z*Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2))*0.5)/distance)*(ya+yd-yA-yD)/(yA-yD);//the distance in Y axis
-            double rate=fovy/fovx;
-            double phipict=Math.atan((Math.abs(yc-yd))/(Math.abs(xc-xd)))*(180/Math.PI);
+        double rate=fovy/fovx;
+        double phipict=Math.atan((Math.abs(yc-yd))/(Math.abs(xc-xd)))*(180/Math.PI);
 
-         /*       double testy = Math.abs(yd-yd1)*fovy/640;
-                double testx = Math.abs(xd-xd1)*fovx/480;
+
+        /*
+        double testy = Math.abs(yd-yd1)*fovy/640;
+        double testx = Math.abs(xd-xd1)*fovx/480;
         System.out.println("testy is: "+testy);
-        System.out.println("testx is: "+testx);*/
-       /* System.out.println("the coordinate in x direction is: "+X);
+        System.out.println("testx is: "+testx);
+        */
+
+        /*
+        System.out.println("the coordinate in x direction is: "+X);
         System.out.println("the coordinate in y direction is: "+Y);
         System.out.println("the coordinate in z direction is: "+Z1);
         System.out.println("the coordinate in z2 direction is: "+Z2);

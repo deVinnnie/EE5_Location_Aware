@@ -53,11 +53,17 @@ import java.util.List;
 import java.util.Map;
 
 public class ImageManipulationsActivity extends ActionBarActivity implements CvCameraViewListener2 {
-    private int camera = 1; //0 backfacing, 1=frontfacing.
+
+    /**
+     * Indicates which camera should be used.
+     * '0' = back facing camera.
+     * '1' = front facing camera.
+     */
+    private int camera = 1;
 
     public static final int VIEW_MODE_RGBA = 0;
     public static int viewMode = VIEW_MODE_RGBA;
-    public static final int VIEW_MODE_CANNY = 2;
+    public static final int VIEW_MODE_CANNY = 2; //Canny edge detector
 
     private static final String TAG = "OCVSample::Activity";
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -76,7 +82,9 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             }
         }
     };
+
     private static final String TAG2 = "Running Time";
+
     TextView tx_x1;
     TextView tx_x2;
     TextView tx_y1;
@@ -165,12 +173,10 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         my_bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
@@ -184,7 +190,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         mOpenCvCameraView.setCameraIndex(this.camera);
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
-
 
     @Override
     public void onPause() {
@@ -205,6 +210,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             mOpenCvCameraView.disableView();
     }
 
+    //<editor-fold desc="Options">
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -261,6 +267,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             return super.onOptionsItemSelected(item);
         }
     }
+    //</editor-fold>
 
     Handler handler = new Handler(Looper.getMainLooper()){
         @Override
@@ -273,7 +280,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
     };
 
     private Calc calc = new Calc();
-
 
     /**
      * Refreshes the overlay text using the latest positions.
@@ -328,6 +334,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         }
     }
 
+    //<editor-fold desc="Algorithm & OpenCV">
     public void onCameraViewStarted(int width, int height) {
         mIntermediateMat = new Mat();
         mSize0 = new Size();
@@ -350,33 +357,25 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
 
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         //Size process_size = new Size(640,360);
-        Mat rgba = inputFrame.rgba();//transform frames from camera to rgba color type
-        Mat rgba2 = inputFrame.rgba();
-        Mat gray2 = inputFrame.gray();
-
+        Mat rgba = inputFrame.rgba(); //Transforms frames from camera to rgba color type.
+        Mat gray = inputFrame.gray();
         Size sizeRgba = rgba.size();
-        PatternCoordinator pattern;
 
         switch (ImageManipulationsActivity.viewMode) {
             case ImageManipulationsActivity.VIEW_MODE_RGBA:
+                //Do no filtering and display the captured image unaltered on the screen.
                 break;
 
             case ImageManipulationsActivity.VIEW_MODE_CANNY:
-                pattern = patternDetection(rgba2, gray2);
+                //Apply the Canny Edge Detection and find the contours of the pattern.
+                PatternCoordinator pattern = patternDetection(rgba, gray);
                 ImageManipulationsActivity.patternCoordinator = pattern;
-
-                if (ImageManipulationsActivity.patternCoordinator == null) {
-                    ImageManipulationsActivity.patternCoordinator = new PatternCoordinator(
-                            new Point(1, 1),
-                            new Point(1, 1),
-                            new Point(1, 1),
-                            new Point(1, 1),
-                            0.00
-                    );
-                }
                 break;
         }
+
         //Imgproc.resize(rgba,rgba,new Size(352,288));
+
+        //Give signal to update the text overlay.
         Message msg = handler.obtainMessage();
         msg.what = 1;
         msg.obj = null;
@@ -386,6 +385,15 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         return rgba;
     }
 
+    /**
+     * Do magic!
+     *
+     * <img src="./doc-files/PatternDetection_01.png" alt="Pattern Detection 01"/>
+     *
+     * @param rgba Color image
+     * @param gray2 Grayscale image
+     * @return Corner points and angle of the pattern. ???????????????????
+     */
     public PatternCoordinator patternDetection(Mat rgba, Mat gray2) {
         double extra_angle = 0;
 
@@ -395,10 +403,12 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         List<MatOfPoint> contour = new ArrayList<MatOfPoint>();
         Mat hierarchys = new Mat();
 
-        Imgproc.threshold(gray2, mIntermediateMat, 80, 255,Imgproc.THRESH_BINARY);
+        Imgproc.threshold(gray2, mIntermediateMat, 80, 255,Imgproc.THRESH_BINARY); //Apply tresholding, result is stored in 'mIntermediateMat'
         //Imgproc.threshold(gray2, mIntermediateMat, 80, 255, Imgproc.THRESH_OTSU);
         //Imgproc.Canny(mIntermediateMat, mIntermediateMat, 80, 90);                           //mIntermediateMat is a Mat format variable in field
 
+
+        //Let OpenCV find contours, the result of this operation is stored in 'contour'.
         Imgproc.findContours(mIntermediateMat, contour, hierarchys, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
         List<MatOfPoint> con_in_range;
         List<MatOfPoint> squareContours;
@@ -408,8 +418,11 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         MatOfPoint squ_out = new MatOfPoint();
 
         if(setupflag == false) {
+            //Filter contours with the wrong size.
             con_in_range = getContoursBySize(distance2, contour);
+            //Filter out non square contours.
             squareContours = getContoursSquare2(con_in_range);
+            //Find the right contour for the pattern.
             pContour = findPattern(squareContours);
             if (pContour.size() == 2) {
                 squ_out = pContour.get(1);
@@ -434,11 +447,8 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             return pc;
         }
         else {
-
             con_in_range = getContoursBySize(distance2, contour);
             squareContours = getContoursSquare2(con_in_range);
-
-            //squareContours =  getContoursSquare2(contour);
             pContour = findPattern(squareContours);
 
             Point innerCenter = new Point();
@@ -451,11 +461,12 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             MatOfPoint2f appo2 = new MatOfPoint2f();
             if (pContour.size() == 2) {
                 appo = new MatOfPoint2f(pContour.get(0).toArray());
-                appo2 = new MatOfPoint2f(pContour.get(1).toArray());
                 NewMtx1 = Imgproc.minAreaRect(appo);
+                outterCenter = NewMtx1.center;
+
+                appo2 = new MatOfPoint2f(pContour.get(1).toArray());
                 NewMtx2 = Imgproc.minAreaRect(appo2);
                 innerCenter = NewMtx2.center;
-                outterCenter = NewMtx1.center;
             }
 
             List<MatOfPoint> appro_con = new ArrayList<MatOfPoint>();
@@ -463,17 +474,21 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
 
             Imgproc.cvtColor(mIntermediateMat, rgba, Imgproc.COLOR_GRAY2BGRA, 4);
 
+            //Overlay the image with some useful lines.
             //Imgproc.drawContours(rgba, contour, -1, orange, 4);
             //Imgproc.drawContours(rgba,outterContours,-1,new Scalar(120,120,255),4);
             Imgproc.drawContours(rgba, squareContours, -1, orange, 4);
             //Original:Imgproc.drawContours(rgba, pContour, -1, light_green, 4);
             //Imgproc.drawContours(rgba, pContour, -1, light_green, 2);
             //Imgproc.drawContours(rgba, pContour, 0, light_green, 2);
-
             //Core.line(rgba, innerCenter, outterCenter, orange, 2);
+
+            //Outer
             Point a = new Point(NewMtx2.boundingRect().x, NewMtx2.boundingRect().y);
             Point b = new Point(NewMtx2.boundingRect().x + NewMtx2.boundingRect().width, NewMtx2.boundingRect().y + NewMtx2.boundingRect().height);
             Core.rectangle(rgba, a, b, dark_blue,3);
+
+            //Inner
             Point a2 = new Point(NewMtx1.boundingRect().x, NewMtx1.boundingRect().y);
             Point b2 = new Point(NewMtx1.boundingRect().x + NewMtx1.boundingRect().width, NewMtx1.boundingRect().y + NewMtx1.boundingRect().height);
             Core.rectangle(rgba, a2, b2, dark_blue,3);
@@ -483,6 +498,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             x2 = outterCenter.x;
             y1 = innerCenter.y;
             y2 = outterCenter.y;
+
             double k = (y2 - y1) / (x1 - x2);
 
             if ((k < -1) | (k > 1)) {
@@ -511,7 +527,6 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             //Core.putText(rgba, String.valueOf(outterCenter.x)+" "+outterCenter.y, new Point(50, 650), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
 
             long stopTime = System.currentTimeMillis();
-
             String sss = String.valueOf(stopTime - startTime);
             //Log.i(TAG2, "spend_time for one frame = " + sss + " ms");
             //Log.i(TAG,"The coordinator is = " + sss);
@@ -724,4 +739,5 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         }
         return patternContours;
     }
+    //</editor-fold>
 }
