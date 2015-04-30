@@ -208,6 +208,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
     @Override
     public void onResume() {
         super.onResume();
+        distance2 = 0;
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this, mLoaderCallback);
     }
 
@@ -441,13 +442,17 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                 ra = Imgproc.contourArea(squ_out)/Imgproc.contourArea(squ_in);
                 if((ra>3)&(ra<7)){
                     setupflag = true;
-                    distance2 = distance2 + 5;
+                    //distance2 = distance2 + 5;
                 }
                 else{
                     setupflag = false;
                 }
             }
-            distance2 = distance2 + 5;
+
+            if(distance2 > 100){
+                distance2 = 0;
+            }
+            distance2 = distance2 + 2;
             PatternCoordinator pc = new PatternCoordinator(
                     new Point(1,1),
                     new Point(1,1),
