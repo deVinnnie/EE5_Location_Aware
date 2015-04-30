@@ -15,6 +15,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
+//TODO: Rename class to something more suitable.
 public class ByteClientInputThread extends AbstractClientInputThread {
     private DataInputStream id;
 

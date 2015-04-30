@@ -6,6 +6,11 @@ import com.EE5.image_manipulation.ImageManipulationsActivity;
 import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.util.GlobalResources;
 
+/**
+ * Passes the position of the server to the server.
+ * This provides the same functionality as the client code, but without sending the data.
+ * Data is injected directly using the static reference to the server instance.
+ */
 public class ServerPassThrough {
     private long sampleRate = 500;
 
@@ -19,11 +24,6 @@ public class ServerPassThrough {
 
                 Server server = GlobalResources.getInstance().getServer();
                 server.getDevices().getPatternMap().put("0001", pc);
-
-                //((AbstractClientOutputThread) client.getClientOutputThread()).setDevice(device);
-
-                /*TextView txtIPAddress = (TextView) findViewById(R.id.txtPosition);
-                txtIPAddress.setText("Position: (" + currentPosition.getX() + "," + currentPosition.getY() + ")");*/
             } catch (Exception e) {
                 e.printStackTrace();
             }

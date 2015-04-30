@@ -16,6 +16,14 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Map;
 
+/**
+ * Each SocketTask handles a connection between the server and one client.
+ * Multiple SocketTasks may be running to allow multiple connections.
+ * The server must make sure each SocketTask is started on its own thread.
+ *
+ * PrimitiveSocketTask uses the DataInputStream and DataOutputStream classes.
+ * It chunks each part of the data and sends it as a primitive data type.
+ */
 public class ByteSocketTask extends SocketTask {
 
     public ByteSocketTask(Socket socket, Server server) throws IOException {
@@ -30,7 +38,7 @@ public class ByteSocketTask extends SocketTask {
     public void run(){
         try{
             //Note: Input stream and output stream should be created in 'opposite' order for client and server.
-            //ObjectInputStream or ObjectOutputStream will hang/block untill the connection is established.
+            //ObjectInputStream or ObjectOutputStream will hang/block until the connection is established.
             //The order of initialisation is therefore important:
             //
             //Server:

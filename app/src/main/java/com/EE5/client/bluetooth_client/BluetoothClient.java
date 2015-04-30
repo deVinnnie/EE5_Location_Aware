@@ -66,8 +66,6 @@ public class BluetoothClient extends Client {
                 //this.inputThread = new BluetoothClientInputThread(mmSocket, this);
                 this.setClientInputThread(inputThread);
 
-                Log.i("Connection", "Setting Start.");
-                this.setIsStart(true);
                 Log.i("Connection", "Starting input and output threads.");
                 this.getClientOutputThread().start();
                 this.getClientInputThread().start();

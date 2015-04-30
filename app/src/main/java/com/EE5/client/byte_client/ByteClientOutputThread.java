@@ -34,7 +34,7 @@ public class ByteClientOutputThread extends AbstractClientOutputThread{
         od.writeUTF(Client.currentDevice.getId());
 
         synchronized (this) {
-            //Wait until new message has arrived.
+            //Wait for first "message" to arrive.
             wait();
         }
         while (keepRunning()) {
@@ -68,12 +68,7 @@ public class ByteClientOutputThread extends AbstractClientOutputThread{
         }
 
         Log.i("Connection", "[ - ] Closing Connection");
-        //Write NULL to server to signal end of transmission.
-        /*oos.reset();
-        oos.writeObject(null);
-        oos.flush();
-        oos.close();*/
-
+        od.close();
         Log.i("Connection", "[ OK ] Outputstream closed.");
     }
 }

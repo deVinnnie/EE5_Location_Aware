@@ -29,7 +29,7 @@ public class Server extends Thread{
 
     public Server(SocketTaskType socketTaskType){
         this.socketTaskType = socketTaskType;
-        executorService = Executors.newFixedThreadPool(
+        this.executorService = Executors.newFixedThreadPool(
                 Runtime.getRuntime().availableProcessors() * 50
         );
     }
@@ -39,6 +39,23 @@ public class Server extends Thread{
         this.handler = handler;
     }
 
+    /**
+     * Send message to the UI thread.
+     * This method gets and sends a message with the input parameters of the method.
+     *
+     * @param what
+     * @param obj
+     * @param arg1
+     */
+    public void alertify(int what, Object obj, int arg1){
+        Message msg = handler.obtainMessage();
+        msg.what = what;
+        msg.obj = obj;
+        msg.arg1 = arg1;
+        handler.sendMessage(msg);
+    }
+
+    //<editor-fold desc="Getters & Setters">
     public ExecutorService getExecutorService() {
         return executorService;
     }
@@ -63,23 +80,8 @@ public class Server extends Thread{
         this.devices = devices;
     }
 
-    /**
-     * Send message to the UI thread.
-     * This method gets and sends a message with the input parameters of the method.
-     *
-     * @param what
-     * @param obj
-     * @param arg1
-     */
-    public void alertify(int what, Object obj, int arg1){
-        Message msg = handler.obtainMessage();
-        msg.what = what;
-        msg.obj = obj;
-        msg.arg1 = arg1;
-        handler.sendMessage(msg);
-    }
-
     public SocketTaskType getSocketTaskType() {
         return socketTaskType;
     }
+    //</editor-fold>
 }

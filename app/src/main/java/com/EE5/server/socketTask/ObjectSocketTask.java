@@ -17,6 +17,8 @@ import java.net.Socket;
  * Each SocketTask handles a connection between the server and one client.
  * Multiple SocketTasks may be running to allow multiple connections.
  * The server must make sure each SocketTask is started on its own thread.
+ *
+ * ObjectSocketTask uses object serialisation and utilizes the ObjectInputStream and ObjectOutputStream classses.
  */
 public class ObjectSocketTask extends SocketTask{
     private Device device;

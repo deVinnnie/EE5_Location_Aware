@@ -30,13 +30,13 @@ public abstract class Client extends AsyncTask<Void, String, Void> {
 
     public static Device currentDevice;
 
+    /**
+     * Place to store an exception should an error occur during the lifetime of the Client instance.
+     * This variable is checked and handled in {@link #onPostExecute(Void aVoid)}
+     */
     private Exception exception;
 
     private boolean isConnected = false;
-
-    /*public Client(){
-        mutex = null;
-    }*/
 
     public Client(Object mutex, ArrayAdapter<String> historyAdapter, SocketTaskType socketTaskType,Context context){
         this.mutex = mutex;
@@ -52,14 +52,10 @@ public abstract class Client extends AsyncTask<Void, String, Void> {
      */
     public abstract boolean start() throws ConnectionException;
 
-    public void setIsStart(boolean isStart) {
-        this.getClientInputThread().setKeepRunning(isStart);
-        this.getClientOutputThread().setKeepRunning(isStart);
-    }
-
     public void quit(){
         Log.i("Client", "Stopping Client...");
-        this.setIsStart(false);
+        this.getClientInputThread().stopRunning();
+        this.getClientOutputThread().stopRunning();
     }
 
     public void update(String string){

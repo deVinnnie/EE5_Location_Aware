@@ -26,7 +26,7 @@ public class TCPClient extends Client {
 
     /**
      *
-     * @param ip IP Address of the server instance.
+     * @param ip IP Address of the server instance. Example: "192.168.1.12".
      * @param port Port number of the server instance.
      */
     public TCPClient(String ip, int port, Object mutex, ArrayAdapter<String> historyAdapter, SocketTaskType socketTaskType, Context context) {
@@ -55,7 +55,6 @@ public class TCPClient extends Client {
                 AbstractClientInputThread inputThread = ClientThreadFactory.produceInputThread(socketTaskType, socket.getInputStream(), this);
                 this.setClientOutputThread(outputThread);
                 this.setClientInputThread(inputThread);
-                this.setIsStart(true);
                 this.getClientInputThread().start();
                 this.getClientOutputThread().start();
             }

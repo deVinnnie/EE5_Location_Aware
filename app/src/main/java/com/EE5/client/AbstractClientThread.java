@@ -29,6 +29,10 @@ public abstract class AbstractClientThread extends Thread{
         return this.keepRunning;
     }
 
+    public void stopRunning(){
+        this.keepRunning = false;
+    }
+
     public Client getClient() {
         return client;
     }

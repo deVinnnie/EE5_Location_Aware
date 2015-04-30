@@ -390,6 +390,8 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
      *
      * <img src="./doc-files/PatternDetection_01.png" alt="Pattern Detection 01"/>
      *
+     * (Uses bitwise operators instead of logical operators. Bitwise is marginally faster.)
+     *
      * @param rgba Color image
      * @param gray2 Grayscale image
      * @return Corner points and angle of the pattern. ???????????????????
