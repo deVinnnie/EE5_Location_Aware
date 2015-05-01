@@ -194,8 +194,8 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         });
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.image_manipulations_activity_surface_view);
-        //mOpenCvCameraView.setCameraIndex(this.camera);
-        mOpenCvCameraView.setCameraIndex(0);
+        mOpenCvCameraView.setCameraIndex(this.camera);
+        //mOpenCvCameraView.setCameraIndex(0);
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
@@ -443,17 +443,17 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                 ra = Imgproc.contourArea(squ_out)/Imgproc.contourArea(squ_in);
                 if((ra>3)&(ra<7)){
                     setupflag = true;
-                    //distance2 = distance2 + 5;
+                    distance2 = distance2 + 5;
                 }
                 else{
                     setupflag = false;
                 }
             }
 
-            if(distance2 > 100){
+            if(distance2 > 500){
                 distance2 = 0;
             }
-            distance2 = distance2 + 2;
+            distance2 = distance2 + 5;
             PatternCoordinator pc = new PatternCoordinator(
                     new Point(1,1),
                     new Point(1,1),
@@ -505,16 +505,24 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             Core.rectangle(rgba, a, b, dark_blue,3);
 
             Point out[] = new Point[4];
+            //Point out_send[];// = new Point[4];
+
+
             NewMtx2.points(out);
 
-            String out_point1 ="point 1 is ("+ String.valueOf(out[0].x)+","+ String.valueOf(out[0].y)+")";
-            String out_point2 ="point 2 is ("+ String.valueOf(out[1].x)+","+ String.valueOf(out[1].y)+")";
-            String out_point3 ="point 3 is ("+ String.valueOf(out[2].x)+","+ String.valueOf(out[2].y)+")";
-            String out_point4 ="point 4 is ("+ String.valueOf(out[3].x)+","+ String.valueOf(out[3].y)+")";
-            Core.putText(rgba, out_point1, out[0], Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
-            Core.putText(rgba, out_point2, out[1], Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
-            Core.putText(rgba, out_point3, out[2], Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
-            Core.putText(rgba, out_point4, out[3], Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+                PatternCoordinator out_send = Cal_Pointnum(out, innerCenter);
+
+                if(out_send.getNum2()!=null) {
+                    String out_point1 = "1";//"point 1 is ("+ String.valueOf(out[0].x)+","+ String.valueOf(out[0].y)+")";
+                    String out_point2 = "2";//"point 2 is ("+ String.valueOf(out[1].x)+","+ String.valueOf(out[1].y)+")";
+                    String out_point3 = "3";//"point 3 is ("+ String.valueOf(out[2].x)+","+ String.valueOf(out[2].y)+")";
+                    String out_point4 = "4";//"point 4 is ("+ String.valueOf(out[3].x)+","+ String.valueOf(out[3].y)+")";
+                    Core.putText(rgba, out_point1, out_send.getNum1(), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+                    Core.putText(rgba, out_point2, out_send.getNum2(), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+                    Core.putText(rgba, out_point3, out_send.getNum3(), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+                    Core.putText(rgba, out_point4, out_send.getNum4(), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+                    Core.putText(rgba, String.valueOf(out_send.getAngle()),new Point(50, 300) , Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+                }
 
             //Inner
             Point a2 = new Point(NewMtx1.boundingRect().x, NewMtx1.boundingRect().y);
@@ -578,9 +586,48 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                         finalangle
                 );
             }*/
+            //PatternCoordinator pc = new PatternCoordinator(out_send[0],out_send[1],out_send[2],out_send[3],finalangle);
             PatternCoordinator pc = new PatternCoordinator(out[0],out[1],out[2],out[3],finalangle);
+            //PatternCoordinator pc = new PatternCoordinator(out_send.getNum1(),out_send.getNum2(),out_send.getNum3(),out_send.getNum4(),finalangle);
             return pc;
         }
+    }
+
+
+
+
+    public PatternCoordinator Cal_Pointnum(Point[] point, Point in_center){
+        Point[] point_send = new Point[4];
+
+        double dis=0,min_dis=10000000;
+
+        for (int i = 0;i<4;i++){
+            dis = Math.sqrt(Math.pow(in_center.x - point[i].x,2)+Math.pow(in_center.y-point[i].y,2));
+            if(dis<min_dis){
+                min_dis = dis;
+                if(i == 0){};
+                if(i == 1) {
+                    point_send[0] = point[1];
+                    point_send[1] = point[2];
+                    point_send[2] = point[3];
+                    point_send[3] = point[0];
+                }
+                if(i == 2) {
+                    point_send[0] = point[2];
+                    point_send[1] = point[3];
+                    point_send[2] = point[0];
+                    point_send[3] = point[1];
+                }
+                if(i == 3) {
+                    point_send[0] = point[3];
+                    point_send[1] = point[1];
+                    point_send[2] = point[2];
+                    point_send[3] = point[3];
+                }
+            }
+        }
+        PatternCoordinator pc = new PatternCoordinator(point_send[0],point_send[1],point_send[2],point_send[3],dis);
+        return pc;
     }
 
     public List<MatOfPoint> getContoursBySize(int dis, List<MatOfPoint> contour) {
