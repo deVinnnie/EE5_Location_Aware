@@ -479,10 +479,10 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             if (pContour.size() == 2) {
                 appo = new MatOfPoint2f(pContour.get(0).toArray());
                 NewMtx1 = Imgproc.minAreaRect(appo);
-                outterCenter = NewMtx1.center;
+                innerCenter = NewMtx1.center;
                 appo2 = new MatOfPoint2f(pContour.get(1).toArray());
                 NewMtx2 = Imgproc.minAreaRect(appo2);
-                innerCenter = NewMtx2.center;
+                outterCenter = NewMtx2.center;
             }
 
             List<MatOfPoint> appro_con = new ArrayList<MatOfPoint>();
@@ -502,7 +502,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             //Outer
             Point a = new Point(NewMtx2.boundingRect().x, NewMtx2.boundingRect().y);
             Point b = new Point(NewMtx2.boundingRect().x + NewMtx2.boundingRect().width, NewMtx2.boundingRect().y + NewMtx2.boundingRect().height);
-            Core.rectangle(rgba, a, b, dark_blue,3);
+            Core.rectangle(rgba, a, b, light_green,3);
 
             Point out[] = new Point[4];
             //Point out_send[];// = new Point[4];
@@ -512,7 +512,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
 
                 PatternCoordinator out_send = Cal_Pointnum(out, innerCenter);
 
-                if(out_send.getNum2()!=null) {
+                if(out_send.getNum2() !=  null) {
                     String out_point1 = "1";//"point 1 is ("+ String.valueOf(out[0].x)+","+ String.valueOf(out[0].y)+")";
                     String out_point2 = "2";//"point 2 is ("+ String.valueOf(out[1].x)+","+ String.valueOf(out[1].y)+")";
                     String out_point3 = "3";//"point 3 is ("+ String.valueOf(out[2].x)+","+ String.valueOf(out[2].y)+")";
@@ -521,7 +521,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                     Core.putText(rgba, out_point2, out_send.getNum2(), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
                     Core.putText(rgba, out_point3, out_send.getNum3(), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
                     Core.putText(rgba, out_point4, out_send.getNum4(), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
-                    Core.putText(rgba, String.valueOf(out_send.getAngle()),new Point(50, 300) , Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+                    //Core.putText(rgba, String.valueOf(out_send.getAngle()),new Point(50, 300) , Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
                 }
 
             //Inner
@@ -587,8 +587,11 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                 );
             }*/
             //PatternCoordinator pc = new PatternCoordinator(out_send[0],out_send[1],out_send[2],out_send[3],finalangle);
-            PatternCoordinator pc = new PatternCoordinator(out[0],out[1],out[2],out[3],finalangle);
-            //PatternCoordinator pc = new PatternCoordinator(out_send.getNum1(),out_send.getNum2(),out_send.getNum3(),out_send.getNum4(),finalangle);
+            //PatternCoordinator pc = new PatternCoordinator(out[0],out[1],out[2],out[3],finalangle);
+            PatternCoordinator pc = new PatternCoordinator(new Point(),new Point(),new Point(),new Point(),0.0);
+            if(out_send.getNum2() !=  null) {
+                pc = new PatternCoordinator(out_send.getNum1(), out_send.getNum2(), out_send.getNum3(), out_send.getNum4(), finalangle);
+            }
             return pc;
         }
     }
@@ -605,7 +608,12 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             dis = Math.sqrt(Math.pow(in_center.x - point[i].x,2)+Math.pow(in_center.y-point[i].y,2));
             if(dis<min_dis){
                 min_dis = dis;
-                if(i == 0){};
+                if(i == 0){
+                    point_send[0] = point[0];
+                    point_send[1] = point[1];
+                    point_send[2] = point[2];
+                    point_send[3] = point[3];
+                };
                 if(i == 1) {
                     point_send[0] = point[1];
                     point_send[1] = point[2];
@@ -620,9 +628,9 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                 }
                 if(i == 3) {
                     point_send[0] = point[3];
-                    point_send[1] = point[1];
-                    point_send[2] = point[2];
-                    point_send[3] = point[3];
+                    point_send[1] = point[0];
+                    point_send[2] = point[1];
+                    point_send[3] = point[2];
                 }
             }
         }
