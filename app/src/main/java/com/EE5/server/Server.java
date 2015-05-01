@@ -83,5 +83,13 @@ public class Server extends Thread{
     public SocketTaskType getSocketTaskType() {
         return socketTaskType;
     }
+
+    public Handler getHandler() {
+        return handler;
+    }
+
+    public void setHandler(Handler handler) {
+        this.handler = handler;
+    }
     //</editor-fold>
 }

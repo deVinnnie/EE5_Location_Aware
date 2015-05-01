@@ -59,30 +59,35 @@ public class ServerActivity extends ActionBarActivity{
         String connection_handling = sharedPref.getString("socketTaskType", "PRIMITIVE_DATA");
         SocketTaskType socketTaskType = SocketTaskType.valueOf(connection_handling); //Convert string to equivalent Enumeration value.
 
-        if(type.equals("Bluetooth")){
-            this.server = new BluetoothServer(socketTaskType, handler);
-        }
-        else {
-            //TCP - default.
-            //The TCP connection needs some more information to setup.
-            int port = Integer.parseInt(sharedPref.getString("server_port", "8080"));
-            this.server = new TCPServer(port, socketTaskType, handler);
+        this.server = GlobalResources.getInstance().getServer();
+        if(this.server == null) {
+            if (type.equals("Bluetooth")) {
+                this.server = new BluetoothServer(socketTaskType, handler);
+            } else {
+                //TCP - default.
+                //The TCP connection needs some more information to setup.
+                int port = Integer.parseInt(sharedPref.getString("server_port", "8080"));
+                this.server = new TCPServer(port, socketTaskType, handler);
 
-            //Get the IP address of the server from the Android WifiManager.
-            WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-            int ipAddress = wm.getConnectionInfo().getIpAddress();
-            //Format the IP address into something that is readable for humans.
-            String ip = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
-            //Display the IP address in a TextView in large friendly letters.
-            TextView txtIPAddress = (TextView) findViewById(R.id.txtServerIP);
-            txtIPAddress.setText("Server IP = " + ip);
-        }
-        this.server.start();
-        GlobalResources.getInstance().setServer(this.server);
+                //Get the IP address of the server from the Android WifiManager.
+                WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+                int ipAddress = wm.getConnectionInfo().getIpAddress();
+                //Format the IP address into something that is readable for humans.
+                String ip = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
+                //Display the IP address in a TextView in large friendly letters.
+                TextView txtIPAddress = (TextView) findViewById(R.id.txtServerIP);
+                txtIPAddress.setText("Server IP = " + ip);
+            }
+            this.server.start();
+            GlobalResources.getInstance().setServer(this.server);
 
-        //Also store the values of this device on the server.
-        ServerPassThrough passThrough = new ServerPassThrough();
-        passThrough.startPolling();
+            //Also store the values of this device on the server.
+            ServerPassThrough passThrough = new ServerPassThrough();
+            passThrough.startPolling();
+        }
+        else{
+            this.server.setHandler(handler);
+        }
     }
 
     private void updatePositionsList() {
@@ -122,24 +127,10 @@ public class ServerActivity extends ActionBarActivity{
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    public void updateList(){
-        ListView lstServerConnections = (ListView) findViewById(R.id.lst_server_connections);
-        ArrayAdapter adapter = (ArrayAdapter<String>) lstServerConnections.getAdapter();
-        adapter.clear();
-        for (Map.Entry<String, Position> entry : this.server.getConnectedDevices().getMap().entrySet())
-        {
-            String id = entry.getKey();
-            adapter.insert(""+id, 0);
-        }
-        ((ArrayAdapter) lstServerConnections.getAdapter()).notifyDataSetChanged();
     }
 }
