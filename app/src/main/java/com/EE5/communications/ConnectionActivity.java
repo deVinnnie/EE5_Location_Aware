@@ -39,7 +39,7 @@ public class ConnectionActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_position);
+        setContentView(R.layout.activity_connection);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String deviceId = IDGenerator.generate(sharedPref);
