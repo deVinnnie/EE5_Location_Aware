@@ -15,17 +15,23 @@
         android:layout_height="wrap_content"
         android:id="@+id/txtPosition"/>
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Connect and Poll"
-        android:id="@+id/buttonConnect"/>
+        android:orientation="horizontal">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Disconnect"
-        android:id="@+id/buttonDisconnect"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect and Poll"
+            android:id="@+id/buttonConnect"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Disconnect"
+            android:id="@+id/buttonDisconnect"/>
+    </LinearLayout>
 
     <ListView
         android:textColor="#000"
