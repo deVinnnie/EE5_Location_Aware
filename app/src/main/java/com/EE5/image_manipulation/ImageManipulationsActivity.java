@@ -2,6 +2,7 @@ package com.EE5.image_manipulation;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +37,7 @@ import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -46,6 +48,8 @@ import org.opencv.core.Rect;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
+import org.opencv.highgui.Highgui;
+import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
 import java.text.DecimalFormat;
@@ -75,6 +79,11 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
                 case LoaderCallbackInterface.SUCCESS: {
                     Log.i(TAG, "OpenCV loaded successfully");
                     mOpenCvCameraView.enableView();
+
+                    //setupCamera(); //Retrieve camera WITHOUT CameraBridgeViewBase and JavaImageView
+
+                    //As information: This block of code is called after the OpenCV stuff has loaded.
+                    //If you try this for instance in the onCreate method it will fail and you won't have a clue as to why it did so.
                 }
                 break;
                 default: {
@@ -121,6 +130,8 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
     );
     //Change later to non-static variable.
 
+    private VideoCapture mCamera;
+
     /**
      * Called when the activity is first created.
      */
@@ -146,6 +157,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         Log.i("ImageSize", imageSize.width + " " +  imageSize.height);
         this.calc = new Calc(pattern_width, imageSize.width, imageSize.height);
 
+        //Select front or back facing camera.
         boolean backfacingCamera = sharedPref.getBoolean("camera", false);
         this.camera = (backfacingCamera) ? 0 : 1;
 
@@ -154,6 +166,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
             //Use rear facing camera if there is no front facing camera.
         }
 
+        //Obviously this line will prevent the screen from turning off.
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.image_manipulations_surface_view);
@@ -165,7 +178,7 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         rotate = (TextView) findViewById(R.id.angle);
 
         iv = (ImageView) findViewById(R.id.imageView);
-        /*iv.setVisibility(false);*/
+        //iv.setVisibility(View.GONE);
 
         Button btn_get = (Button) findViewById(R.id.btn_get);
         btn_get.setOnClickListener(new View.OnClickListener() {
@@ -197,13 +210,34 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         mOpenCvCameraView.setCameraIndex(this.camera);
         //mOpenCvCameraView.setCameraIndex(0);
         mOpenCvCameraView.setCvCameraViewListener(this);
+        //mOpenCvCameraView.setVisibility(View.GONE); GONE = Invisible + Not considered when layouting the other elements.
+
+        //cameraHandler.postDelayed(cameraRunnable, 100);
+    }
+
+    /**
+     * Load camera with the {@link VideoCapture} class.
+     * Code is based on <a href="http://developer.sonymobile.com/knowledge-base/tutorials/android_tutorial/get-started-with-opencv-on-android/">http://developer.sonymobile.com/knowledge-base/tutorials/android_tutorial/get-started-with-opencv-on-android/</a>
+     */
+    private void setupCamera(){
+        if (mCamera != null) {
+            VideoCapture camera = mCamera;
+            mCamera = null;
+            camera.release();
+        }
+
+        mCamera = new VideoCapture(0);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mOpenCvCameraView != null)
+        if (mOpenCvCameraView != null) {
             mOpenCvCameraView.disableView();
+        }
+        if(this.mCamera != null){
+            this.mCamera.release();
+        }
     }
 
     @Override
@@ -345,6 +379,63 @@ public class ImageManipulationsActivity extends ActionBarActivity implements CvC
         }
     }
 
+    private Handler cameraHandler = new Handler();
+    private Runnable cameraRunnable = new Runnable(){
+        @Override
+        public void run() {
+            try {
+               if(mCamera != null){
+                    //Grab one frame of the camera.
+                    boolean grabbed = mCamera.grab();
+                    if (grabbed) {
+                        Mat rgba = new Mat();
+                        Mat gray = new Mat();
+                        mCamera.retrieve(rgba, Highgui.CV_CAP_ANDROID_COLOR_FRAME_RGB);
+
+                        //Convert to grayscale.
+                        Imgproc.cvtColor(rgba, gray, Imgproc.COLOR_RGB2GRAY);
+
+                        //Quasi the same code as in onCameraFrame()
+                        switch (ImageManipulationsActivity.viewMode) {
+                            case ImageManipulationsActivity.VIEW_MODE_RGBA:
+                                //Do no filtering and display the captured image unaltered on the screen.
+                                break;
+
+                            case ImageManipulationsActivity.VIEW_MODE_CANNY:
+                                //Apply the Canny Edge Detection and find the contours of the pattern.
+                                PatternCoordinator pattern = patternDetection(rgba, gray);
+                                ImageManipulationsActivity.patternCoordinator = pattern;
+                                break;
+                        }
+
+                        // Convert the matrix to an Android bitmap
+                        // As a means of testing the bitmap is displayed in an ImageView.
+                        // (iv was already available...)
+                        // In the final version this would be disabled
+                        // (at least for the most part of the run of the application)
+                        Bitmap bitmap = Bitmap.createBitmap(rgba.cols(), rgba.rows(), Bitmap.Config.ARGB_8888);
+                        Utils.matToBitmap(rgba, bitmap, true);
+                        iv.setImageBitmap(bitmap);
+
+                        //Give signal to update the text overlay.
+                        Message msg = handler.obtainMessage();
+                        msg.what = 1;
+                        msg.obj = null;
+                        msg.arg1 = 0;
+                        handler.sendMessage(msg);
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //Execute this code again after 100 milliseconds.
+            cameraHandler.postDelayed(cameraRunnable, 100);
+        }
+    };
+
+    //TODO Move algorithm code into separate POJO (Plain Java Object).
     //<editor-fold desc="Algorithm & OpenCV">
     public void onCameraViewStarted(int width, int height) {
         mIntermediateMat = new Mat();
