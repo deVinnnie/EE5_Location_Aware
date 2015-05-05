@@ -1,9 +1,9 @@
 package com.EE5.communications;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * After a successful connection it will send the Application back to the MainActivity.
  *
  */
-public class ConnectionActivity extends ActionBarActivity {
+public class ConnectionActivity extends Activity {
     private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
     private Button btnConnect;
     private Button btnDisconnect;

@@ -1,6 +1,7 @@
 package com.EE5.math;
 
 import com.EE5.image_manipulation.PatternCoordinator;
+import com.EE5.server.data.Position;
 import com.EE5.util.Point3D;
 
 /**
@@ -34,9 +35,9 @@ public class Calc {
      */
     public Calc() {
         xA=0;yA=0;
-        xB=480;yB=0;
-        xC=0;yC=640;
-        xD=480;yD=640;
+        xB=640;yB=0;
+        xC=0;yC=480;
+        xD=640;yD=480;
     }
 
     /**
@@ -44,8 +45,8 @@ public class Calc {
      *  @param size The real life size of the pattern in cm (The length of one of the sides of the square)
      *             Size is in fact a misleading name, as it could be misinterpreted as the area of the square.
      *
-     *  @param width Width in pixels of the image.
-     *  @param height Height in pixels of the image.
+     *  @param width Width in pixels of the full image.
+     *  @param height Height in pixels of the full image.
      */
      public Calc(double size, double width, double height) {
          this(); //Call Default Constructor.
@@ -129,5 +130,31 @@ public class Calc {
         System.out.println("rate is: " +rate);*/
 
         return new Point3D(X,Y,Z1);
+    }
+
+    /**
+     * Calculates the distance between two positions.
+     * Uses formula for Euclidean distance in 3 dimensions:
+     * distance = √ ( (x2-x1)² + (y2-y1)² + (z2-z1)² )
+     *
+     * @param position1 First position
+     * @param position2 Second Position
+     * @return Distance between position1 and position2
+     */
+    public static double getDistance(Position position1, Position position2){
+        double distance = Math.sqrt(
+                Math.pow(
+                        (position1.getX()-position2.getX()),2
+                )
+                +
+                Math.pow(
+                        (position1.getY()-position2.getY()),2
+                )
+                +
+                Math.pow(
+                        (position1.getHeight()-position2.getHeight()),2
+                )
+        );
+        return distance;
     }
 }

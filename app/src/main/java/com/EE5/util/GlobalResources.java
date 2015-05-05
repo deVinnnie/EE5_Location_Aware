@@ -1,6 +1,7 @@
 package com.EE5.util;
 
 import com.EE5.communications.connection.Connection;
+import com.EE5.image_manipulation.PatternDetector;
 import com.EE5.server.Server;
 import com.EE5.server.data.Device;
 import com.EE5.server.data.DeviceList;
@@ -14,18 +15,20 @@ import com.EE5.server.data.DeviceList;
 public class GlobalResources {
     private static GlobalResources instance;
 
-    public Connection connection;
-    public Server server;
+    private Connection connection;
+    private Server server;
 
     /**
      * Information about THIS device.
      */
-    public Device device = new Device();
+    private Device device = new Device();
 
     /**
      * Only Positions of other Devices.
      */
-    public DeviceList devices = new DeviceList();
+    private DeviceList devices = new DeviceList();
+
+    private PatternDetector patternDetector;
 
     // The constructor is private so that it can only be called from within the class.
     private GlobalResources(){}
@@ -68,6 +71,14 @@ public class GlobalResources {
 
     public void setDevice(Device device) {
         this.device = device;
+    }
+
+    public PatternDetector getPatternDetector() {
+        return patternDetector;
+    }
+
+    public void setPatternDetector(PatternDetector patternDetector) {
+        this.patternDetector = patternDetector;
     }
     //</editor-fold>
 }

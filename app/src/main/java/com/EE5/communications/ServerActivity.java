@@ -1,5 +1,6 @@
 package com.EE5.communications;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +27,7 @@ import com.EE5.util.GlobalResources;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class ServerActivity extends ActionBarActivity{
+public class ServerActivity extends Activity {
     private Server server;
     private ArrayList<String> connectedDevices = new ArrayList<String>();
 

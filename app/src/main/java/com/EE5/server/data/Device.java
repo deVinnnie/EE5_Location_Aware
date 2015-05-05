@@ -38,6 +38,7 @@ public class Device implements Serializable{
         this.position = position;
     }
 
+    /** @deprecated */
     public PatternCoordinator getPattern() {
         return pattern;
     }

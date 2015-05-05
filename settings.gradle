@@ -1,2 +1,5 @@
 include ':openCVLibrary2410'
 include ':app'
+include ':demo_basic'
+include ':demo_arrows'
+include ':libgdx-core'

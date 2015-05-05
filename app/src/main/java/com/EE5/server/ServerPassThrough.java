@@ -2,8 +2,6 @@ package com.EE5.server;
 
 import android.os.Handler;
 
-import com.EE5.image_manipulation.ImageManipulationsActivity;
-import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.util.GlobalResources;
 
 /**
@@ -19,11 +17,8 @@ public class ServerPassThrough {
         @Override
         public void run() {
             try {
-                PatternCoordinator pc = ImageManipulationsActivity.patternCoordinator;
-                //currentPosition = new Position(pc.getNum1().x, pc.getNum1().y, currentPosition.getRotation(), currentPosition.getHeight());
-
                 Server server = GlobalResources.getInstance().getServer();
-                server.getDevices().getPatternMap().put("0001", pc);
+                server.getDevices().getPatternMap().put("0001", GlobalResources.getInstance().getDevice().getPattern());
                 server.getDevices().getMap().put("0001", GlobalResources.getInstance().getDevice().getPosition());
             } catch (Exception e) {
                 e.printStackTrace();
