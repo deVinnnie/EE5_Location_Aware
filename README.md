@@ -10,7 +10,7 @@ Make sure to run 'Sync Project with gradle files' (Tools->Android) so that the .
 Project Modules Explained
 -------------------------
 
-* app : Contains library code for communications, image manipulation and mathematics.
+* libLocationAware : Contains library code for communications, image manipulation and mathematics.
         This is a Android Library Module, it cannot run standalone on an Android Device.
         (Note: it does however contain Activity classes and layouts. These can be called by applications using the library module)
 * demo_basic : Simple Android Application to run the code in app.

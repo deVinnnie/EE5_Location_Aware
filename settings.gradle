@@ -1,5 +1,5 @@
 include ':openCVLibrary2410'
-include ':app'
+include ':libLocationAware'
 include ':demo_basic'
 include ':demo_arrows'
 include ':libgdx-core'
