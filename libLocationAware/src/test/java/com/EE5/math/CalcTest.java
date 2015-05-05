@@ -17,7 +17,7 @@ import static junit.framework.Assert.assertEquals;
 public class CalcTest  {
     /**
      * Assert that when the pattern is in the dead centre of the image the coordinates are (0,0).
-     *
+     * The pattern size is set to be 10cm in reality and 100 pixels wide in the image.
      */
     @Test
     public void testPatternInCentre(){

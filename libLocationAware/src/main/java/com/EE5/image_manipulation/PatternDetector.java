@@ -15,6 +15,14 @@ import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
+/**
+ * Grabs frames from the camera and gives them to the Pattern Detection Algorithm.
+ * The results are stored in the {@link GlobalResources} Singleton.
+ *
+ * The constructor can be called at any time. The method {@link #setup()} has to be called after the OpenCV library has loaded.
+ *
+ * @see PatternDetectorAlgorithmInterface
+ */
 public class PatternDetector {
     public Mat image;
 

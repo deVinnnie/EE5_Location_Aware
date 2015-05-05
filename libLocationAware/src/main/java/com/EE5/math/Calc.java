@@ -61,7 +61,7 @@ public class Calc {
 
     /**
      * Calculate the x,y and z coordinates of the device.
-     * Position (0,0,0) is when the pattern is in the centre. (?)
+     * Position (0,0,0) is when the pattern is in the centre.
      *
      * @param pattern Corner points of the pattern.
      * @return A new point representing the position of the device.

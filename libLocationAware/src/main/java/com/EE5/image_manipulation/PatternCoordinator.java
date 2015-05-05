@@ -5,7 +5,7 @@ import org.opencv.core.Point;
 import java.io.Serializable;
 
 /**
- * Created by CastorYan on 3/14/2015.
+ * Holds the 4 coordinates of the corners of the pattern, and the rotation.
  */
 public class PatternCoordinator implements Serializable{
     private static final long serialVersionUID = 2L;

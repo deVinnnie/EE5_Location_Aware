@@ -127,6 +127,7 @@ public class ImageManipulationsActivity extends Activity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 distance = seekBar.getProgress();
                 tx_y2.setText(String.valueOf(distance));
+                //Due to complications (See PatternDetectorInterface) some variables cannot be directly accessed anymore.
             }
         });*/
     }
@@ -145,7 +146,7 @@ public class ImageManipulationsActivity extends Activity {
         }
 
         //Derive the image size.
-        Camera camera=Camera.open(cameraSelection);
+        Camera camera=Camera.open(cameraSelection); //Be careful : this locks the camera!
         Camera.Parameters params = camera.getParameters();
         Camera.Size imageSize = params.getPictureSize();
         camera.release();
@@ -240,7 +241,12 @@ public class ImageManipulationsActivity extends Activity {
     //</editor-fold>
 
     //<editor-fold desc="View updates">
-    Handler handler = new Handler(Looper.getMainLooper()){
+    /**
+     * A reference to this handler is passed to the {@link PatternDetector} instance.
+     * This enables the {@link PatternDetector} to send the signal to update the UI.
+     * (UI changes can only be run on the main thread. The {@link PatternDetector} code runs on a separate thread.)
+     */
+    private Handler handler = new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
             if(msg.what==1){

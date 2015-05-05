@@ -6,7 +6,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 
 /**
- * Dummy implementation of the Pattern Detector Algorithm.
+ * Dummy implementation of the Pattern Detection Algorithm.
  * It won't look at the camera output, but will return a predetermined set of values.
  * This is for testing purposes.
  */

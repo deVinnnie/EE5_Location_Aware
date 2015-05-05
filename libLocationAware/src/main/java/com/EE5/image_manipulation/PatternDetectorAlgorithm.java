@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * The official implementation of the algorithm.
+ */
 public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterface{
     double ra;
 
