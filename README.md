@@ -1,4 +1,3 @@
-
 Building Instructions
 ---------------------
 
@@ -17,7 +16,9 @@ Project Modules Explained
                 This can be used as the basis for an application only based on Android.
 * libgdx-core : For libgdx.
 * openCVLibrary2410 : Used by library code, contains the OpenCV framework.
-* demo_arrows : The pointing arrows demo using libgdx.
+* demo_arrows : The pointing arrows demo using libgdx. This app first launches the ImageManipulationsActivity.
+                You need to press return (the physical button) to get to the actual app. (The first view is to setup the camera and networking)
+                New projects based on this one will need to copy some lines within the main build.gradle file and change the name of the project accordingly.
 
 Accessing Position Data
 -----------------------
@@ -35,3 +36,18 @@ You can use the following construct to iterate over all devices.
     for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
         System.out.println("key=" + entry.getKey() + "; value=" + entry.getValue());
     }
+
+Primer on using git
+-------------------
+
+Short answer: use the [Github Client for Windows](https://windows.github.com/).
+
+Long answer (CLI):
+
+* `git clone git@github.com:deVinnnie/EE5_Location_Aware.git` Copies the files to your computer.
+* Make changes to the code
+* `git add --all` Tell git to index all new files you (might have) created.
+* Use `git status` to see which files were changed.
+* Make a new commit with `git commit -m 'Some Useful desciption'`
+* Push the commit(s) with `git push` to send the commits to the main repository.
+* Use `git pull` to download commits from the main repository.
