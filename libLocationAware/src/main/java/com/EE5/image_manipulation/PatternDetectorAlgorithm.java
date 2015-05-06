@@ -128,7 +128,8 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             List<MatOfPoint> appro_con = new ArrayList<MatOfPoint>();
             appro_con.add(new MatOfPoint(appo.toArray()));
 
-            Imgproc.cvtColor(mIntermediateMat, rgba, Imgproc.COLOR_GRAY2BGRA, 4);
+            //Imgproc.cvtColor(mIntermediateMat, rgba, Imgproc.COLOR_GRAY2BGRA, 4); //Convert to rgba;
+            //When this line is commented the following commands will draw on the original rgba image.
 
             //Overlay the image with some useful lines.
             //Imgproc.drawContours(image, contour, -1, orange, 4);
@@ -146,7 +147,6 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
 
             Point out[] = new Point[4];
             //Point out_send[];// = new Point[4];
-
 
             NewMtx2.points(out);
 
@@ -215,6 +215,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             }
             return pc;
         }
+
     }
 
     private PatternCoordinator Cal_Pointnum(Point[] point, Point in_center){
