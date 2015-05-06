@@ -24,7 +24,7 @@ public class Game extends ApplicationAdapter {
     {
         calc = new Calculator();
         calc.x1 = 0; calc.y1 = 0;
-        calc.x2 = -100; calc.y2 = -173 ;
+        //calc.x2 = -100; calc.y2 = -173 ;
         calc.rotation = 90;
         batch = new SpriteBatch();
         img = new Texture("arrow.png");
@@ -57,12 +57,12 @@ public class Game extends ApplicationAdapter {
         for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
             calc.x2 = entry.getValue().getX();
             calc.y2 = entry.getValue().getY();
-            break;
+            break; //Only read the position of the first device.
         }
 
         calc.rotation = ownPosition.getRotation();
-
-        sprite.setRotation((int)calc.calcAngle());
+        int angle = (int) calc.calcAngle();
+        sprite.setRotation(angle);
         //batch.draw(img, 0, 0);
 
         //Draw Current Device Position.

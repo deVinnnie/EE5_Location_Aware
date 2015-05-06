@@ -94,10 +94,11 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             }
             distance2 = distance2 + 5;
             PatternCoordinator pc = new PatternCoordinator(
-                    new Point(1,1),
-                    new Point(1,1),
-                    new Point(1,1),
-                    new Point(1,1),
+                    //Pattern in center.
+                    new Point(320-50,240-50),
+                    new Point(320+50,240-50),
+                    new Point(320-50,240+50),
+                    new Point(320+50,240+50),
                     0.00
             );
             return pc;

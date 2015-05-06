@@ -27,10 +27,10 @@ public class PatternDetector {
 
     private PatternDetectorAlgorithmInterface patternDetectorAlgorithm = new PatternDetectorAlgorithm();
     private PatternCoordinator patternCoordinates = new PatternCoordinator(
-            new Point(1,1),
-            new Point(1,1),
-            new Point(1,1),
-            new Point(1,1),
+            new Point(320-50,240-50),
+            new Point(320+50,240-50),
+            new Point(320-50,240+50),
+            new Point(320+50,240+50),
             0.00
     );
 
@@ -78,8 +78,8 @@ public class PatternDetector {
                 e.printStackTrace();
             }
 
-            //Execute this code again after 100 milliseconds.
-            cameraHandler.postDelayed(cameraRunnable, 100);
+            //Execute this code again after <sample_rate> milliseconds.
+            cameraHandler.postDelayed(cameraRunnable, sampleRate);
         }
     };
 
