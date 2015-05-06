@@ -75,7 +75,7 @@ task run(type: Exec) {
 }
 
 // sets up the Android Eclipse project, using the old Ant based build.
-eclipse {
+/*eclipse {
     // need to specify Java source sets explicitely, SpringSource Gradle Eclipse plugin
     // ignores any nodes added in classpath.file.withXml
     sourceSets {
@@ -104,7 +104,7 @@ eclipse {
         buildCommand "com.android.ide.eclipse.adt.ApkBuilder"
 
     }
-}
+}*/
 
 // sets up the Android Idea project, using the old Ant based build.
 idea {
