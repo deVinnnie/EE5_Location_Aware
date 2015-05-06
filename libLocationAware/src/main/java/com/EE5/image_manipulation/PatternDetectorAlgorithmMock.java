@@ -1,7 +1,5 @@
 package com.EE5.image_manipulation;
 
-import android.util.Log;
-
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 
@@ -34,7 +32,6 @@ public class PatternDetectorAlgorithmMock implements PatternDetectorAlgorithmInt
      * @return Corner points and angle of the pattern.
      */
     public PatternCoordinator find(Mat rgba, Mat gray2) {
-        Log.i("Mock", "Running Mock");
         if(method.equals(MockMethod.STATIONARY)){
             return new PatternCoordinator(
                     new Point(320-50,240-50),

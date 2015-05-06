@@ -2,7 +2,6 @@ package com.EE5.image_manipulation;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.EE5.math.Calc;
 import com.EE5.server.data.Position;
@@ -46,9 +45,7 @@ public class PatternDetector {
         @Override
         public void run() {
             try {
-                Log.i("PatternDetector", "Getting Frame");
                 if (mCamera != null) {
-                    Log.i("PatternDetector", "Processing Frame");
                     //Grab one frame of the camera.
                     boolean grabbed = mCamera.grab();
                     if (grabbed) {
