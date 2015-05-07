@@ -1,5 +1,7 @@
-include ':openCVLibrary2410', ':demo_color_mixer'
+include ':openCVLibrary2410'
 include ':libLocationAware'
 include ':demo_basic'
 include ':demo_arrows'
 include ':libgdx-core'
+include ':demo_parachute'
+include ':demo_color_mixer'
