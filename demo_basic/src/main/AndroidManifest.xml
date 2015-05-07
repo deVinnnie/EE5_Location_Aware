@@ -14,7 +14,9 @@
             android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="com.EE5.image_manipulation.ImageManipulationsActivity" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
+
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

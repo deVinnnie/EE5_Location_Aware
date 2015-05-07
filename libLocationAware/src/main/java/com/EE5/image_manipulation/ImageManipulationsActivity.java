@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.EE5.R;
 import com.EE5.client.IDGenerator;
@@ -129,33 +130,39 @@ public class ImageManipulationsActivity extends Activity {
     }
 
     private void setupCamera(){
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        double pattern_width = Double.parseDouble(sharedPref.getString("pattern_size", "11.75")); //Second param is default value.
+        try {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            double pattern_width = Double.parseDouble(sharedPref.getString("pattern_size", "11.75")); //Second param is default value.
 
-        //Select front or back facing camera.
-        boolean forceBackFacingCamera = sharedPref.getBoolean("camera", false);
-        int cameraSelection = (forceBackFacingCamera) ? 0 : 1;
+            //Select front or back facing camera.
+            boolean forceBackFacingCamera = sharedPref.getBoolean("camera", false);
+            int cameraSelection = (forceBackFacingCamera) ? 0 : 1;
 
-        if(Camera.getNumberOfCameras()<2){
-            cameraSelection = 0;
-            //Use rear facing camera if there is no front facing camera.
+            if(Camera.getNumberOfCameras()<2){
+                cameraSelection = 0;
+                //Use rear facing camera if there is no front facing camera.
+            }
+
+            //Derive the image size.
+            Camera camera = Camera.open(cameraSelection); //Be careful : this locks the camera!
+            Camera.Parameters params = camera.getParameters();
+            Camera.Size imageSize = params.getPictureSize();
+            camera.release();
+            Log.i("ImageSize", imageSize.width + " " + imageSize.height);
+            Calc calc = new Calc(pattern_width, imageSize.width, imageSize.height);
+
+            //Make new PatternDetector.
+            this.patternDetector = new PatternDetector(cameraSelection);
+            this.patternDetector.setHandler(this.handler);
+            this.patternDetector.setCalc(calc);
+            this.patternDetector.setup();
+            this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
+            GlobalResources.getInstance().setPatternDetector(this.patternDetector);
         }
-
-        //Derive the image size.
-        Camera camera=Camera.open(cameraSelection); //Be careful : this locks the camera!
-        Camera.Parameters params = camera.getParameters();
-        Camera.Size imageSize = params.getPictureSize();
-        camera.release();
-        Log.i("ImageSize", imageSize.width + " " +  imageSize.height);
-        Calc calc = new Calc(pattern_width, imageSize.width, imageSize.height);
-
-        //Make new PatternDetector.
-        this.patternDetector = new PatternDetector(cameraSelection);
-        this.patternDetector.setHandler(this.handler);
-        this.patternDetector.setCalc(calc);
-        this.patternDetector.setup();
-        this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
-        GlobalResources.getInstance().setPatternDetector(this.patternDetector);
+        catch(RuntimeException ex){
+            CharSequence text = "Camera not available";
+            Toast.makeText(this.getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -176,7 +183,9 @@ public class ImageManipulationsActivity extends Activity {
 
     public void onDestroy() {
         super.onDestroy();
-        //this.patternDetector.destroy();
+        if(isFinishing() && this.patternDetector != null) {
+            this.patternDetector.destroy();
+        }
     }
 
     //<editor-fold desc="Options">
