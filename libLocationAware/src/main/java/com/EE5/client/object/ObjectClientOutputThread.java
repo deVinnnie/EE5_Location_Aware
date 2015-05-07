@@ -40,6 +40,7 @@ public class ObjectClientOutputThread extends AbstractClientOutputThread {
                 // the result is that when writing the same (updated) object multiple times,
                 // the old version is used.
                 oos.writeObject(this.getDevice());
+                oos.writeObject(this.getCustomData());
                 oos.flush();
 
                 synchronized (this) {

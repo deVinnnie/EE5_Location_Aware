@@ -6,6 +6,7 @@ import com.EE5.client.AbstractClientInputThread;
 import com.EE5.client.Client;
 import com.EE5.client.LatencyTest;
 import com.EE5.server.data.DeviceList;
+import com.EE5.util.GlobalResources;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class ObjectClientInputThread extends AbstractClientInputThread {
                 long timeDif = LatencyTest.getLatency();
                 Log.i("Timing", "" + timeDif + "ms");
                 getClient().update("" + timeDif + "ms");
+                GlobalResources.getInstance().setDevices(deviceList);
             }
         }
         catch(EOFException ex){

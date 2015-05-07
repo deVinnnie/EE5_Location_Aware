@@ -45,6 +45,7 @@ public class PrimitiveClientOutputThread extends AbstractClientOutputThread{
                 od.writeDouble(this.getDevice().getPosition().getY());
                 od.writeDouble(this.getDevice().getPosition().getHeight());
                 od.writeDouble(this.getDevice().getPosition().getRotation());
+                od.writeUTF(this.getCustomData());
 
                 /*od.writeDouble(this.getDevice().getPattern().getNum1().x);
                 od.writeDouble(this.getDevice().getPattern().getNum1().y);

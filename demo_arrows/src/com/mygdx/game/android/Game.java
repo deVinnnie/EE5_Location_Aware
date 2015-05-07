@@ -2,6 +2,7 @@ package com.mygdx.game.android;
 
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
+import com.EE5.util.Tuple;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -54,9 +55,9 @@ public class Game extends ApplicationAdapter {
         calc.y1 = ownPosition.getY();
 
         //Iterate over other devices.
-        for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
-            calc.x2 = entry.getValue().getX();
-            calc.y2 = entry.getValue().getY();
+        for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
+            calc.x2 = entry.getValue().element1.getX();
+            calc.y2 = entry.getValue().element1.getY();
             break; //Only read the position of the first device.
         }
 

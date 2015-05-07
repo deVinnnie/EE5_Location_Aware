@@ -21,7 +21,7 @@ import java.net.Socket;
  * ObjectSocketTask uses object serialisation and utilizes the ObjectInputStream and ObjectOutputStream classses.
  */
 public class ObjectSocketTask extends SocketTask{
-    private Device device;
+    //private Device device;
 
     public ObjectSocketTask(Socket socket, Server server) throws IOException {
         super(socket, server);
@@ -56,14 +56,15 @@ public class ObjectSocketTask extends SocketTask{
             //Keep reading from socket.
             while(true){
                 Device device = (Device) oInputStream.readObject(); //Will block until it has received a new object.
+                String data = (String) oInputStream.readObject();
                 if(device == null){
-                    devices.removeDevice(this.device);
+                    devices.removeDevice(device);
                     //this.getServer().alertify(0,null, 1);
                     //Log.d("Server", "Removing Device");
                     break;
                 }
-                this.device = device;
                 boolean present = devices.contains(device);
+                devices.add(device.getId(), device.getPosition(), data);
                 devices.addDevice(device);
 
                 this.getServer().alertify(1,null, 1);

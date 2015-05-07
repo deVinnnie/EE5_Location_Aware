@@ -7,6 +7,7 @@ import java.io.OutputStream;
 public abstract class AbstractClientOutputThread extends AbstractClientThread {
     private OutputStream outputStream;
     private Device device;
+    private String customData;
 
     public OutputStream getOutputStream() {
         return outputStream;
@@ -27,5 +28,13 @@ public abstract class AbstractClientOutputThread extends AbstractClientThread {
 
     public Device getDevice(){
         return this.device;
+    }
+
+    public String getCustomData() {
+        return customData;
+    }
+
+    public void setCustomData(String customData) {
+        this.customData = customData;
     }
 }
