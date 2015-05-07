@@ -57,12 +57,12 @@ public class PatternDetector {
                         Imgproc.cvtColor(rgba, gray, Imgproc.COLOR_RGB2GRAY);
 
                         //Quasi the same code as in onCameraFrame()
-                        switch (ImageManipulationsActivity.viewMode) {
-                            case ImageManipulationsActivity.VIEW_MODE_RGBA:
+                        switch (PatternDetector.this.viewMode) {
+                            case PatternDetector.VIEW_MODE_RGBA:
                                 //Do no filtering and display the captured image unaltered on the screen.
                                 break;
 
-                            case ImageManipulationsActivity.VIEW_MODE_CANNY:
+                            case PatternDetector.VIEW_MODE_CANNY:
                                 //Apply the Canny Edge Detection and find the contours of the pattern.
                                 patternCoordinates = patternDetectorAlgorithm.find(rgba, gray);
                                 break;
@@ -89,6 +89,11 @@ public class PatternDetector {
      * '1' = front facing camera.
      */
     private int camera = 1;
+
+
+    public static final int VIEW_MODE_RGBA = 0;
+    public static final int VIEW_MODE_CANNY = 2; //Canny edge detector
+    private int viewMode = VIEW_MODE_RGBA;
 
     public PatternDetector() {
     }
@@ -164,5 +169,13 @@ public class PatternDetector {
 
     public void setPatternDetectorAlgorithm(PatternDetectorAlgorithmInterface patternDetectorAlgorithm) {
         this.patternDetectorAlgorithm = patternDetectorAlgorithm;
+    }
+
+    public int getViewMode() {
+        return viewMode;
+    }
+
+    public void setViewMode(int viewMode) {
+        this.viewMode = viewMode;
     }
 }

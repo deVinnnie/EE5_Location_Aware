@@ -39,10 +39,6 @@ import java.util.Map;
 
 
 public class ImageManipulationsActivity extends Activity {
-    public static final int VIEW_MODE_RGBA = 0;
-    public static final int VIEW_MODE_CANNY = 2; //Canny edge detector
-    public static int viewMode = VIEW_MODE_RGBA;
-
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
@@ -158,9 +154,8 @@ public class ImageManipulationsActivity extends Activity {
         this.patternDetector.setHandler(this.handler);
         this.patternDetector.setCalc(calc);
         this.patternDetector.setup();
+        this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
         GlobalResources.getInstance().setPatternDetector(this.patternDetector);
-
-        ImageManipulationsActivity.viewMode = VIEW_MODE_CANNY;
     }
 
     @Override
@@ -219,11 +214,11 @@ public class ImageManipulationsActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         //First check if Canny or RGBA was clicked.
         if (item == mItemPreviewRGBA) {
-            viewMode = VIEW_MODE_RGBA;
+            this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_RGBA);
             return true;
         }
         else if (item == mItemPreviewCanny) {
-            viewMode = VIEW_MODE_CANNY;
+            this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
             return true;
         }
 
