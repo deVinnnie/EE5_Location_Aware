@@ -2,22 +2,50 @@ package com.EE5.demo_parachute;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 public class MainActivity extends Activity {
+    private RelativeLayout.LayoutParams params;
+    private RelativeLayout layout;
+    private ImageView iv;
+
+    private Handler loopHandler = new Handler();
+    private Runnable loopRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if(params.topMargin < layout.getHeight()) {
+                MainActivity.this.params.topMargin+=4;
+            }
+            else{
+                MainActivity.this.params.topMargin=0;
+            }
+            layout.updateViewLayout(iv, params);
+
+            //Execute this code again after <sample_rate> milliseconds.
+            loopHandler.postDelayed(loopRunnable, 100);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"), 0);
         setContentView(R.layout.activity_main);
 
-        ImageView iv = (ImageView) findViewById(R.id.parachute_image);
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.parachute_layout);
-        layout.removeView(iv);
-        layout.addView(iv,new RelativeLayout.LayoutParams(300, 400));
+        iv = (ImageView) findViewById(R.id.parachute_image);
+        layout = (RelativeLayout) findViewById(R.id.parachute_layout);
+        //layout.removeView(iv);
+        params = new RelativeLayout.LayoutParams(300, 400);
+        params.leftMargin = 0;
+        params.topMargin = 0;
+        //layout.addView(iv,params);
+        layout.updateViewLayout(iv, params);
+
+        loopHandler.postDelayed(loopRunnable, 1000);
     }
 
     @Override
