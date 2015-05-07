@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,30 +8,48 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/my_colors_spinner"
-        android:layout_weight="1" />
-
-    <Spinner
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/other_colors_spinner"
-        android:layout_weight="1" />
+        android:layout_gravity="center_vertical"
+        android:layout_below="@+id/myColorSelect"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/myColorSelect"
+        android:layout_alignEnd="@+id/myColorSelect" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_send"
-        android:onClick="setColors" />
+        android:onClick="setColors"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/button" />
+
+    <Spinner
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/other_colors_spinner"
+        android:layout_gravity="center_vertical"
+        android:layout_below="@+id/otherColorSelect"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@+id/otherColorSelect"
+        android:layout_alignStart="@+id/otherColorSelect" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select my color"
-        android:id="@+id/myColorSelect" />
+        android:text="@string/otherTitle"
+        android:id="@+id/otherColorSelect"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select other color"
-        android:id="@+id/otherColorSelect" />
+        android:text="@string/myTitle"
+        android:id="@+id/myColorSelect"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-</LinearLayout>
+</RelativeLayout>

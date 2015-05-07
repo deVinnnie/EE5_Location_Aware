@@ -1,10 +1,12 @@
 package ee5.demo_color_mixer;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class DisplayColorActivity extends ActionBarActivity {
@@ -22,10 +24,14 @@ public class DisplayColorActivity extends ActionBarActivity {
         // Show selected colors as text. Later: set background color
         TextView myTextView = (TextView) findViewById(R.id.myTextView);
         TextView otherTextView = (TextView) findViewById(R.id.otherTextView);
-        //myTextView.setTextSize(40);
         myTextView.setText(myColor);
-        //otherTextView.setTextSize(40);
         otherTextView.setText(otherColor);
+
+        // Show my color as background
+        RelativeLayout background = (RelativeLayout) findViewById(R.id.myBackground);
+        BackgroundColor firstColor = BackgroundColor.RED;
+        background.setBackgroundColor(Color.argb(firstColor.getA(), firstColor.getR(), firstColor.getG(), firstColor.getB()));
+
     }
 
 

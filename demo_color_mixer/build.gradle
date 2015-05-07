@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "ee5.demo.color_mixer"
+        applicationId "ee5.demo_color_mixer"
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 1

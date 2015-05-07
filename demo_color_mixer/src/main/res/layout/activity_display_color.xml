@@ -4,7 +4,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="ee5.colormixer.DisplayColorActivity">
+    android:id="@+id/myBackground"
+    tools:context="ee5.demo_color_mixer.DisplayColorActivity" >
 
 
     <TextView
