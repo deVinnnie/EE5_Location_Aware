@@ -107,7 +107,7 @@ public class ImageManipulationsActivity extends Activity {
         btn_get.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rotate.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().distance2));
+                //rotate.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().distance2));
                 //tx_y1.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().ra));
 
             }

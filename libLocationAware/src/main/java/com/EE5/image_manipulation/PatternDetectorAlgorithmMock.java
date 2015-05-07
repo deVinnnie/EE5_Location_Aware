@@ -51,6 +51,11 @@ public class PatternDetectorAlgorithmMock implements PatternDetectorAlgorithmInt
         }
     }
 
+    @Override
+    public int getDistance() {
+        return 0;
+    }
+
     public enum MockMethod{
         STATIONARY,
         MOVING_UP_DOWN

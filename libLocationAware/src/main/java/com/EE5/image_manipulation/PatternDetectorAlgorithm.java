@@ -222,6 +222,11 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
 
     }
 
+    @Override
+    public int getDistance() {
+        return 0;
+    }
+
     private PatternCoordinator Cal_Pointnum(Point[] point, Point in_center){
         Point[] point_send = new Point[4];
         double dis=0;
@@ -450,6 +455,6 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
     }
 
     public int getDistance2(){
-        
+        return 0;
     }
 }
