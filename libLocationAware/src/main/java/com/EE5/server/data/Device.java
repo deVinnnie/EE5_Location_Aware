@@ -11,8 +11,11 @@ public class Device implements Serializable{
      * Unique ID to identify this phone among the other connected devices.
      */
     private String id;
+
+    /**
+     * Current position of the device.
+     */
     private Position position;
-    private PatternCoordinator pattern;
 
     public Device(){
         this.id = "001";
@@ -36,15 +39,6 @@ public class Device implements Serializable{
 
     public void setPosition(Position position) {
         this.position = position;
-    }
-
-    /** @deprecated */
-    public PatternCoordinator getPattern() {
-        return pattern;
-    }
-
-    public void setPattern(PatternCoordinator pattern) {
-        this.pattern = pattern;
     }
 
     @Override

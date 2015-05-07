@@ -15,7 +15,7 @@ public class DeviceList implements Serializable {
 
     public void addDevice(Device device) {
         list.put(device.getId(), device.getPosition());
-        pclist.put(device.getId(),device.getPattern());
+        //pclist.put(device.getId(),device.getPattern());
     }
 
     public void removeDevice(Device device) {
@@ -28,29 +28,16 @@ public class DeviceList implements Serializable {
         pclist.clear();
     }
 
-    /*public Iterator<Device> getIterator() {
-        return list.iterator();
-    }*/
-
     public Map<String, Position> getMap(){
         return this.list;
     }
+
+    /** @deprecated */
     public Map<String, PatternCoordinator> getPatternMap(){
         return this.pclist;
     }
 
-
-
     public boolean contains(Device device){
         return this.list.containsKey(device.getId());
     }
-
-    /*public boolean containsAll(Collection<Device> devices){
-        return this.list.containsAll(devices);
-    }*/
-
-    /*public Device get(){
-        this.list.
-
-    }*/
 }
