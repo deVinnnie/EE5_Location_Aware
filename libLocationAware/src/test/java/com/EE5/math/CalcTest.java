@@ -33,4 +33,23 @@ public class CalcTest  {
         assertEquals(0.0, point.getX());
         assertEquals(0.0, point.getY());
     }
+
+    @Test
+    public void testGetDistance(){
+        Point3D point1 = new Point3D(0,0,0);
+        Point3D point2;
+        double result;
+
+        point2 = new Point3D(1,0,0);
+        result = Calc.getDistance(point1, point2);
+        assertEquals(1.0, result);
+
+        point2 = new Point3D(0,1,0);
+        result = Calc.getDistance(point1, point2);
+        assertEquals(1.0, result);
+
+        point2 = new Point3D(0,0,1);
+        result = Calc.getDistance(point1, point2);
+        assertEquals(1.0, result);
+    }
 }

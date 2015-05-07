@@ -142,18 +142,44 @@ public class Calc {
      * @return Distance between position1 and position2
      */
     public static double getDistance(Position position1, Position position2){
+        double distance = Calc.getDistance(
+                new Point3D(position1.getX(), position1.getY(), position1.getHeight()),
+                new Point3D(position2.getX(), position2.getY(), position2.getHeight())
+
+        );
+        return distance;
+    }
+
+    /**
+     * Calculates the distance between two points.
+     * Uses formula for Euclidean distance in 3 dimensions:
+     * distance = √ ( (x2-x1)² + (y2-y1)² + (z2-z1)² )
+     *
+     * @param point1 First point
+     * @param point2 Second point
+     * @return Distance between point1 and point2
+     */
+    public static double getDistance(Point3D point1, Point3D point2){
         double distance = Math.sqrt(
                 Math.pow(
-                        (position1.getX()-position2.getX()),2
+                        (point1.getX()-point2.getX()),2
                 )
                 +
                 Math.pow(
-                        (position1.getY()-position2.getY()),2
+                        (point1.getY()-point2.getY()),2
                 )
                 +
                 Math.pow(
-                        (position1.getHeight()-position2.getHeight()),2
+                        (point1.getZ()-point2.getZ()),2
                 )
+        );
+        return distance;
+    }
+
+    public static double getDistance(double x1, double y1, double x2, double y2){
+        double distance = Calc.getDistance(
+                new Point3D(x1,y1,0),
+                new Point3D(x2,y2,0)
         );
         return distance;
     }
