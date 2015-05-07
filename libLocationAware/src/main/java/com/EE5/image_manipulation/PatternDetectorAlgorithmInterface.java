@@ -10,4 +10,5 @@ public interface PatternDetectorAlgorithmInterface {
      * @return Corner points and angle of the pattern.
      */
     public PatternCoordinator find(Mat rgba, Mat gray2);
+    public int getDistance();
 }

@@ -18,10 +18,10 @@ import java.util.List;
  * The official implementation of the algorithm.
  */
 public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterface{
-    double ra;
+    public double ra;
 
     int distance;
-    int distance2;
+    public int distance2;
     boolean setupflag;
 
     private Scalar orange = new Scalar(255, 120, 0);
@@ -447,5 +447,9 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             }
         }
         return patternContours;
+    }
+
+    public int getDistance2(){
+        
     }
 }

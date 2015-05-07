@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -102,13 +103,14 @@ public class ImageManipulationsActivity extends Activity {
         //iv.setVisibility(View.GONE);
 
         Button btn_get = (Button) findViewById(R.id.btn_get);
-        /*btn_get.setOnClickListener(new View.OnClickListener() {
+        btn_get.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 rotate.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().distance2));
-                tx_y1.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().ra));
+                //tx_y1.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().ra));
+
             }
-        });*/
+        });
 
         SeekBar my_bar = (SeekBar) findViewById(R.id.my_bar);
         /*my_bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
