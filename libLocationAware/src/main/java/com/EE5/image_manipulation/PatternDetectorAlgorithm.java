@@ -32,6 +32,8 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
     private Mat mIntermediateMat = new Mat();
 
     public PatternDetectorAlgorithm(){
+        distance2 = 0;
+        setupflag = false;
     }
 
 
@@ -82,17 +84,17 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
                 ra = Imgproc.contourArea(squ_out)/Imgproc.contourArea(squ_in);
                 if((ra>3)&(ra<7)){
                     setupflag = true;
-                    distance2 = distance2 + 5;
+                    distance2 = distance2 + 2;
                 }
                 else{
                     setupflag = false;
                 }
             }
 
-            if(distance2 > 500){
+            if(distance2 > 50){
                 distance2 = 0;
             }
-            distance2 = distance2 + 5;
+            distance2 = distance2 + 2;
             PatternCoordinator pc = new PatternCoordinator(
                     //Pattern in center.
                     new Point(320-50,240-50),
@@ -143,7 +145,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             //Outer
             Point a = new Point(NewMtx2.boundingRect().x, NewMtx2.boundingRect().y);
             Point b = new Point(NewMtx2.boundingRect().x + NewMtx2.boundingRect().width, NewMtx2.boundingRect().y + NewMtx2.boundingRect().height);
-            Core.rectangle(rgba, a, b, light_green, 3);
+            Core.rectangle(rgba, a, b, dark_blue, 3);
 
             Point out[] = new Point[4];
             //Point out_send[];// = new Point[4];
@@ -167,7 +169,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             //Inner
             Point a2 = new Point(NewMtx1.boundingRect().x, NewMtx1.boundingRect().y);
             Point b2 = new Point(NewMtx1.boundingRect().x + NewMtx1.boundingRect().width, NewMtx1.boundingRect().y + NewMtx1.boundingRect().height);
-            Core.rectangle(rgba, a2, b2, dark_blue,3);
+            Core.rectangle(rgba, a2, b2, light_green,3);
 
             double x1, x2, y1, y2;
             x1 = innerCenter.x;
@@ -195,8 +197,10 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
 
             String kk = "k is (" + String.valueOf(k) + ")";
             Core.putText(rgba, kk, new Point(50, 400), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+            String dis = "the distance2 is "+ String.valueOf(distance2) +" )";
+            Core.putText(rgba, dis, new Point(50, 350), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
             String angle = "rotate angle is (" + String.valueOf(finalangle) + ")";
-            Core.putText(rgba, angle, new Point(50, 500), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+            Core.putText(rgba, angle, new Point(50, 450), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
 
             //Core.putText(image, String.valueOf(pContour.size()), new Point(50, 550), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
             //Core.putText(image, String.valueOf(innerCenter.x)+" "+innerCenter.y, new Point(50, 600), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
@@ -280,7 +284,10 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         while(each_con.hasNext()){
             MatOfPoint contours = each_con.next();
             out_rect = Imgproc.boundingRect(contours);
-            if(Math.abs(out_rect.height - out_rect.width) < 10){
+
+            if((Math.abs(out_rect.height - out_rect.width) < 10)){
+                   // &(1.5>(out_rect.area()/Imgproc.contourArea(contours)))
+                   // &(0.75<(out_rect.area()/Imgproc.contourArea(contours)))
                 squareContours.add(contours);
             }
         }
