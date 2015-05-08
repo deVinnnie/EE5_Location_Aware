@@ -12,5 +12,6 @@ public interface PatternDetectorAlgorithmInterface {
     public PatternCoordinator find(Mat rgba, Mat gray2);
     public int getDistance();
     public void setDistance(int dis);
+    public void setDistance2(int dis);
     public void setSetupflag(boolean flag);
 }

@@ -109,6 +109,7 @@ public class ImageManipulationsActivity extends Activity {
                 //rotate.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().getDistance()));
                 //tx_y1.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().ra));
                 patternDetector.getPatternDetectorAlgorithm().setSetupflag(false);
+                patternDetector.getPatternDetectorAlgorithm().setDistance2(0);
             }
         });
 

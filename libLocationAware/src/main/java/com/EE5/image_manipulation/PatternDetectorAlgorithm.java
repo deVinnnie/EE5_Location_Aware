@@ -85,13 +85,25 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             if (pContour.size() == 2) {
                 squ_out = pContour.get(1);
                 squ_in = pContour.get(0);
-                double size_out = Imgproc.contourArea(squ_out);
-                double size_in = Imgproc.contourArea(squ_in);
+                RotatedRect rot_re_out = new RotatedRect();
+                RotatedRect rot_re_in = new RotatedRect();
+                MatOfPoint2f mp2f_out = new MatOfPoint2f();
+                MatOfPoint2f mp2f_in = new MatOfPoint2f();
+                mp2f_in = new MatOfPoint2f(squ_in.toArray());
+                mp2f_out = new MatOfPoint2f(squ_out.toArray());
+                rot_re_out = Imgproc.minAreaRect(mp2f_out);
+                rot_re_in = Imgproc.minAreaRect(mp2f_in);
+
+                double size_out = rot_re_out.size.area();
+                double size_in = rot_re_in.size.area();
                 ra = size_out/size_in;
-                if((ra>3)&&(ra<7)){
+                if((ra>4)&&(ra<16)){
                     ii++;
-                    setupflag = true;
-                    distance2 = distance2 + 4;
+                    if(ii == 3) {
+                        setupflag = true;
+                        distance2 = distance2 + 4;
+                        ii = 0;
+                    }
                 }
                 else{
                     setupflag = false;
@@ -466,7 +478,9 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
     public void setDistance(int dis){
         distance = dis;
     }
-
+    public void setDistance2(int dis){
+        distance2 = dis;
+    }
     public void setSetupflag(boolean flag){
         setupflag = flag;
     }
