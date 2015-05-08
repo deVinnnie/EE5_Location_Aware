@@ -276,7 +276,7 @@ public class ImageManipulationsActivity extends Activity {
         Bitmap bitmap = Bitmap.createBitmap(this.patternDetector.image.cols(), this.patternDetector.image.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(this.patternDetector.image, bitmap, true);
         iv.setImageBitmap(bitmap);
-        tx_x2.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().getDistance()));
+        tx_x2.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().getDistance2()));
 
     }
 

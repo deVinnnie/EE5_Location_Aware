@@ -471,10 +471,9 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         return patternContours;
     }
 
-    public int getDistance(){
+    public int getDistance2(){
         return distance2;
     }
-
     public void setDistance(int dis){
         distance = dis;
     }

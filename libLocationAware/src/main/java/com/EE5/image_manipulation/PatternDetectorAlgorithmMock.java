@@ -51,7 +51,7 @@ public class PatternDetectorAlgorithmMock implements PatternDetectorAlgorithmInt
         }
     }
 
-    public int getDistance(){
+    public int getDistance2(){
         return 0;
     }
 
