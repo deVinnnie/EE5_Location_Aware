@@ -106,9 +106,9 @@ public class ImageManipulationsActivity extends Activity {
         btn_get.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rotate.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().getDistance()));
+                //rotate.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().getDistance()));
                 //tx_y1.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().ra));
-
+                patternDetector.getPatternDetectorAlgorithm().setSetupflag(false);
             }
         });
 
@@ -127,6 +127,7 @@ public class ImageManipulationsActivity extends Activity {
                 int distance = seekBar.getProgress();
                 patternDetector.getPatternDetectorAlgorithm().setDistance(distance);
                 tx_y2.setText(String.valueOf(distance));
+
                 //Due to complications (See PatternDetectorInterface) some variables cannot be directly accessed anymore.
             }
         });
@@ -274,6 +275,8 @@ public class ImageManipulationsActivity extends Activity {
         Bitmap bitmap = Bitmap.createBitmap(this.patternDetector.image.cols(), this.patternDetector.image.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(this.patternDetector.image, bitmap, true);
         iv.setImageBitmap(bitmap);
+        tx_x2.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().getDistance()));
+
     }
 
     /**

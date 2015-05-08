@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.EE5.server.Server;
 import com.EE5.server.data.Position;
+import com.EE5.util.GlobalResources;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

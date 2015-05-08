@@ -72,7 +72,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         MatOfPoint squ_in  = new MatOfPoint();
         MatOfPoint squ_out = new MatOfPoint();
 
-        if(setupflag == true)
+        if(setupflag == false)
         {
             //Filter contours with the wrong size.
             con_in_range = getContoursBySize(distance2, contour);
@@ -85,7 +85,9 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             if (pContour.size() == 2) {
                 squ_out = pContour.get(1);
                 squ_in = pContour.get(0);
-                ra = Imgproc.contourArea(squ_out)/Imgproc.contourArea(squ_in);
+                double size_out = Imgproc.contourArea(squ_out);
+                double size_in = Imgproc.contourArea(squ_in);
+                ra = size_out/size_in;
                 if((ra>3)&&(ra<7)){
                     ii++;
                     setupflag = true;
@@ -111,7 +113,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             return pc;
         }
         else {
-            con_in_range = getContoursBySize(distance, contour);
+            con_in_range = getContoursBySize(distance2, contour);
             squareContours = getContoursSquare2(con_in_range);
             pContour = findPattern(squareContours);
 
@@ -130,6 +132,9 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
                 appo2 = new MatOfPoint2f(pContour.get(1).toArray());
                 NewMtx2 = Imgproc.minAreaRect(appo2);
                 outterCenter = NewMtx2.center;
+            }
+            else{
+                //setupflag = false;
             }
 
             List<MatOfPoint> appro_con = new ArrayList<MatOfPoint>();
@@ -272,7 +277,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         Iterator<MatOfPoint> each = contour.iterator();
         while (each.hasNext()) {
             MatOfPoint contours = each.next();
-            if ((Imgproc.contourArea(contours) < dis * 600) & (Imgproc.contourArea(contours) > dis * 20)) {
+            if ((Imgproc.contourArea(contours) < dis * 600) & (Imgproc.contourArea(contours) > dis * 10)) {
                 con_in_range.add(contours);
             }
         }
@@ -462,4 +467,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         distance = dis;
     }
 
+    public void setSetupflag(boolean flag){
+        setupflag = flag;
+    }
 }

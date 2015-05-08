@@ -5,6 +5,7 @@ import android.util.Log;
 import com.EE5.server.Server;
 import com.EE5.server.data.Device;
 import com.EE5.server.data.DeviceList;
+import com.EE5.util.GlobalResources;
 
 import java.io.IOException;
 import java.io.InputStream;
