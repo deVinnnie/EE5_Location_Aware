@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterface{
     public double ra;
-
+    public int ii;
     int distance;
     public int distance2;
     boolean setupflag;
@@ -34,6 +34,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
     public PatternDetectorAlgorithm(){
         distance2 = 0;
         setupflag = false;
+        ii = 0;
     }
 
 
@@ -71,20 +72,22 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         MatOfPoint squ_in  = new MatOfPoint();
         MatOfPoint squ_out = new MatOfPoint();
 
-        if(setupflag == false) {
+        if(setupflag == true) {
             //Filter contours with the wrong size.
             con_in_range = getContoursBySize(distance2, contour);
             //Filter out non square contours.
             squareContours = getContoursSquare2(con_in_range);
             //Find the right contour for the pattern.
             pContour = findPattern(squareContours);
+            Imgproc.drawContours(rgba, squareContours, -1, orange, 4);
             if (pContour.size() == 2) {
                 squ_out = pContour.get(1);
                 squ_in = pContour.get(0);
                 ra = Imgproc.contourArea(squ_out)/Imgproc.contourArea(squ_in);
                 if((ra>3)&(ra<7)){
+                    ii++;
                     setupflag = true;
-                    distance2 = distance2 + 2;
+                    distance2 = distance2 + 4;
                 }
                 else{
                     setupflag = false;
@@ -106,7 +109,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             return pc;
         }
         else {
-            con_in_range = getContoursBySize(distance2, contour);
+            con_in_range = getContoursBySize(distance, contour);
             squareContours = getContoursSquare2(con_in_range);
             pContour = findPattern(squareContours);
 
@@ -286,8 +289,8 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             out_rect = Imgproc.boundingRect(contours);
 
             if((Math.abs(out_rect.height - out_rect.width) < 10)){
-                   // &(1.5>(out_rect.area()/Imgproc.contourArea(contours)))
-                   // &(0.75<(out_rect.area()/Imgproc.contourArea(contours)))
+                    //&(3>(out_rect.area()/Imgproc.contourArea(contours)))
+                    //&(0.75<(out_rect.area()/Imgproc.contourArea(contours)))){
                 squareContours.add(contours);
             }
         }
@@ -438,7 +441,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
                 MatOfPoint con2 = iter2.next();
                 Point center2 = getShapeCenter(con2);
                 double dis_this = Math.abs(center1.x-center2.x)+Math.abs(center1.y-center2.y);
-                if((dis_this < distance)&(dis_this>0)){
+                if((dis_this < distance)&(dis_this>0)){//&(dis_this<70)){
                     distance = dis_this;
                     patternContours.clear();
                     patternContours.add(con1);
@@ -449,7 +452,12 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         return patternContours;
     }
 
-    public int getDistance2(){
-        
+    public int getDistance(){
+        return distance2;
     }
+
+    public void setDistance(int dis){
+        distance = dis;
+    }
+
 }
