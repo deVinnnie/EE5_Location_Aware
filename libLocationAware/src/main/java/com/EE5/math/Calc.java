@@ -50,13 +50,18 @@ public class Calc {
      */
      public Calc(double size, double width, double height) {
          this(); //Call Default Constructor.
-
+         /** the height value is 640 and the width value is 480
+             the height is bigger then the width**/
          this.size = size;
 
-         this.xB = width;
-         this.yC = height;
-         this.xD = width;
-         this.yD = height;
+         //this.xB = width;
+         this.xB = 480;
+         //this.yC = height;
+         this.yC = 640;
+         //this.xD = width;
+         this.xD = 480;
+         //this.yD = height;
+         this.yD = 640;
     }
 
     /**

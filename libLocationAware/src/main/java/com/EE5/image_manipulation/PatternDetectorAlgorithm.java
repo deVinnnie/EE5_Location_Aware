@@ -72,7 +72,8 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         MatOfPoint squ_in  = new MatOfPoint();
         MatOfPoint squ_out = new MatOfPoint();
 
-        if(setupflag == true) {
+        if(setupflag == true)
+        {
             //Filter contours with the wrong size.
             con_in_range = getContoursBySize(distance2, contour);
             //Filter out non square contours.
@@ -80,11 +81,12 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             //Find the right contour for the pattern.
             pContour = findPattern(squareContours);
             Imgproc.drawContours(rgba, squareContours, -1, orange, 4);
+            /** tot hier werkt het goed **/
             if (pContour.size() == 2) {
                 squ_out = pContour.get(1);
                 squ_in = pContour.get(0);
                 ra = Imgproc.contourArea(squ_out)/Imgproc.contourArea(squ_in);
-                if((ra>3)&(ra<7)){
+                if((ra>3)&&(ra<7)){
                     ii++;
                     setupflag = true;
                     distance2 = distance2 + 4;

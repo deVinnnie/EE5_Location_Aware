@@ -1,5 +1,7 @@
 package com.mygdx.game.android;
 
+import android.util.Log;
+
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -24,7 +26,7 @@ public class Game extends ApplicationAdapter {
     {
         calc = new Calculator();
         calc.x1 = 0; calc.y1 = 0;
-        //calc.x2 = -100; calc.y2 = -173 ;
+        calc.x2 = 0; calc.y2 = 0;
         calc.rotation = 90;
         batch = new SpriteBatch();
         img = new Texture("arrow.png");
@@ -32,7 +34,7 @@ public class Game extends ApplicationAdapter {
         sprite.setPosition(Gdx.graphics.getWidth() / 2 - sprite.getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - sprite.getHeight() / 2);
         sprite.setOriginCenter();
-        sprite.setScale(1,1);
+        sprite.setScale(0.5f,0.5f);
         font = new BitmapFont();
 
         //Some code to use a 'fake', in other words simulated, pattern detection.
@@ -52,11 +54,12 @@ public class Game extends ApplicationAdapter {
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
         calc.x1 = ownPosition.getX();
         calc.y1 = ownPosition.getY();
-
+        Log.d("arrows","Own postion " + calc.x1 + " " + calc.y1 );
         //Iterate over other devices.
         for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
             calc.x2 = entry.getValue().getX();
             calc.y2 = entry.getValue().getY();
+            Log.d("arrows","Own postion " + calc.x2 + " " + calc.y2 );
             break; //Only read the position of the first device.
         }
 

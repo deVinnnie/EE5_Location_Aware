@@ -187,7 +187,8 @@ public class ImageManipulationsActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
         if(isFinishing() && this.patternDetector != null) {
-            this.patternDetector.destroy();
+            //this.patternDetector.destroy();
+            Log.d("destroy","destroy");
         }
     }
 
