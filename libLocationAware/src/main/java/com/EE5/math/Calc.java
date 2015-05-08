@@ -16,14 +16,15 @@ public class Calc {
     double xA,xB,xC,xD;
     double yA,yB,yC,yD;
 
+
     /**
      * The vertical distance between the camera and the pattern.
      */
     double distance;
 
-    double length;//the length that cemaral captured
+    double length;//the length that cemara captured
 
-    double wide;//the wide that cameral captured
+    double wide;//the wide that camera captured
 
     /**
      * The real life size of the pattern in cm.
@@ -62,6 +63,10 @@ public class Calc {
          this.xD = 480;
          //this.yD = height;
          this.yD = 640;
+         this.xA = 0;
+         this.ya = 0;
+         this.xC = 0;
+         this.yB = 0;
     }
 
     /**

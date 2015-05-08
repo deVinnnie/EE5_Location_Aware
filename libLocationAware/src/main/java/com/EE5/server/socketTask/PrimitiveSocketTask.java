@@ -92,6 +92,11 @@ public class PrimitiveSocketTask extends SocketTask {
 
                 Position position = new Position(x, y, rotation,z);
                 this.getServer().getDevices().getMap().put(uuid,position);
+                GlobalResources.getInstance().getDevices().getMap().put(
+                        uuid,
+                        position
+                );
+
                 //Iterate over all devices and send the stored position over the current connection.
                 for (Map.Entry<String, Position> entry : this.getServer().getDevices().getMap().entrySet())
                 {

@@ -53,6 +53,8 @@ public class ObjectSocketTask extends SocketTask{
             Log.i("Server", "[ OK ] ObjectStreams Created.");
 
             DeviceList devices = this.getServer().getDevices();
+            GlobalResources.getInstance().setDevices(devices);
+
             //Keep reading from socket.
             while(true){
                 Device device = (Device) oInputStream.readObject(); //Will block until it has received a new object.
