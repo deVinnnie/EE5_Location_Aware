@@ -21,13 +21,12 @@ public class AndroidLauncher extends AndroidApplication {
         initialize(new Game(), config);
     }
 
+    // For an overview of when and which events are called see:
+    // http://www.tutorialspoint.com/android/android_acitivities.htm
+    //<editor-fold desc="Android Activity Lifecycle Events">
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
-        if(patternDetector != null) {
-            patternDetector.destroy();
-        }
     }
 
     @Override
@@ -47,4 +46,5 @@ public class AndroidLauncher extends AndroidApplication {
             patternDetector.setup();
         }
     }
+    //</editor-fold>
 }

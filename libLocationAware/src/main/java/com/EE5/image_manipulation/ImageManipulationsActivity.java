@@ -41,6 +41,13 @@ import java.util.Map;
 
 
 public class ImageManipulationsActivity extends Activity {
+
+    /**
+     * The code in onManagerConnected is called after the OpenCV stuff has loaded.
+     * If you try this for instance in the onCreate method it will fail and you won't have a clue as to why it did so.
+     * This is because OpenCV components (even simple things like the Mat class) are used
+     * before the library is loaded it will throw an exception.
+     */
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
@@ -48,11 +55,10 @@ public class ImageManipulationsActivity extends Activity {
                 case LoaderCallbackInterface.SUCCESS: {
                     Log.i("OpenCV", "OpenCV loaded successfully");
                     if(GlobalResources.getInstance().getPatternDetector() == null) {
+                        //Only Execute this code if a PatternDetector already exists from a previous run.
+                        setupPatternDetector();
                         setupCamera(); //Retrieve camera WITHOUT CameraBridgeViewBase and JavaImageView
                     }
-
-                    //As information: This block of code is called after the OpenCV stuff has loaded.
-                    //If you try this for instance in the onCreate method it will fail and you won't have a clue as to why it did so.
                 }
                 break;
                 default: {
@@ -134,7 +140,11 @@ public class ImageManipulationsActivity extends Activity {
         });
     }
 
-    private void setupCamera(){
+    /**
+     * Makes a new PatternDetector instance and saves it to GlobalResources.
+     * Doesn't start the camera.
+     */
+    private void setupPatternDetector(){
         try {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             double pattern_width = Double.parseDouble(sharedPref.getString("pattern_size", "11.75")); //Second param is default value.
@@ -160,8 +170,6 @@ public class ImageManipulationsActivity extends Activity {
             this.patternDetector = new PatternDetector(cameraSelection);
             this.patternDetector.setHandler(this.handler);
             this.patternDetector.setCalc(calc);
-            this.patternDetector.setup();
-            this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
             GlobalResources.getInstance().setPatternDetector(this.patternDetector);
         }
         catch(RuntimeException ex){
@@ -170,10 +178,21 @@ public class ImageManipulationsActivity extends Activity {
         }
     }
 
+    private void setupCamera(){
+        this.patternDetector.setup();
+        this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
+    }
+
+    // For an overview of when and which events are called see:
+    // http://www.tutorialspoint.com/android/android_acitivities.htm
+    //<editor-fold desc="Android Activity Lifecycle Events">
     @Override
     public void onPause() {
         super.onPause();
-        //this.patternDetector.destroy();
+        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        if(patternDetector != null) {
+            patternDetector.destroy();
+        }
     }
 
     @Override
@@ -182,17 +201,21 @@ public class ImageManipulationsActivity extends Activity {
         PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
         if(patternDetector != null) {
             //patternDetector.getPatternDetectorAlgorithm().distance2 = 0;
+            patternDetector.setup();
         }
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this, mLoaderCallback);
     }
 
     public void onDestroy() {
         super.onDestroy();
-        if(isFinishing() && this.patternDetector != null) {
+        /*if(isFinishing() && this.patternDetector != null) {
             //this.patternDetector.destroy();
             Log.d("destroy","destroy");
-        }
+        }*/
+        //'patternDetector.destroy()' is not called here because onDestroy() is called after onPause().
+        //The destroy method is already called in onPause()
     }
+    //</editor-fold>
 
     //<editor-fold desc="Options">
     @Override
