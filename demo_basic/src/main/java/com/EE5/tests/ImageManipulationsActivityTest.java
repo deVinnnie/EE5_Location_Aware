@@ -30,6 +30,7 @@ public class ImageManipulationsActivityTest extends ActivityUnitTestCase<ImageMa
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
+        this.activity.onPause();
     }
 
     @SmallTest
