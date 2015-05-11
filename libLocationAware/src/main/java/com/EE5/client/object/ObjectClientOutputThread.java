@@ -5,6 +5,7 @@ import android.util.Log;
 import com.EE5.client.AbstractClientOutputThread;
 import com.EE5.client.Client;
 import com.EE5.client.LatencyTest;
+import com.EE5.util.GlobalResources;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -40,7 +41,8 @@ public class ObjectClientOutputThread extends AbstractClientOutputThread {
                 // the result is that when writing the same (updated) object multiple times,
                 // the old version is used.
                 oos.writeObject(this.getDevice());
-                oos.writeObject(this.getCustomData());
+                String data = GlobalResources.getInstance().getData();
+                oos.writeObject(data);
                 oos.flush();
 
                 synchronized (this) {

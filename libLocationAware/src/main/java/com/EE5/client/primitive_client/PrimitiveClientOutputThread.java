@@ -5,6 +5,7 @@ import android.util.Log;
 import com.EE5.client.AbstractClientOutputThread;
 import com.EE5.client.Client;
 import com.EE5.client.LatencyTest;
+import com.EE5.util.GlobalResources;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -45,7 +46,8 @@ public class PrimitiveClientOutputThread extends AbstractClientOutputThread{
                 od.writeDouble(this.getDevice().getPosition().getY());
                 od.writeDouble(this.getDevice().getPosition().getHeight());
                 od.writeDouble(this.getDevice().getPosition().getRotation());
-                od.writeUTF(this.getCustomData());
+                String data = GlobalResources.getInstance().getData();
+                od.writeUTF(data);
 
                 /*od.writeDouble(this.getDevice().getPattern().getNum1().x);
                 od.writeDouble(this.getDevice().getPattern().getNum1().y);
