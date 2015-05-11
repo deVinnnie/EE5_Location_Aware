@@ -1,14 +1,9 @@
-include ':openCVLibrary2410', ':demo_height_sound', ':demo_busstop', ':demo_busstop', ':desktop', ':html', ':ios', ':android', ':core'
+include ':openCVLibrary2410'
 include ':libLocationAware'
+include ':libgdx-core'
+include ':demo_height_sound'
 include ':demo_basic'
 include ':demo_arrows'
-include ':libgdx-core'
 include ':demo_parachute'
 include ':demo_color_mixer'
-include ':demo_busstopr'
-/*
-project(':desktop').projectDir = new File('demo_busstop/desktop')
-project(':html').projectDir = new File('demo_busstop/html')
-project(':ios').projectDir = new File('demo_busstop/ios')
-project(':android').projectDir = new File('demo_busstop/android')
-project(':core').projectDir = new File('demo_busstop/core')*/
+include ':demo_busstop'
