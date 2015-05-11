@@ -67,4 +67,16 @@ public class PatternCoordinator implements Serializable{
     public void setAngle(double angle) {
         this.angle = angle;
     }
+
+    @Override
+    public String toString(){
+        String string = "\n";
+        string += "("+ this.getNum1().x  + "," + this.getNum1().y + ")\n";
+        string += "("+ this.getNum2().x  + "," + this.getNum2().y + ")\n";
+        string += "("+ this.getNum3().x  + "," + this.getNum3().y + ")\n";
+        string += "("+ this.getNum4().x  + "," + this.getNum4().y + ")\n";
+        string += "("+ this.getAngle() + ")\n";
+        return string;
+
+    }
 }

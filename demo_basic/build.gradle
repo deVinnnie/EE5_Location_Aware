@@ -10,6 +10,9 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        testApplicationId "com.EE5.tests"
+        testInstrumentationRunner "com.EE5.tests.OpenCVTestRunner"
+        //testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
     buildTypes {
         release {

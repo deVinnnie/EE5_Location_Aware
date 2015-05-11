@@ -43,6 +43,11 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
      *
      * <img src="./doc-files/PatternDetection_01.png" alt="Pattern Detection 01"/>
      *
+     * The figure below shows the order in which the corner points of the pattern are defined.
+     * Point 1 is near the inner square. Then moving in the clockwise direction you find point 2, 3 and 4.
+     *
+     * <img src="./doc-files/Pattern_Point_Naming_Convention.png" alt="Naming Convention for Points of Pattern"/>
+     *
      * (Uses bitwise operators instead of logical operators. Bitwise is marginally faster.)
      *
      * @param rgba Color image

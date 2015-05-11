@@ -42,6 +42,8 @@ import java.util.Map;
 
 public class ImageManipulationsActivity extends Activity {
 
+
+    public boolean OpenCVReady;
     /**
      * The code in onManagerConnected is called after the OpenCV stuff has loaded.
      * If you try this for instance in the onCreate method it will fail and you won't have a clue as to why it did so.
@@ -53,21 +55,30 @@ public class ImageManipulationsActivity extends Activity {
         public void onManagerConnected(int status) {
             switch (status) {
                 case LoaderCallbackInterface.SUCCESS: {
-                    Log.i("OpenCV", "OpenCV loaded successfully");
-                    if(GlobalResources.getInstance().getPatternDetector() == null) {
-                        //Only Execute this code if a PatternDetector already exists from a previous run.
-                        setupPatternDetector();
-                        setupCamera(); //Retrieve camera WITHOUT CameraBridgeViewBase and JavaImageView
+                    onOpenCVSuccessLoad();
+                    synchronized (ImageManipulationsActivity.this){
+                        ImageManipulationsActivity.this.notify();
                     }
                 }
                 break;
                 default: {
+                    Log.i("OpenCV", "OpenCV did not load correctly");
                     super.onManagerConnected(status);
                 }
                 break;
             }
         }
     };
+
+    private void onOpenCVSuccessLoad(){
+        Log.i("OpenCV", "OpenCV loaded successfully");
+        if(GlobalResources.getInstance().getPatternDetector() == null) {
+            //Only Execute this code if a PatternDetector already exists from a previous run.
+            setupPatternDetector();
+            setupCamera(); //Retrieve camera WITHOUT CameraBridgeViewBase and JavaImageView
+        }
+        this.OpenCVReady = true;
+    }
 
     private TextView tx_x1;
     private TextView tx_x2;
@@ -203,7 +214,18 @@ public class ImageManipulationsActivity extends Activity {
             //patternDetector.getPatternDetectorAlgorithm().distance2 = 0;
             patternDetector.setup();
         }
+
+        Log.i("OpenCV", "OpenCV loading");
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this, mLoaderCallback);
+
+        synchronized (this) {
+            try {
+                this.wait(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public void onDestroy() {
