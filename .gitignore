@@ -27,4 +27,4 @@ proguard/
 
 /.idea/*
 *.iml
-demo_busstop/src/com/castoryan/game/android/MyLauncher.java
+/openCVLibrary2410/.idea/*
