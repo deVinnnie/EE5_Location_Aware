@@ -23,9 +23,15 @@ public class Game extends ApplicationAdapter {
     public void create ()
     {
         calc = new Calculator();
+<<<<<<< HEAD
         calc.x1 = 0; calc.y1 = 0;
         //calc.x2 = -100; calc.y2 = -173 ;
         calc.rotation = 90;
+=======
+        //calc.x1 = 0; calc.y1 = 0;
+        //calc.x2 = 0; calc.y2 = 0;
+        //calc.rotation = 90;
+>>>>>>> arrows
         batch = new SpriteBatch();
         img = new Texture("arrow.png");
         sprite = new Sprite(img);
@@ -50,23 +56,28 @@ public class Game extends ApplicationAdapter {
         sprite.draw(batch);
 
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
-        calc.x1 = ownPosition.getX();
-        calc.y1 = ownPosition.getY();
 
+        calc.x1 = ownPosition.getX();//* Math.cos(Math.toRadians(ownPosition.getRotation()))- ownPosition.getY()*Math.sin(Math.toRadians(ownPosition.getRotation()));
+        calc.y1 = ownPosition.getY();//* Math.cos(Math.toRadians(ownPosition.getRotation()))+ ownPosition.getX()*Math.sin(Math.toRadians(ownPosition.getRotation()));
+        //Log.d("arrows","Own postion " + calc.x1 + " " + calc.y1 );
         //Iterate over other devices.
         for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
+            //calc.x2 = entry.getValue().getX()* Math.cos(Math.toRadians(entry.getValue().getRotation()))- entry.getValue().getY()*Math.sin(Math.toRadians(entry.getValue().getRotation()));
             calc.x2 = entry.getValue().getX();
+            //calc.y2 =entry.getValue().getY()* Math.cos(Math.toRadians( entry.getValue().getRotation()))+  entry.getValue().getX()*Math.sin(Math.toRadians( entry.getValue().getRotation()));
             calc.y2 = entry.getValue().getY();
+            //Log.d("arrows","Own postion " + calc.x2 + " " + calc.y2 );
             break; //Only read the position of the first device.
         }
 
         calc.rotation = ownPosition.getRotation();
+        //Log.d("arrows",""+ calc.rotation);
         int angle = (int) calc.calcAngle();
         sprite.setRotation(angle);
         //batch.draw(img, 0, 0);
 
         //Draw Current Device Position.
-        String position = "("+ownPosition.getX() + ", " + ownPosition.getY()+")";
+        String position = "("+Math.round(ownPosition.getX()) + ", " + Math.round(ownPosition.getY())+")" +  " " + ownPosition.getRotation() + "°";
         font.draw(batch, position, 50, 50);
 
         batch.end();
