@@ -1,5 +1,7 @@
 package com.EE5.math;
 
+import android.util.Log;
+
 import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.server.data.Position;
 import com.EE5.util.Point3D;
@@ -88,7 +90,7 @@ public class Calc {
         this.yc = pattern.getNum3().y;
         this.xd = pattern.getNum4().x;
         this.yd = pattern.getNum4().y;
-
+        Log.d("kutzooi"," A "+ xa + " " + ya +" B "+ xb + " " + yb +" C "+ xc + " " + yc +" D "+ xd + " " + yd);
         //Start with calculations.
         double phix=(40.876*Math.PI)/180;
         double phiy=(52.999*Math.PI)/180;
@@ -113,6 +115,11 @@ public class Calc {
         //Z=(Z1+Z2)/2;
         Z1=1/((2*Math.tan(phix/2))/fovx);
         Z2=1/((2*Math.tan(phiy/2))/fovy);
+        /** when rotated, the picture width and hight of the image changes,
+            also the position of the pattern changes when the angle changes **/
+        //list += "new x:"+df.format(position.getX()* Math.cos(Math.toRadians(position.getRotation()))- position.getY()*Math.sin(Math.toRadians(position.getRotation())));
+        //list+="\n";
+        //list += "new y:"+df.format(position.getY()* Math.cos(Math.toRadians(position.getRotation()))+ position.getX()*Math.sin(Math.toRadians(position.getRotation())));
         X=fovx/480*(xe-xE);
         Y=fovy/640*(ye-yE);
         //Y=Math.sqrt(Math.pow(xe-xE,2)+Math.pow(ye-yE,2));

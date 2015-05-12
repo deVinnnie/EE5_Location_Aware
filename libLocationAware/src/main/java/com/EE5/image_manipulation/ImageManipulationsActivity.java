@@ -345,7 +345,10 @@ public class ImageManipulationsActivity extends Activity {
 
                 list += "x:"+df.format(position.getX())+"; y:" + df.format(position.getY()) +"; z:" + df.format(position.getHeight()) + "; rot:" + df.format(position.getRotation());
                 list+="\n";
-
+                list += "new x:"+df.format(position.getX()* Math.cos(Math.toRadians(position.getRotation()))- position.getY()*Math.sin(Math.toRadians(position.getRotation())));
+                list+="\n";
+                list += "new y:"+df.format(position.getY()* Math.cos(Math.toRadians(position.getRotation()))+ position.getX()*Math.sin(Math.toRadians(position.getRotation())));
+                list+="\n";
                 double distance = Calc.getDistance(position, devicePosition);
                 list+="distance="+distance+"\n";
             }
