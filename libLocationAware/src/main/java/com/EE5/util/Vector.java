@@ -40,4 +40,7 @@ public class Vector {
         return dotProduct;
     }
 
+    public double crossProduct(Vector vector2){
+        return (this.getX()*vector2.getY() - this.getY()*vector2.getX());
+    }
 }

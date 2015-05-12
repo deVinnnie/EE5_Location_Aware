@@ -2,6 +2,9 @@ package com.EE5.math;
 
 import com.EE5.BuildConfig;
 import com.EE5.image_manipulation.PatternCoordinator;
+import com.EE5.server.data.Position;
+import com.EE5.util.GlobalResources;
+import com.EE5.util.Point2D;
 import com.EE5.util.Point3D;
 
 import org.junit.Test;
@@ -38,6 +41,7 @@ public class CalcTest  {
     }
 
     //<editor-fold desc="Test pattern in image centre (x,y = 0,0) with rotation">
+    //TODO: Set rotation using corner points.
     @Test
     public void testPatternInCentreWithRotation_45_Degrees(){
         Calc calc = new Calc(10,480,640);
@@ -243,6 +247,109 @@ public class CalcTest  {
 
     //</editor-fold>
 
+    //<editor-fold desc="Pattern Coordinate System to Device Centred Coordinate System">
+    @Test
+    public void testCoordinateTranslation_Not_Angled_1(){
+        Calc calc = new Calc(10,480,640);
+        Position ownPosition = new Position(
+                20.0,
+                20.0,
+                0.0,
+                10.0
+        );
+
+        Position otherPosition = new Position(
+            -10.0,
+            50,
+            0.0,
+            10.0
+        );
+
+        GlobalResources.getInstance().getDevice().setPosition(ownPosition);
+
+        Point2D expectedPoint = new Point2D(30,-30);
+        Point2D actualPoint = calc.convertToDeviceCentredCoordinates(otherPosition);
+
+        assertEquals(expectedPoint.getX(),actualPoint.getX());
+        assertEquals(expectedPoint.getY(),actualPoint.getY());
+    }
+
+    @Test
+    public void testCoordinateTranslation_PointInPatternOrigin_and_Minus45Degrees(){
+        Calc calc = new Calc(10,480,640);
+        //Y direction = Line through Origin and OwnPosition.
+        Position ownPosition = new Position(
+                20.0,
+                20.0,
+                -45.0,
+                10.0
+        );
+
+        Position otherPosition = new Position(
+                0.0,0.0, 0.0, 0.0
+        );
+
+        GlobalResources.getInstance().getDevice().setPosition(ownPosition);
+
+        double distance = Math.sqrt(20*20*2);
+        Point2D expectedPoint = new Point2D(0.0, -distance);
+        Point2D actualPoint = calc.convertToDeviceCentredCoordinates(otherPosition);
+
+        assertEquals(expectedPoint.getX(),actualPoint.getX(), 0.001);
+        assertEquals(expectedPoint.getY(),actualPoint.getY(), 0.001);
+    }
+
+    @Test
+    public void testCoordinateTranslation_PointInPatternOrigin_and_45Degrees(){
+        Calc calc = new Calc(10,480,640);
+        //Y direction = Line through Origin and OwnPosition.
+        Position ownPosition = new Position(
+                20.0,
+                -20.0,
+                45.0,
+                10.0
+        );
+
+        Position otherPosition = new Position(
+                0.0,0.0, 0.0, 0.0
+        );
+
+        GlobalResources.getInstance().getDevice().setPosition(ownPosition);
+
+        double distance = Math.sqrt(20*20*2);
+        Point2D expectedPoint = new Point2D(0.0, -distance);
+        Point2D actualPoint = calc.convertToDeviceCentredCoordinates(otherPosition);
+
+        assertEquals(expectedPoint.getX(),actualPoint.getX(), 0.001);
+        assertEquals(expectedPoint.getY(),actualPoint.getY(), 0.001);
+    }
+
+    @Test
+    public void testCoordinateTranslation_Rotation_Larger_Than_90_Degrees(){
+        Calc calc = new Calc(10,480,640);
+        //Y direction = Line through Origin and OwnPosition.
+        Position ownPosition = new Position(
+                20.0,
+                -20.0,
+                135.0,
+                10.0
+        );
+
+        Position otherPosition = new Position(
+                10.0,10.0, 0.0, 0.0
+        );
+
+        GlobalResources.getInstance().getDevice().setPosition(ownPosition);
+
+        Point2D expectedPoint = new Point2D(-28.5, -14.5);
+        Point2D actualPoint = calc.convertToDeviceCentredCoordinates(otherPosition);
+
+        assertEquals(expectedPoint.getX(),actualPoint.getX(), 0.5);
+        assertEquals(expectedPoint.getY(),actualPoint.getY(), 0.5);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Other">
     @Test
     public void testGetDistance(){
         Point3D point1 = new Point3D(0,0,0);
@@ -261,4 +368,5 @@ public class CalcTest  {
         result = Calc.getDistance(point1, point2);
         assertEquals(1.0, result);
     }
+    //</editor-fold>
 }

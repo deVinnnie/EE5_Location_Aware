@@ -2,6 +2,7 @@ package com.EE5.math;
 
 import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.server.data.Position;
+import com.EE5.util.GlobalResources;
 import com.EE5.util.Point2D;
 import com.EE5.util.Point3D;
 import com.EE5.util.Vector;
@@ -82,6 +83,8 @@ public class Calc {
      * Position (0,0,0) is when the pattern is in the centre.
      *
      * @param pattern Corner points of the pattern.
+     *                Num1 is the point at the white inner square.
+     *                Moving clockwise the points should correspond to Num2, Num3 and Num4.
      * @return A new point representing the position of the device.
      */
     public Point3D calculate(PatternCoordinator pattern){
@@ -173,23 +176,23 @@ public class Calc {
         }
         //</editor-fold>
 
-        //Centerpoint of Pattern.
+        //<editor-fold desc="Determine Centerpoint of Pattern.">
         double xe,ye;
         xe = (xa+xb+xc+xd)/4.0;
         ye = (ya+yb+yc+yd)/4.0;
+        //</editor-fold>
 
-        //Centerpoint of Image Canvas.
+        //<editor-fold desc="Determine Centerpoint of Image Canvas.">
         double xE,yE;
         xE=(xA+xD)/2;
         yE=(yA+yD)/2;
+        //</editor-fold>
 
         //Calculate height using field of view.
         Z1=1/((2*Math.tan(phix/2))/fovx); // 1/2 * tan(phix/2) / fovx;
         Z2=1/((2*Math.tan(phiy/2))/fovy);
 
-        //Calculate the angle between the Pattern x-Axis and the point E (Centerpoint of the canvas)
-        //Uses properties of vector for axis projection. (dot product in particular)
-
+        //Use properties of vector for axis projection (dot product in particular) to transform the coordinates.
         //<editor-fold desc="Calculate X-coordinate">
         Point2D centre34 = this.getCentre(new Point2D(realPatternCoordinator.getNum3()), new Point2D(realPatternCoordinator.getNum4()));
 
@@ -230,24 +233,110 @@ public class Calc {
         Y = cosAlphaY * toImageCenter.getLength();
         //</editor-fold>
 
-        //Y=Math.sqrt(Math.pow(xe-xE,2)+Math.pow(ye-yE,2));
-        //X=((Z*Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2))*0.5)/distance)*(xb+xc-xB-xC)/(xB-xC); //the distance in X axis
-        //Y=((Z*Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2))*0.5)/distance)*(ya+yd-yA-yD)/(yA-yD);//the distance in Y axis
-
         double rate=fovy/fovx;
         double phiPict=Math.toDegrees(
                 Math.atan(
                     (Math.abs(yc-yd))/(Math.abs(xc-xd))
                 )
         );
+
+        //<editor-fold desc="Calculate Rotation (Baseline -> X-axis)">
+        //Angle = Angle from baseline (y-as) of image to Pattern-based-X-axis.
+        //Baseline below x-axis = positive angle.
+        //x-axis above baseline = negative angle.
+        Vector imageBaselineDirection = new Vector(
+            0, 640
+        );
+        imageBaselineDirection.normalize();
+
+        double dotProductBaseline = imageBaselineDirection.dotProduct(xDirection);
+
+        //The crossproduct will be negative for negative angles, and positive for positive angles.
+        double crossProduct = imageBaselineDirection.crossProduct(xDirection);
+
+        double cosCorrectAngle = dotProductBaseline / (xDirection.getLength() * imageBaselineDirection.getLength());
+
+        //The dotproduct always returns a positive angle. Using the crossproduct the sign of the angle is determined.
+        double correctAngle = Math.signum(crossProduct) * Math.acos(cosCorrectAngle);
+        pattern.setAngle(Math.toDegrees(correctAngle));
+        //</editor-fold>
+
         return new Point3D(X,Y,Z1);
     }
 
-    public double getFieldOfView(){
-        return 0;
+    /**
+     * Convert from "Pattern Coordinate System" to "Device Centred Coordinate System".
+     * In the "Pattern Coordinate System" the origin is the center of the pattern.
+     * X- and Y-axis are defined based on the inner rectangle.
+     *
+     * |-------|                              ^
+     * |       |                              |  y-axis
+     * |o      |   ------ x-axis  ------>     |
+     * |-------|
+     *
+     *
+     * In the "Device Centered Coordinate System" the origin is the position of the device.
+     * The y-axis is parallel to the long side of the device (the 640px side) and points from the top of the device to the bottom.
+     * The origin is however not linked to a position on the screen. This is only getting the angles right!
+     *
+     * |-----------------------|
+     * |                       |
+     * |    ---  y-axis ---->  |
+     * |                       |
+     * |-----------------------|
+     *
+     *
+     * @param position Other Position
+     * @return position in Device Centred Coordinate System.
+     */
+    public Point2D convertToDeviceCentredCoordinates(Position position){
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
 
+        double rotation = Math.toRadians(ownPosition.getRotation());
+
+        //Careful with convention, y is the baseline axis. X is up.
+        Vector xDeviceDirection = new Vector(
+                Math.sin(rotation),
+                Math.cos(rotation)
+        );
+        xDeviceDirection.normalize();
+
+        Vector centreToPoint = new Vector(
+            position.getX() - ownPosition.getX(),
+            position.getY() - ownPosition.getY()
+        );
+
+        double dotProductX = xDeviceDirection.dotProduct(centreToPoint);
+        double cosAlphaX = 0;
+        if(centreToPoint.getLength() != 0) {
+            cosAlphaX = dotProductX / (xDeviceDirection.getLength() * centreToPoint.getLength());
+        }
+        double X = cosAlphaX * centreToPoint.getLength();
+
+        //Careful with convention, y is the baseline axis. X is up.
+        Vector yDeviceDirection = new Vector(
+                Math.cos(rotation),
+                -Math.sin(rotation)
+        );
+        yDeviceDirection.normalize();
+
+        double dotProductY = yDeviceDirection.dotProduct(centreToPoint);
+        double cosAlphaY = 0;
+        if(centreToPoint.getLength() != 0) {
+            cosAlphaY = dotProductY / (yDeviceDirection.getLength() * centreToPoint.getLength());
+        }
+        double Y = cosAlphaY * centreToPoint.getLength();
+
+        return new Point2D(X,Y);
     }
 
+    /**
+     * Calculates the centre between points. Shortcut for  [ 0.5 * (x1+x2) , 0.5 * (y1+y2) ]
+     *
+     * @param point1
+     * @param point2
+     * @return The centre between point1 and point2.
+     */
     public Point2D getCentre(Point2D point1, Point2D point2){
         return new Point2D(
                 (point1.getX() + point2.getX()) / 2.0,
