@@ -1,7 +1,5 @@
 package com.EE5.server.data;
 
-import com.EE5.image_manipulation.PatternCoordinator;
-
 import java.io.Serializable;
 
 public class Device implements Serializable{
@@ -15,7 +13,7 @@ public class Device implements Serializable{
     /**
      * Current position of the device.
      */
-    private Position position;
+    private Position position = new Position();
 
     public Device(){
         this.id = "001";
