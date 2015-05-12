@@ -50,15 +50,16 @@ public class Game extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         sprite.draw(batch);
-
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
-        calc.x1 = ownPosition.getX();
-        calc.y1 = ownPosition.getY();
+        calc.x1 = ownPosition.getX()* Math.cos(Math.toRadians(ownPosition.getRotation()))- ownPosition.getY()*Math.sin(Math.toRadians(ownPosition.getRotation()));
+        calc.y1 = ownPosition.getY()* Math.cos(Math.toRadians(ownPosition.getRotation()))+ ownPosition.getX()*Math.sin(Math.toRadians(ownPosition.getRotation()));
         Log.d("arrows","Own postion " + calc.x1 + " " + calc.y1 );
         //Iterate over other devices.
         for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
-            calc.x2 = entry.getValue().getX();
-            calc.y2 = entry.getValue().getY();
+            calc.x2 = entry.getValue().getX()* Math.cos(Math.toRadians(entry.getValue().getRotation()))- entry.getValue().getY()*Math.sin(Math.toRadians(entry.getValue().getRotation()));
+            //calc.x2 = entry.getValue().getX();
+            calc.y2 =entry.getValue().getY()* Math.cos(Math.toRadians( entry.getValue().getRotation()))+  entry.getValue().getX()*Math.sin(Math.toRadians( entry.getValue().getRotation()));
+            //calc.y2 = entry.getValue().getY();
             Log.d("arrows","Own postion " + calc.x2 + " " + calc.y2 );
             break; //Only read the position of the first device.
         }
