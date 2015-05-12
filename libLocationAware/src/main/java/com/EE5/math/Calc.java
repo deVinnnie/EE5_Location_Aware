@@ -87,6 +87,15 @@ public class Calc {
     public Point3D calculate(PatternCoordinator pattern){
         double X,Y,Z1,Z2,Z;
 
+        this.xB = 480;
+        this.yC = 640;
+        this.xD = 480;
+        this.yD = 640;
+        this.xA = 0;
+        this.xC = 0;
+        this.yB = 0;
+
+
         this.xa = pattern.getNum1().x;
         this.ya = pattern.getNum1().y;
         this.xb = pattern.getNum2().x;
@@ -113,11 +122,13 @@ public class Calc {
 
         //Alpha
         // (z/x) * 480
-        double fovx= (this.size / (Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2)))) * Math.abs(xA-xB);
+        double canvasXSize = Math.abs(xA-xB);
+        double fovx= (this.size / (Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2)))) * canvasXSize;
 
         //Beta
         // (z/x) * 640
-        double fovy= (this.size / (Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2)))) * Math.abs(yA-yC);
+        double canvasYSize = Math.abs(yA-yC);
+        double fovy= (this.size / (Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2)))) * canvasYSize;
 
 
         //<editor-fold desc="Convert from Pixel Values to Real Values">
