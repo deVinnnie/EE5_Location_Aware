@@ -39,6 +39,7 @@ import java.util.Map;
 
 
 public class ImageManipulationsActivity extends Activity {
+
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {

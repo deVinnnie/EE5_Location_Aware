@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mygdx.game.android"
+    package="com.castoryan.game.android"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.mygdx.game.android.AndroidLauncher"
+            android:name="com.castoryan.game.android.MyLauncher"
             android:label="@string/app_name" 
             android:screenOrientation="portrait"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
