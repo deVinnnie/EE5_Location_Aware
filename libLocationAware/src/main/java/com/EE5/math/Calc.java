@@ -22,14 +22,15 @@ public class Calc {
     double xA,xB,xC,xD;
     double yA,yB,yC,yD;
 
+
     /**
      * The vertical distance between the camera and the pattern.
      */
     double distance;
 
-    double length;//the length that cemaral captured
+    double length;//the length that cemara captured
 
-    double wide;//the wide that cameral captured
+    double wide;//the wide that camera captured
 
     /**
      * The real life size of the pattern in cm.
@@ -58,13 +59,22 @@ public class Calc {
      */
      public Calc(double size, double width, double height) {
          this(); //Call Default Constructor.
-
+         /** the height value is 640 and the width value is 480
+             the height is bigger then the width**/
          this.size = size;
 
-         this.xB = width;
-         this.yC = height;
-         this.xD = width;
-         this.yD = height;
+         //this.xB = width;
+         this.xB = 480;
+         //this.yC = height;
+         this.yC = 640;
+         //this.xD = width;
+         this.xD = 480;
+         //this.yD = height;
+         this.yD = 640;
+         this.xA = 0;
+         this.ya = 0;
+         this.xC = 0;
+         this.yB = 0;
     }
 
     /**
