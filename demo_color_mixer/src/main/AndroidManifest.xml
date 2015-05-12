@@ -12,7 +12,6 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -23,6 +22,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ee5.demo_color_mixer.ColorSelectActivity" />
+        </activity>
+        <activity
+            android:name="com.EE5.image_manipulation.ImageManipulationsActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="com.EE5.image_manipulation.ImageManipulationsActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 

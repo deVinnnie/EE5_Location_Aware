@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,12 +12,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.EE5.server.data.Position;
+import com.EE5.util.GlobalResources;
+
+import java.util.Map;
+
 public class DisplayColorActivity extends ActionBarActivity {
+    private Calculator calc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_color);
+
+        calc = new Calculator();
 
         // Get the colors from the intent
         Intent intent = getIntent();
@@ -73,12 +82,27 @@ public class DisplayColorActivity extends ActionBarActivity {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        if(hasFocus) {
-            TextView myTextView = (TextView) findViewById(R.id.myTextView);
-            TextView otherTextView = (TextView) findViewById(R.id.otherTextView);
-            String myColor = myTextView.getText().toString();
-            String otherColor = otherTextView.getText().toString();
-            changeColor(myColor, otherColor);
+        if (hasFocus) {
+
+            final Handler myHandler = new Handler();
+
+            (new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    TextView myTextView = (TextView) findViewById(R.id.myTextView);
+                    TextView otherTextView = (TextView) findViewById(R.id.otherTextView);
+                    final String myColor = myTextView.getText().toString();
+                    final String otherColor = otherTextView.getText().toString();
+                    myHandler.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            changeColor(myColor, otherColor);
+                        }
+                    });
+                }
+            })).start();
         }
     }
 
@@ -167,11 +191,25 @@ public class DisplayColorActivity extends ActionBarActivity {
      * @return isClose
      */
     public boolean checkDistance() {
-        try {
-            Thread.sleep(5000);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
+        boolean isClose = false;
+
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        calc.setX1(ownPosition.getX());
+        calc.setY1(ownPosition.getY());
+
+        //Iterate over other devices.
+        for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
+            calc.setX2(entry.getValue().getX());
+            calc.setY2(entry.getValue().getY());
+            break; //Only read the position of the first device.
         }
-        return true;
+
+        double distance = calc.calcDistance();
+
+        if (distance <= 5) {
+            isClose = true;
+        }
+
+        return isClose;
     }
 }

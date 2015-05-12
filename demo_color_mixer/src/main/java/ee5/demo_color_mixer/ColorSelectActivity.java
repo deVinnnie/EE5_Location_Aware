@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.EE5.image_manipulation.PatternDetector;
+import com.EE5.util.GlobalResources;
+
 public class ColorSelectActivity extends ActionBarActivity {
     public final static String EXTRA_MYCOLOR = "ee5.colormixer.MYCOLOR";
     public final static String EXTRA_OTHERCOLOR = "ee5.colormixer.OTHERCOLOR";
@@ -17,6 +20,11 @@ public class ColorSelectActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_color_select);
+
+        //Start new Activity and block until it returns.
+        startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"), 0);
+        //----------------------------------------------
+
         Spinner mySpinner = (Spinner) findViewById(R.id.my_colors_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -52,6 +60,29 @@ public class ColorSelectActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        if(patternDetector != null) {
+            patternDetector.destroy();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        if(patternDetector != null) {
+            patternDetector.setup();
+        }
     }
 
     /** Called when the user clicks the Send button */
