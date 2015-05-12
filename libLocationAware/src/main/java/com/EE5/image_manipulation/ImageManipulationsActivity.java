@@ -13,11 +13,13 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.EE5.R;
 import com.EE5.client.IDGenerator;
@@ -40,27 +42,43 @@ import java.util.Map;
 
 public class ImageManipulationsActivity extends Activity {
 
+
+    public boolean OpenCVReady;
+    /**
+     * The code in onManagerConnected is called after the OpenCV stuff has loaded.
+     * If you try this for instance in the onCreate method it will fail and you won't have a clue as to why it did so.
+     * This is because OpenCV components (even simple things like the Mat class) are used
+     * before the library is loaded it will throw an exception.
+     */
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
                 case LoaderCallbackInterface.SUCCESS: {
-                    Log.i("OpenCV", "OpenCV loaded successfully");
-                    if(GlobalResources.getInstance().getPatternDetector() == null) {
-                        setupCamera(); //Retrieve camera WITHOUT CameraBridgeViewBase and JavaImageView
+                    onOpenCVSuccessLoad();
+                    synchronized (ImageManipulationsActivity.this){
+                        ImageManipulationsActivity.this.notify();
                     }
-
-                    //As information: This block of code is called after the OpenCV stuff has loaded.
-                    //If you try this for instance in the onCreate method it will fail and you won't have a clue as to why it did so.
                 }
                 break;
                 default: {
+                    Log.i("OpenCV", "OpenCV did not load correctly");
                     super.onManagerConnected(status);
                 }
                 break;
             }
         }
     };
+
+    private void onOpenCVSuccessLoad(){
+        Log.i("OpenCV", "OpenCV loaded successfully");
+        if(GlobalResources.getInstance().getPatternDetector() == null) {
+            //Only Execute this code if a PatternDetector already exists from a previous run.
+            setupPatternDetector();
+            setupCamera(); //Retrieve camera WITHOUT CameraBridgeViewBase and JavaImageView
+        }
+        this.OpenCVReady = true;
+    }
 
     private TextView tx_x1;
     private TextView tx_x2;
@@ -102,16 +120,18 @@ public class ImageManipulationsActivity extends Activity {
         //iv.setVisibility(View.GONE);
 
         Button btn_get = (Button) findViewById(R.id.btn_get);
-        /*btn_get.setOnClickListener(new View.OnClickListener() {
+        btn_get.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rotate.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().distance2));
-                tx_y1.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().ra));
+                //rotate.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().getDistance()));
+                //tx_y1.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().ra));
+                patternDetector.getPatternDetectorAlgorithm().setSetupflag(false);
+                patternDetector.getPatternDetectorAlgorithm().setDistance2(0);
             }
-        });*/
+        });
 
         SeekBar my_bar = (SeekBar) findViewById(R.id.my_bar);
-        /*my_bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        my_bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
             }
@@ -122,47 +142,68 @@ public class ImageManipulationsActivity extends Activity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                distance = seekBar.getProgress();
+                int distance = seekBar.getProgress();
+                patternDetector.getPatternDetectorAlgorithm().setDistance(distance);
                 tx_y2.setText(String.valueOf(distance));
+
                 //Due to complications (See PatternDetectorInterface) some variables cannot be directly accessed anymore.
             }
-        });*/
+        });
+    }
+
+    /**
+     * Makes a new PatternDetector instance and saves it to GlobalResources.
+     * Doesn't start the camera.
+     */
+    private void setupPatternDetector(){
+        try {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            double pattern_width = Double.parseDouble(sharedPref.getString("pattern_size", "11.75")); //Second param is default value.
+
+            //Select front or back facing camera.
+            boolean forceBackFacingCamera = sharedPref.getBoolean("camera", false);
+            int cameraSelection = (forceBackFacingCamera) ? 0 : 1;
+
+            if(Camera.getNumberOfCameras()<2){
+                cameraSelection = 0;
+                //Use rear facing camera if there is no front facing camera.
+            }
+
+            //Derive the image size.
+            Camera camera = Camera.open(cameraSelection); //Be careful : this locks the camera!
+            Camera.Parameters params = camera.getParameters();
+            Camera.Size imageSize = params.getPictureSize();
+            camera.release();
+            Log.i("ImageSize", imageSize.width + " " + imageSize.height);
+            Calc calc = new Calc(pattern_width, imageSize.width, imageSize.height);
+
+            //Make new PatternDetector.
+            this.patternDetector = new PatternDetector(cameraSelection);
+            this.patternDetector.setHandler(this.handler);
+            this.patternDetector.setCalc(calc);
+            GlobalResources.getInstance().setPatternDetector(this.patternDetector);
+        }
+        catch(RuntimeException ex){
+            CharSequence text = "Camera not available";
+            Toast.makeText(this.getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setupCamera(){
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        double pattern_width = Double.parseDouble(sharedPref.getString("pattern_size", "11.75")); //Second param is default value.
-
-        //Select front or back facing camera.
-        boolean forceBackFacingCamera = sharedPref.getBoolean("camera", false);
-        int cameraSelection = (forceBackFacingCamera) ? 0 : 1;
-
-        if(Camera.getNumberOfCameras()<2){
-            cameraSelection = 0;
-            //Use rear facing camera if there is no front facing camera.
-        }
-
-        //Derive the image size.
-        Camera camera=Camera.open(cameraSelection); //Be careful : this locks the camera!
-        Camera.Parameters params = camera.getParameters();
-        Camera.Size imageSize = params.getPictureSize();
-        camera.release();
-        Log.i("ImageSize", imageSize.width + " " +  imageSize.height);
-        Calc calc = new Calc(pattern_width, imageSize.width, imageSize.height);
-
-        //Make new PatternDetector.
-        this.patternDetector = new PatternDetector(cameraSelection);
-        this.patternDetector.setHandler(this.handler);
-        this.patternDetector.setCalc(calc);
         this.patternDetector.setup();
         this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
-        GlobalResources.getInstance().setPatternDetector(this.patternDetector);
     }
 
+    // For an overview of when and which events are called see:
+    // http://www.tutorialspoint.com/android/android_acitivities.htm
+    //<editor-fold desc="Android Activity Lifecycle Events">
     @Override
     public void onPause() {
         super.onPause();
-        //this.patternDetector.destroy();
+        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        if(patternDetector != null) {
+            patternDetector.destroy();
+        }
     }
 
     @Override
@@ -171,14 +212,32 @@ public class ImageManipulationsActivity extends Activity {
         PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
         if(patternDetector != null) {
             //patternDetector.getPatternDetectorAlgorithm().distance2 = 0;
+            patternDetector.setup();
         }
+
+        Log.i("OpenCV", "OpenCV loading");
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this, mLoaderCallback);
+
+        synchronized (this) {
+            try {
+                this.wait(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public void onDestroy() {
         super.onDestroy();
-        //this.patternDetector.destroy();
+        /*if(isFinishing() && this.patternDetector != null) {
+            //this.patternDetector.destroy();
+            Log.d("destroy","destroy");
+        }*/
+        //'patternDetector.destroy()' is not called here because onDestroy() is called after onPause().
+        //The destroy method is already called in onPause()
     }
+    //</editor-fold>
 
     //<editor-fold desc="Options">
     @Override
@@ -262,6 +321,8 @@ public class ImageManipulationsActivity extends Activity {
         Bitmap bitmap = Bitmap.createBitmap(this.patternDetector.image.cols(), this.patternDetector.image.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(this.patternDetector.image, bitmap, true);
         iv.setImageBitmap(bitmap);
+        tx_x2.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().getDistance2()));
+
     }
 
     /**

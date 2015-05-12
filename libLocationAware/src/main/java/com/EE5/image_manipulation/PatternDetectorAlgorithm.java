@@ -18,10 +18,10 @@ import java.util.List;
  * The official implementation of the algorithm.
  */
 public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterface{
-    double ra;
-
+    public double ra;
+    public int ii;
     int distance;
-    int distance2;
+    public int distance2;
     boolean setupflag;
 
     private Scalar orange = new Scalar(255, 120, 0);
@@ -32,6 +32,9 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
     private Mat mIntermediateMat = new Mat();
 
     public PatternDetectorAlgorithm(){
+        distance2 = 0;
+        setupflag = false;
+        ii = 0;
     }
 
 
@@ -39,6 +42,11 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
      * Do magic!
      *
      * <img src="./doc-files/PatternDetection_01.png" alt="Pattern Detection 01"/>
+     *
+     * The figure below shows the order in which the corner points of the pattern are defined.
+     * Point 1 is near the inner square. Then moving in the clockwise direction you find point 2, 3 and 4.
+     *
+     * <img src="./doc-files/Pattern_Point_Naming_Convention.png" alt="Naming Convention for Points of Pattern"/>
      *
      * (Uses bitwise operators instead of logical operators. Bitwise is marginally faster.)
      *
@@ -69,30 +77,48 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         MatOfPoint squ_in  = new MatOfPoint();
         MatOfPoint squ_out = new MatOfPoint();
 
-        if(setupflag == false) {
+        if(setupflag == false)
+        {
             //Filter contours with the wrong size.
             con_in_range = getContoursBySize(distance2, contour);
             //Filter out non square contours.
             squareContours = getContoursSquare2(con_in_range);
             //Find the right contour for the pattern.
             pContour = findPattern(squareContours);
+            Imgproc.drawContours(rgba, squareContours, -1, orange, 4);
+            /** tot hier werkt het goed **/
             if (pContour.size() == 2) {
                 squ_out = pContour.get(1);
                 squ_in = pContour.get(0);
-                ra = Imgproc.contourArea(squ_out)/Imgproc.contourArea(squ_in);
-                if((ra>3)&(ra<7)){
-                    setupflag = true;
-                    distance2 = distance2 + 5;
+                RotatedRect rot_re_out = new RotatedRect();
+                RotatedRect rot_re_in = new RotatedRect();
+                MatOfPoint2f mp2f_out = new MatOfPoint2f();
+                MatOfPoint2f mp2f_in = new MatOfPoint2f();
+                mp2f_in = new MatOfPoint2f(squ_in.toArray());
+                mp2f_out = new MatOfPoint2f(squ_out.toArray());
+                rot_re_out = Imgproc.minAreaRect(mp2f_out);
+                rot_re_in = Imgproc.minAreaRect(mp2f_in);
+
+                double size_out = rot_re_out.size.area();
+                double size_in = rot_re_in.size.area();
+                ra = size_out/size_in;
+                if((ra>4)&&(ra<16)){
+                    ii++;
+                    if(ii == 3) {
+                        setupflag = true;
+                        distance2 = distance2 + 4;
+                        ii = 0;
+                    }
                 }
                 else{
                     setupflag = false;
                 }
             }
 
-            if(distance2 > 500){
+            if(distance2 > 50){
                 distance2 = 0;
             }
-            distance2 = distance2 + 5;
+            distance2 = distance2 + 2;
             PatternCoordinator pc = new PatternCoordinator(
                     //Pattern in center.
                     new Point(320-50,240-50),
@@ -124,6 +150,9 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
                 NewMtx2 = Imgproc.minAreaRect(appo2);
                 outterCenter = NewMtx2.center;
             }
+            else{
+                //setupflag = false;
+            }
 
             List<MatOfPoint> appro_con = new ArrayList<MatOfPoint>();
             appro_con.add(new MatOfPoint(appo.toArray()));
@@ -143,7 +172,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             //Outer
             Point a = new Point(NewMtx2.boundingRect().x, NewMtx2.boundingRect().y);
             Point b = new Point(NewMtx2.boundingRect().x + NewMtx2.boundingRect().width, NewMtx2.boundingRect().y + NewMtx2.boundingRect().height);
-            Core.rectangle(rgba, a, b, light_green, 3);
+            Core.rectangle(rgba, a, b, dark_blue, 3);
 
             Point out[] = new Point[4];
             //Point out_send[];// = new Point[4];
@@ -167,7 +196,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             //Inner
             Point a2 = new Point(NewMtx1.boundingRect().x, NewMtx1.boundingRect().y);
             Point b2 = new Point(NewMtx1.boundingRect().x + NewMtx1.boundingRect().width, NewMtx1.boundingRect().y + NewMtx1.boundingRect().height);
-            Core.rectangle(rgba, a2, b2, dark_blue,3);
+            Core.rectangle(rgba, a2, b2, light_green,3);
 
             double x1, x2, y1, y2;
             x1 = innerCenter.x;
@@ -195,8 +224,10 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
 
             String kk = "k is (" + String.valueOf(k) + ")";
             Core.putText(rgba, kk, new Point(50, 400), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+            String dis = "the distance2 is "+ String.valueOf(distance2) +" )";
+            Core.putText(rgba, dis, new Point(50, 350), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
             String angle = "rotate angle is (" + String.valueOf(finalangle) + ")";
-            Core.putText(rgba, angle, new Point(50, 500), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
+            Core.putText(rgba, angle, new Point(50, 450), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
 
             //Core.putText(image, String.valueOf(pContour.size()), new Point(50, 550), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
             //Core.putText(image, String.valueOf(innerCenter.x)+" "+innerCenter.y, new Point(50, 600), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
@@ -263,7 +294,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         Iterator<MatOfPoint> each = contour.iterator();
         while (each.hasNext()) {
             MatOfPoint contours = each.next();
-            if ((Imgproc.contourArea(contours) < dis * 600) & (Imgproc.contourArea(contours) > dis * 20)) {
+            if ((Imgproc.contourArea(contours) < dis * 600) & (Imgproc.contourArea(contours) > dis * 10)) {
                 con_in_range.add(contours);
             }
         }
@@ -280,7 +311,10 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         while(each_con.hasNext()){
             MatOfPoint contours = each_con.next();
             out_rect = Imgproc.boundingRect(contours);
-            if(Math.abs(out_rect.height - out_rect.width) < 10){
+
+            if((Math.abs(out_rect.height - out_rect.width) < 10)){
+                    //&(3>(out_rect.area()/Imgproc.contourArea(contours)))
+                    //&(0.75<(out_rect.area()/Imgproc.contourArea(contours)))){
                 squareContours.add(contours);
             }
         }
@@ -431,7 +465,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
                 MatOfPoint con2 = iter2.next();
                 Point center2 = getShapeCenter(con2);
                 double dis_this = Math.abs(center1.x-center2.x)+Math.abs(center1.y-center2.y);
-                if((dis_this < distance)&(dis_this>0)){
+                if((dis_this < distance)&(dis_this>0)){//&(dis_this<70)){
                     distance = dis_this;
                     patternContours.clear();
                     patternContours.add(con1);
@@ -440,5 +474,18 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             }
         }
         return patternContours;
+    }
+
+    public int getDistance2(){
+        return distance2;
+    }
+    public void setDistance(int dis){
+        distance = dis;
+    }
+    public void setDistance2(int dis){
+        distance2 = dis;
+    }
+    public void setSetupflag(boolean flag){
+        setupflag = flag;
     }
 }

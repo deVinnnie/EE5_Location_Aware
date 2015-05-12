@@ -2,6 +2,7 @@ package com.EE5.image_manipulation;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.EE5.math.Calc;
 import com.EE5.server.data.Position;
@@ -19,6 +20,8 @@ import org.opencv.imgproc.Imgproc;
  * The results are stored in the {@link GlobalResources} Singleton.
  *
  * The constructor can be called at any time. The method {@link #setup()} has to be called after the OpenCV library has loaded.
+ * Use {@link #destroy()} to clean up.
+ *
  *
  * @see PatternDetectorAlgorithmInterface
  */
@@ -46,6 +49,7 @@ public class PatternDetector {
         public void run() {
             try {
                 if (mCamera != null) {
+                    Log.i("PatternDetector","Camera Frame Grabbed");
                     //Grab one frame of the camera.
                     boolean grabbed = mCamera.grab();
                     if (grabbed) {
@@ -113,7 +117,9 @@ public class PatternDetector {
      * Code is based on <a href="http://developer.sonymobile.com/knowledge-base/tutorials/android_tutorial/get-started-with-opencv-on-android/">http://developer.sonymobile.com/knowledge-base/tutorials/android_tutorial/get-started-with-opencv-on-android/</a>
      */
     public void setup() {
+        Log.i("PatternDetector", "Setup Camera");
         if (mCamera != null) {
+            //If a camera is already present release it first before setting up the new one.
             VideoCapture camera = mCamera;
             mCamera = null;
             camera.release();
@@ -124,15 +130,23 @@ public class PatternDetector {
         cameraHandler.postDelayed(cameraRunnable, this.sampleRate);
     }
 
+    /**
+     * Release Camera and cleanup.
+     */
     public void destroy(){
+        Log.i("PatternDetector", "Release Camera");
         if(this.mCamera != null){
             this.mCamera.release();
+            this.mCamera = null;
         }
         cameraHandler.removeCallbacks(cameraRunnable);
     }
 
+    /**
+     * Sends a signal to the UI Thread to update the user interface.
+     * (Text overlay etc)
+     */
     public void alertify(){
-        //Give signal to update the text overlay.
         Message msg = handler.obtainMessage();
         msg.what = 1;
         msg.obj = null;

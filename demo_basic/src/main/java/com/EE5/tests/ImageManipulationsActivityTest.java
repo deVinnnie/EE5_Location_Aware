@@ -35,7 +35,7 @@ public class ImageManipulationsActivityTest extends ActivityUnitTestCase<ImageMa
 
     @SmallTest
     public void testOpenCVReady(){
-        boolean openCVReady=true;// = activity.OpenCVReady;
+        boolean openCVReady = activity.OpenCVReady;
         assertTrue(openCVReady);
     }
 
