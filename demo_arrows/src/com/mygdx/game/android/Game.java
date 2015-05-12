@@ -23,15 +23,9 @@ public class Game extends ApplicationAdapter {
     public void create ()
     {
         calc = new Calculator();
-<<<<<<< HEAD
-        calc.x1 = 0; calc.y1 = 0;
-        //calc.x2 = -100; calc.y2 = -173 ;
-        calc.rotation = 90;
-=======
         //calc.x1 = 0; calc.y1 = 0;
         //calc.x2 = 0; calc.y2 = 0;
         //calc.rotation = 90;
->>>>>>> arrows
         batch = new SpriteBatch();
         img = new Texture("arrow.png");
         sprite = new Sprite(img);
