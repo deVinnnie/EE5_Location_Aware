@@ -1,4 +1,4 @@
-include ':openCVLibrary2410'
+include ':openCVLibrary2410', ':busstop'
 include ':libLocationAware'
 include ':demo_basic'
 include ':demo_arrows'
