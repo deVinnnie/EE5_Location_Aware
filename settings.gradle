@@ -1,5 +1,6 @@
-include ':openCVLibrary2410', ':busstop'
+include ':openCVLibrary2410'
 include ':libLocationAware'
 include ':demo_basic'
 include ':demo_arrows'
+include ':demo_busstop'
 include ':libgdx-core'

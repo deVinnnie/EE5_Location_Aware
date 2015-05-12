@@ -49,7 +49,7 @@ allprojects {
         }
     }
 
-    project(":busstop") {
+    project(":demo_busstop") {
         apply plugin: "android"
 
         configurations { natives }
