@@ -1,7 +1,9 @@
 package com.mygdx.game.android;
 
+import com.EE5.math.Calc;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
+import com.EE5.util.Point2D;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -50,24 +52,23 @@ public class Game extends ApplicationAdapter {
         sprite.draw(batch);
 
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
-
-        calc.x1 = ownPosition.getX();//* Math.cos(Math.toRadians(ownPosition.getRotation()))- ownPosition.getY()*Math.sin(Math.toRadians(ownPosition.getRotation()));
-        calc.y1 = ownPosition.getY();//* Math.cos(Math.toRadians(ownPosition.getRotation()))+ ownPosition.getX()*Math.sin(Math.toRadians(ownPosition.getRotation()));
+        Position otherPosition = new Position(0.0,0.0,0.0,0.0);
+        //calc.x1 = ownPosition.getX();//* Math.cos(Math.toRadians(ownPosition.getRotation()))- ownPosition.getY()*Math.sin(Math.toRadians(ownPosition.getRotation()));
+        //calc.y1 = ownPosition.getY();//* Math.cos(Math.toRadians(ownPosition.getRotation()))+ ownPosition.getX()*Math.sin(Math.toRadians(ownPosition.getRotation()));
         //Log.d("arrows","Own postion " + calc.x1 + " " + calc.y1 );
         //Iterate over other devices.
         for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
-            //calc.x2 = entry.getValue().getX()* Math.cos(Math.toRadians(entry.getValue().getRotation()))- entry.getValue().getY()*Math.sin(Math.toRadians(entry.getValue().getRotation()));
-            calc.x2 = entry.getValue().getX();
-            //calc.y2 =entry.getValue().getY()* Math.cos(Math.toRadians( entry.getValue().getRotation()))+  entry.getValue().getX()*Math.sin(Math.toRadians( entry.getValue().getRotation()));
-            calc.y2 = entry.getValue().getY();
-            //Log.d("arrows","Own postion " + calc.x2 + " " + calc.y2 );
+            otherPosition = entry.getValue();
             break; //Only read the position of the first device.
         }
 
-        calc.rotation = ownPosition.getRotation();
-        //Log.d("arrows",""+ calc.rotation);
-        int angle = (int) calc.calcAngle();
-        sprite.setRotation(angle);
+        Calc algorithmCalc = new Calc();
+        Point2D dcPoint = algorithmCalc.convertToDeviceCentredCoordinates(otherPosition);
+
+        double angle = -90; //Use correct offset to align with baseline.
+        angle += Math.toDegrees(Math.atan2(dcPoint.getY(), dcPoint.getX()));
+
+        sprite.setRotation( (float) 90);
         //batch.draw(img, 0, 0);
 
         //Draw Current Device Position.
