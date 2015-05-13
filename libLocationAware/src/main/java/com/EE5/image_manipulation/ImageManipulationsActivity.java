@@ -298,6 +298,7 @@ public class ImageManipulationsActivity extends Activity {
 
                 double distance = Calc.getDistance(position, devicePosition);
                 list+="distance="+distance+"\n";
+                list+="data=" + entry.getValue().element2+"\n";
             }
 
             TextView server_display = (TextView) findViewById(R.id.server_display);
