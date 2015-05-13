@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
+import com.EE5.util.Tuple;
 
 import java.util.Map;
 
@@ -198,9 +199,9 @@ public class DisplayColorActivity extends ActionBarActivity {
         calc.setY1(ownPosition.getY());
 
         //Iterate over other devices.
-        for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
-            calc.setX2(entry.getValue().getX());
-            calc.setY2(entry.getValue().getY());
+        for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
+            calc.setX2(entry.getValue().element1.getX());
+            calc.setY2(entry.getValue().element1.getY());
             break; //Only read the position of the first device.
         }
 

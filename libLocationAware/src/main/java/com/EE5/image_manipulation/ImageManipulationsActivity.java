@@ -30,6 +30,7 @@ import com.EE5.preferences.SettingsActivity;
 import com.EE5.server.Server;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
+import com.EE5.util.Tuple;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
@@ -337,9 +338,9 @@ public class ImageManipulationsActivity extends Activity {
             String list=""; //Temporary variable for building the text for the TextView overlay.
 
             //Iterate over all devices and save relevant information to TextView.
-            for (Map.Entry<String, Position> entry : server.getConnectedDevices().getMap().entrySet()) {
+            for (Map.Entry<String, Tuple<Position, String>> entry : server.getConnectedDevices().getAll()) {
                 String id = entry.getKey();
-                Position position = entry.getValue();
+                Position position = entry.getValue().element1;
                 list+=""+id +"\n";
                 DecimalFormat df = new DecimalFormat("#.##"); //Round to two decimal places.
 
@@ -348,6 +349,7 @@ public class ImageManipulationsActivity extends Activity {
 
                 double distance = Calc.getDistance(position, devicePosition);
                 list+="distance="+distance+"\n";
+                list+="data=" + entry.getValue().element2+"\n";
             }
 
             TextView server_display = (TextView) findViewById(R.id.server_display);

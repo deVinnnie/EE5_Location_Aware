@@ -1,40 +1,43 @@
 package com.EE5.server.data;
 
-import com.EE5.image_manipulation.PatternCoordinator;
+import com.EE5.util.Tuple;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class DeviceList implements Serializable {
-    private Map<String, Position> list = new HashMap<String, Position>();
-    private Map<String, PatternCoordinator> pclist = new HashMap<String, PatternCoordinator>();
+    //private Map<String, Position> list = new HashMap<String, Position>();
+    private Map<String, Tuple<Position, String>> list = new HashMap<String, Tuple<Position, String>>();
 
     public DeviceList() {
     }
 
+    /** @deprecated */
     public void addDevice(Device device) {
-        list.put(device.getId(), device.getPosition());
+        //list.put(device.getId(), device.getPosition());
         //pclist.put(device.getId(),device.getPattern());
+    }
+
+    public void add(String id, Position position, String data){
+        list.put(id, new Tuple<Position, String>(position, data));
     }
 
     public void removeDevice(Device device) {
         list.remove(device.getId());
-        pclist.remove(device.getId());
     }
 
     public void clear() {
         list.clear();
-        pclist.clear();
     }
 
-    public Map<String, Position> getMap(){
+    public Map<String, Tuple<Position,String>> getMap(){
         return this.list;
     }
 
-    /** @deprecated */
-    public Map<String, PatternCoordinator> getPatternMap(){
-        return this.pclist;
+    public Set<Map.Entry<String,Tuple<Position,String>>> getAll(){
+        return this.getMap().entrySet();
     }
 
     public boolean contains(Device device){

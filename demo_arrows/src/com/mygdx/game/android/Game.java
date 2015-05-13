@@ -1,9 +1,12 @@
 package com.mygdx.game.android;
 
+import android.util.Log;
+
 import com.EE5.math.Calc;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
 import com.EE5.util.Point2D;
+import com.EE5.util.Tuple;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -42,6 +45,7 @@ public class Game extends ApplicationAdapter {
         //detector.setPatternDetectorAlgorithm(new PatternDetectorAlgorithmMock());
         /*PatternDetectorAlgorithmInterface inter = GlobalResources.getInstance().getPatternDetector().getPatternDetectorAlgorithm();
         Log.i("Test", inter.getClass().toString());*/
+        GlobalResources.getInstance().setData("Hello World");
     }
 
     @Override
@@ -57,8 +61,10 @@ public class Game extends ApplicationAdapter {
         //calc.y1 = ownPosition.getY();//* Math.cos(Math.toRadians(ownPosition.getRotation()))+ ownPosition.getX()*Math.sin(Math.toRadians(ownPosition.getRotation()));
         //Log.d("arrows","Own postion " + calc.x1 + " " + calc.y1 );
         //Iterate over other devices.
-        for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
-            otherPosition = entry.getValue();
+        for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
+            calc.x2 = entry.getValue().element1.getX();
+            calc.y2 = entry.getValue().element1.getY();
+            Log.i("T", entry.getValue().element2);
             break; //Only read the position of the first device.
         }
 

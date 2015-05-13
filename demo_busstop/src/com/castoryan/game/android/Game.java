@@ -1,7 +1,5 @@
 package com.castoryan.game.android;
 
-import com.EE5.server.data.Position;
-import com.EE5.util.GlobalResources;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,8 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import java.util.Map;
 
 public class Game extends ApplicationAdapter {
     SpriteBatch batch;
@@ -33,8 +29,8 @@ public class Game extends ApplicationAdapter {
         stop = new Texture("STOP.png");
         people = new Texture("people.png");
         sprite = new Sprite(people);
-        sprite.setPosition(500, 500); //Î»ÖÃ
-        sprite.setRotation(115);//Ðý×ª
+        sprite.setPosition(500, 500);
+        sprite.setRotation(115);
 //        sprite.setPosition(Gdx.graphics.getWidth() / 2 - sprite.getWidth() / 2,
 //                Gdx.graphics.getHeight() / 2 - sprite.getHeight() / 2);
 //        sprite.setOriginCenter();

@@ -33,8 +33,8 @@ Use `GlobalResources.getInstance().getDevices()` to get a list of other (connect
 
 You can use the following construct to iterate over all devices.
 
-    for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
-        System.out.println("key=" + entry.getKey() + "; value=" + entry.getValue());
+    for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
+        System.out.println("key=" + entry.getKey() + "; position=" + entry.getValue().element1 + "; data=" + entry.getValue().element2);
     }
 
 Primer on using git
