@@ -69,10 +69,6 @@ public class ObjectSocketTask extends SocketTask{
 
                 this.getServer().alertify(1,null, 1);
 
-                if(!present) {
-                   // this.getServer().alertify(0,null, 1);
-                }
-
                 //System.out.print("Position: (" + device.getPosition().getX() + "," + device.getPosition().getY() + ")\n");
                 // "\r" Is the carriage return, it places the cursor back at the beginning of the line.
                 // At the next print, the previously present text is overwritten.
