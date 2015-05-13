@@ -15,7 +15,9 @@ public class ConnectionFactory {
         int sampleRate = Integer.parseInt(preferences.getString("sample_rate", "500"));
 
         if (connection_type.equals("Bluetooth")) {
+            int targetDevice = preferences.getInt("PREFS_BLUETOOTH_TARGET", 0); //Second param is default value.
             connection = new BluetoothConnection(sampleRate, arrayAdapter, socketTaskType, context);
+            ((BluetoothConnection) connection).setDevice(targetDevice);
         }
         else {
             String ipAddress = preferences.getString("server_ip", "127.0.0.1"); //Second param is default value.

@@ -14,6 +14,8 @@ import com.EE5.util.ConnectionException;
 import java.util.Set;
 
 public class BluetoothConnection extends Connection{
+    private int device;
+
     public BluetoothConnection(int sampleRate, ArrayAdapter<String> historyAdapter, SocketTaskType socketTaskType, Context context){
         super(sampleRate, historyAdapter, socketTaskType, context);
     }
@@ -26,7 +28,7 @@ public class BluetoothConnection extends Connection{
             BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             Set bondendDevices = mBluetoothAdapter.getBondedDevices();
             Object[] deviceArray = bondendDevices.toArray();
-            BluetoothDevice mmDevice = (BluetoothDevice) deviceArray[0]; //Get the first paired device.
+            BluetoothDevice mmDevice = (BluetoothDevice) deviceArray[this.device]; //Get the first paired device.
             //TODO: Choose Bluetooth Device.
 
             Log.i("Devices", mmDevice.getAddress());
@@ -38,5 +40,13 @@ public class BluetoothConnection extends Connection{
         catch(ArrayIndexOutOfBoundsException e){
             throw new ConnectionException("No Bluetooth devices connected", e);
         }
+    }
+
+    public int getDevice() {
+        return device;
+    }
+
+    public void setDevice(int device) {
+        this.device = device;
     }
 }
