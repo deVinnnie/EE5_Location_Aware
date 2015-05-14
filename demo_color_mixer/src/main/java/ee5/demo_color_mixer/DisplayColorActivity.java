@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
@@ -18,21 +19,6 @@ import com.EE5.util.Tuple;
 import java.util.Map;
 
 public class DisplayColorActivity extends Activity {
-
-    String myColor;
-    String otherColor;
-    private Calculator calc;
-    private Handler loopHandler = new Handler();
-    private Runnable loopRunnable = new Runnable() {
-        @Override
-        public void run() {
-
-            changeColor(myColor, otherColor);
-
-            //Execute this code again after <sample_rate> milliseconds.
-            loopHandler.postDelayed(loopRunnable, 100);
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +62,6 @@ public class DisplayColorActivity extends Activity {
         super.onStop();
     }
 
-    /** Called just before the activity is destroyed. */
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        loopHandler.removeCallbacks(loopRunnable);
-    }
-
     /** Activity being restarted from stopped state. */
     @Override
     protected void onRestart() {
@@ -90,13 +69,11 @@ public class DisplayColorActivity extends Activity {
         setupColors();
     }
 
+    /** Called just before the activity is destroyed. */
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+    public void onDestroy() {
+        super.onDestroy();
+        loopHandler.removeCallbacks(loopRunnable);
     }
 
     @Override
@@ -121,13 +98,21 @@ public class DisplayColorActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
     public void changeColor(String myColor, String otherColor) {
         RelativeLayout background = (RelativeLayout) findViewById(R.id.myBackground);
         BackgroundColor mixedColor = BackgroundColor.WHITE;
         boolean inRange = checkDistance();
         if (!inRange) {
-            BackgroundColor firstColor = checkColor(myColor);
-            background.setBackgroundColor(Color.argb(firstColor.getA(), firstColor.getR(), firstColor.getG(), firstColor.getB()));
+            background.setBackgroundColor(Color.argb(mixedColor.getA(), mixedColor.getR(), mixedColor.getG(), mixedColor.getB()));
         }
         else  {
             mixedColor.setR(calculateR(myColor, otherColor));
@@ -198,7 +183,7 @@ public class DisplayColorActivity extends Activity {
      * Returns true when the distance between two phones is between 1 and 100 cm.
      * @return inRange
      */
-    public boolean checkDistance() {
+    private boolean checkDistance() {
         boolean inRange = false;
 
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
@@ -209,17 +194,11 @@ public class DisplayColorActivity extends Activity {
         for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
             calc.setX2(entry.getValue().element1.getX());
             calc.setY2(entry.getValue().element1.getY());
+            Log.d("checkserver", "check other phone x: " + calc.getX2() + " y: " + calc.getY2());
+            Log.i("T", entry.getValue().element2);
             break; //Only read the position of the first device.
         }
 
-        /*if (calc.getX1() == 0) {
-            return false;
-        }
-
-        calc.setX1(calc.getX1()-1);
-        calc.setY1(0);
-        calc.setX2(0);
-        calc.setY2(0);*/
         int distance = calc.calcDistance();
 
         if (distance >= 1 && distance <= 100) {
@@ -251,4 +230,19 @@ public class DisplayColorActivity extends Activity {
         // Start thread to change colors
         loopHandler.post(loopRunnable);
     }
+
+    private String myColor;
+    private String otherColor;
+    private Calculator calc;
+    private Handler loopHandler = new Handler();
+    private Runnable loopRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            changeColor(myColor, otherColor);
+
+            //Execute this code again after <sample_rate> milliseconds.
+            loopHandler.postDelayed(loopRunnable, 100);
+        }
+    };
 }
