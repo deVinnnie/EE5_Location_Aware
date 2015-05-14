@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.EE5.image_manipulation.PatternDetector;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
 import com.EE5.util.Tuple;
@@ -18,24 +18,19 @@ import com.EE5.util.Tuple;
 import java.util.Map;
 
 public class DisplayColorActivity extends Activity {
-    String msg = "Android : ";
-    int x;
+
+    String myColor;
+    String otherColor;
     private Calculator calc;
     private Handler loopHandler = new Handler();
     private Runnable loopRunnable = new Runnable() {
         @Override
         public void run() {
 
-            TextView myTextView = (TextView) findViewById(R.id.myTextView);
-            TextView otherTextView = (TextView) findViewById(R.id.otherTextView);
-            String myColor = myTextView.getText().toString();
-            String otherColor = otherTextView.getText().toString();
-
-            changeColor(myColor, otherColor, x);
-            x++;
+            changeColor(myColor, otherColor);
 
             //Execute this code again after <sample_rate> milliseconds.
-            loopHandler.postDelayed(loopRunnable, 200);
+            loopHandler.postDelayed(loopRunnable, 100);
         }
     };
 
@@ -53,28 +48,32 @@ public class DisplayColorActivity extends Activity {
     protected void onStart() {
         super.onStart();
         setupColors();
-        Log.d(msg, "The onStart() event");
     }
 
     /** Called when the activity has become visible. */
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(msg, "The onResume() event");
+        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        if(patternDetector != null) {
+            patternDetector.setup();
+        }
     }
 
     /** Called when another activity is taking focus. */
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(msg, "The onPause() event");
+        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        if(patternDetector != null) {
+            patternDetector.destroy();
+        }
     }
 
     /** Called when the activity is no longer visible. */
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(msg, "The onStop() event");
     }
 
     /** Called just before the activity is destroyed. */
@@ -82,8 +81,6 @@ public class DisplayColorActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
         loopHandler.removeCallbacks(loopRunnable);
-        x = 0;
-        Log.d(msg, "The onDestroy() event");
     }
 
     /** Activity being restarted from stopped state. */
@@ -124,33 +121,32 @@ public class DisplayColorActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void changeColor(String myColor, String otherColor, int x) {
+    public void changeColor(String myColor, String otherColor) {
         RelativeLayout background = (RelativeLayout) findViewById(R.id.myBackground);
-        /*BackgroundColor mixedColor = checkColor(myColor);
+        BackgroundColor mixedColor = BackgroundColor.WHITE;
         boolean inRange = checkDistance();
-        while (!inRange) {
-            inRange = checkDistance();
+        if (!inRange) {
+            BackgroundColor firstColor = checkColor(myColor);
+            background.setBackgroundColor(Color.argb(firstColor.getA(), firstColor.getR(), firstColor.getG(), firstColor.getB()));
         }
-        while(inRange) {
+        else  {
             mixedColor.setR(calculateR(myColor, otherColor));
             mixedColor.setG(calculateG(myColor, otherColor));
             mixedColor.setB(calculateB(myColor, otherColor));
             background.setBackgroundColor(Color.argb(mixedColor.getA(), mixedColor.getR(), mixedColor.getG(), mixedColor.getB()));
-            inRange = checkDistance();
-        }*/
-
-            /*mixedColor.setR(calculateR(myColor, otherColor, x));
-            mixedColor.setG(calculateG(myColor, otherColor));
-            mixedColor.setB(calculateB(myColor, otherColor));*/
-            background.setBackgroundColor(Color.argb(255, calculateR(myColor, otherColor, x), 0, 255));
+        }
     }
 
-    private int calculateR(String myColor, String otherColor, int x) {
+    private int calculateR(String myColor, String otherColor) {
         int rValue;
         BackgroundColor mColor = checkColor(myColor);
         BackgroundColor oColor = checkColor(otherColor);
-        //rValue = Math.min(((mColor.getR()) + (oColor.getR()-(2*calc.calcDistance()))), 255);
-        rValue = Math.min(((mColor.getR()) + (oColor.getR()-255+x)), 255);
+        if (oColor.getR() == 255) {
+            rValue = Math.min(((mColor.getR()) + (oColor.getR() - (2 * calc.calcDistance()))), 255);
+        }
+        else {
+            rValue = Math.min(((mColor.getR()) + (oColor.getR())), 255);
+        }
         return rValue;
     }
 
@@ -158,7 +154,12 @@ public class DisplayColorActivity extends Activity {
         int gValue;
         BackgroundColor mColor = checkColor(myColor);
         BackgroundColor oColor = checkColor(otherColor);
-        gValue = Math.min(((mColor.getG()) + (oColor.getG()-(2*calc.calcDistance()))),255);
+        if (oColor.getG() == 255) {
+            gValue = Math.min(((mColor.getG()) + (oColor.getG() - (2 * calc.calcDistance()))), 255);
+        }
+        else {
+            gValue = Math.min(((mColor.getG()) + (oColor.getG())), 255);
+        }
         return gValue;
     }
 
@@ -166,7 +167,12 @@ public class DisplayColorActivity extends Activity {
         int bValue;
         BackgroundColor mColor = checkColor(myColor);
         BackgroundColor oColor = checkColor(otherColor);
-        bValue = Math.min(((mColor.getB()) + (oColor.getB()-(2*calc.calcDistance()))),255);
+        if (oColor.getB() == 255) {
+            bValue = Math.min(((mColor.getB()) + (oColor.getB() - (2 * calc.calcDistance()))), 255);
+        }
+        else {
+            bValue = Math.min(((mColor.getB()) + (oColor.getB())), 255);
+        }
         return bValue;
     }
 
@@ -189,11 +195,11 @@ public class DisplayColorActivity extends Activity {
     }
 
     /**
-     * Returns true when the distance between two phones is between 10 and 100 cm.
+     * Returns true when the distance between two phones is between 1 and 100 cm.
      * @return inRange
      */
     public boolean checkDistance() {
-        /*boolean inRange = false;
+        boolean inRange = false;
 
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
         calc.setX1(ownPosition.getX());
@@ -206,24 +212,30 @@ public class DisplayColorActivity extends Activity {
             break; //Only read the position of the first device.
         }
 
+        /*if (calc.getX1() == 0) {
+            return false;
+        }
+
+        calc.setX1(calc.getX1()-1);
+        calc.setY1(0);
+        calc.setX2(0);
+        calc.setY2(0);*/
         int distance = calc.calcDistance();
 
-        if (distance >= 10 && distance <= 100) {
+        if (distance >= 1 && distance <= 100) {
             inRange = true;
         }
 
-        return inRange;*/
-        return true;
+        return inRange;
     }
 
     private void setupColors() {
         calc = new Calculator();
-        x = 0;
 
         // Get the colors from the intent
         Intent intent = getIntent();
-        String myColor = intent.getStringExtra(ColorSelectActivity.EXTRA_MYCOLOR);
-        String otherColor = intent.getStringExtra(ColorSelectActivity.EXTRA_OTHERCOLOR);
+        myColor = intent.getStringExtra(ColorSelectActivity.EXTRA_MYCOLOR);
+        otherColor = intent.getStringExtra(ColorSelectActivity.EXTRA_OTHERCOLOR);
 
         // Show selected colors as text.
         TextView myTextView = (TextView) findViewById(R.id.myTextView);

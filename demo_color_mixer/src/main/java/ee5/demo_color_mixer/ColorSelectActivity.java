@@ -19,8 +19,8 @@ public class ColorSelectActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"), 0);
         setContentView(R.layout.activity_color_select);
+        startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"), 0);
         setupColorSelect();
     }
 
@@ -90,21 +90,15 @@ public class ColorSelectActivity extends Activity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        setupColorSelect();
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
         super.onSaveInstanceState(savedInstanceState);
     }
 
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
-        if(patternDetector != null) {
-            patternDetector.setup();
-        }
     }
 
     /** Called when the user clicks the Send button */

@@ -1,13 +1,9 @@
 package ee5.demo_color_mixer;
 
-/**
- * Created by Matthias on 11/05/2015.
- */
 public class Calculator  {
     private double x1,x2,y1,y2;
 
-    public Calculator(){
-
+    public Calculator() {
     }
 
     public int calcDistance() {
