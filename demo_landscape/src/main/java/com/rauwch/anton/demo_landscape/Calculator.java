@@ -21,9 +21,15 @@ public class Calculator
 
     public void calcDiff()
     {
-        xDiff = (float) (x2 - x1);
-        yDiff = (float)(y2 - y1);
-        Log.d("diff"," xDiff: " + xDiff + " yDiff:" + yDiff );
+        if (x1 != Double.NaN || y1 != Double.NaN)
+        {
+            xDiff = (float) (x2 - x1);
+            yDiff = (float)(y2 - y1);
+            Log.d("diff"," xDiff: " + xDiff + " yDiff:" + yDiff );
+        }
+
+
+
     }
 
     /** calculate angle between two phones and add own rotation

@@ -2,9 +2,11 @@ package com.rauwch.anton.demo_jaws.states;
 
 import android.util.Log;
 
+import com.EE5.math.Calc;
 import com.EE5.server.Server;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
+import com.EE5.util.Point2D;
 import com.EE5.util.Tuple;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -28,6 +30,7 @@ import java.util.Map;
 public class Shark extends GameState
 {
     private Calculator calc;
+    private double distance;
     private Sprite sprite;
     private Viewport viewport;
     private Texture texture;
@@ -45,12 +48,21 @@ public class Shark extends GameState
     {
         super(gsm);
         batch = new SpriteBatch();
+        distance = 0;
         texture = new Texture("shark.jpg");
         calc = new Calculator();
         sprite = new Sprite(texture);
         sprite.setPosition(Gdx.graphics.getWidth() / 2 - sprite.getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - sprite.getHeight() / 2);
         sprite.setScale(1,1);
+
+        Position otherPosition = new Position(1.0,0.0,0.0,1.0);
+        for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
+            calc.x2 = entry.getValue().element1.getX();
+            calc.y2 = entry.getValue().element1.getY();
+            otherPosition = entry.getValue().element1;
+            break; //Only read the position of the first device.
+        }
     }
 
     public void handleInput()
@@ -78,17 +90,20 @@ public class Shark extends GameState
         calc.y1 = ownPosition.getY();
 
 
+        Position otherPosition = new Position(0.0,0.0,0.0,0.0);
+        //Iterate over other devices.
         for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
             calc.x2 = entry.getValue().element1.getX();
             calc.y2 = entry.getValue().element1.getY();
-            Log.d("checkserver", "check other phone x: " + calc.x2 + " y: " + calc.y2 );
-            Log.i("T", entry.getValue().element2);
+            otherPosition = entry.getValue().element1;
             break; //Only read the position of the first device.
         }
 
+        Log.d("distance", "otherPostion x: " + otherPosition.getX() + "   y: " +otherPosition.getY());
+        Calc algorithmCalc = new Calc();
+       distance = algorithmCalc.getDistance(ownPosition,otherPosition);
 
-
-        calc.calcDistance();
+        //calc.calcDistance();
         changeStat();
         if(prevState != state)
         {
@@ -136,20 +151,20 @@ public class Shark extends GameState
     private void changeStat()
     {
 
-        if(calc.distance > 100)
+        if(distance > 100)
             state=0;
-        else if(calc.distance > 50)
+        else if(distance > 50)
             state = 1;
-        else if(calc.distance > 30)
+        else if(distance > 30)
             state = 2;
-        else if(calc.distance >20)
+        else if(distance >20)
             state = 3;
-        else if(calc.distance >10)
+        else if(distance >10)
             state = 4;
-        else if(calc.distance >0)
+        else if(distance >0)
             state = 5;
 
-        Log.d("distance", " the distance is " + calc.distance + " with state" + state);
+        Log.d("distance", " the distance is " + distance + " with state" + state);
     }
     public int getState() {
         return state;

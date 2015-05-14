@@ -26,7 +26,7 @@ public class Game extends ApplicationAdapter {
     @Override
     public void create ()
     {
-        camera = new OrthographicCamera(1280, 720);
+        camera = new OrthographicCamera(720, 1280);
         calc = new Calculator();
         batch = new SpriteBatch();
         texture = new Texture("waldo.jpg");
@@ -54,14 +54,40 @@ public class Game extends ApplicationAdapter {
         sprite.draw(batch);
 
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
-
-        calc.x1 = ownPosition.getX();
-        calc.y1 = ownPosition.getY();
+        if (!(Double.isNaN(ownPosition.getX()) || Double.isNaN(ownPosition.getY()))) {
+            Log.d("noNan","noNan");
+            calc.x1 = ownPosition.getX();
+            calc.y1 = ownPosition.getY();
+        }
         //Log.d("arrows","Own postion " + calc.x1 + " " + calc.y1 );
         //Iterate over other devices.
         calc.calcDiff();
-        sprite.setPosition(-(sprite.getWidth() / 2 + calc.xDiff*100), -(sprite.getHeight() / 2 + calc.yDiff*100
-        ));
+        float localx = sprite.getWidth() / 2 + calc.xDiff*100;
+        float localy = sprite.getHeight() /2  + calc.yDiff*100;
+
+        Log.d("local","localx: " + localx + " localy: " + localy);
+        if(localx > sprite.getWidth() - 360)
+        {
+            localx = sprite.getWidth() - 360;
+
+        }
+        if( localy > sprite.getHeight() - 640)
+        {
+            localy = sprite.getHeight() - 640;
+        }
+        if(localx < 0 + 360)
+        {
+            localx =  0 + 360;
+        }
+
+        if( localy < 0 + 640)
+        {
+            localy = 0 + 640;
+        }
+
+
+        sprite.setPosition(-localx, -localy);
+
 
 
         batch.end();
