@@ -112,7 +112,7 @@ public class DisplayColorActivity extends Activity {
         BackgroundColor mixedColor = BackgroundColor.WHITE;
         boolean inRange = checkDistance();
         if (!inRange) {
-            background.setBackgroundColor(Color.argb(mixedColor.getA(), mixedColor.getR(), mixedColor.getG(), mixedColor.getB()));
+            // Do nothing
         }
         else  {
             mixedColor.setR(calculateR(myColor, otherColor));
