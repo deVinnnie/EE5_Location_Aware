@@ -345,4 +345,12 @@ public class height_sound_app extends AppCompatActivity {
 
 
     }
+    public void get_reference(View view) {
+        // Do something in response to button
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        beginheight= ownPosition.getHeight();
+        TextView myTextView = (TextView) findViewById(R.id.textView6);
+        myTextView.setText("" + beginheight);
+
+    }
 }

@@ -77,4 +77,16 @@
         android:textSize="25dp"
         android:text="Reference Height:" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="refresh reference"
+        android:id="@+id/button3"
+        android:layout_alignTop="@+id/textView5"
+        android:layout_alignRight="@+id/button2"
+        android:layout_alignEnd="@+id/button2"
+        android:background="#ffffff00"
+        android:textSize="20dp"
+        android:onClick="get_reference" />
+
 </RelativeLayout>
