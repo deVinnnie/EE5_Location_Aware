@@ -1,22 +1,30 @@
 package com.example.david.demo_height_sound;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.os.SystemClock;
-import android.support.v7.app.ActionBarActivity;
+/*import android.os.SystemClock;
+import android.support.v7.app.ActionBarActivity;*/
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
+//import android.widget.Button;
 
+import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.image_manipulation.PatternDetector;
+import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
 
 
 public class height_sound_app extends AppCompatActivity {
 
+
+    /*public Context contexto;
+   public MediaPlayer mp;*/
     protected MediaPlayer sound1;
     protected MediaPlayer sound2;
     protected MediaPlayer sound3;
@@ -26,16 +34,146 @@ public class height_sound_app extends AppCompatActivity {
     protected MediaPlayer sound7;
     protected MediaPlayer sound8;
     public double height;
-    private boolean stopped;
-    private double prevheight;
+    private boolean stopped=false;
+    PatternCoordinator pattern;
+   // private double prevheight;*/
+
+    private Handler loopHandler = new Handler();
+    private Runnable loopRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+
+            TextView myTextView = (TextView) findViewById(R.id.textView3);
+
+            myTextView.setText("" + height);
+
+           if (height <= 50) {
+
+
+               sound1.setVolume(1,1);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+            } else if (height <= 70) {
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(1,1);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+
+           } else if (height <= 90) {
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(1,1);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+            } else if (height < 110) {
+
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(1,1);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+
+            } else if (height < 130) {
+
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(1,1);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+
+            } else if (height < 150) {
+
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(1,1);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+            } else if (height < 170) {
+
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(1,1);
+               sound8.setVolume(0,0);
+
+
+            } else {
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(1,1);
+
+            }
+
+            //height++;
+            height= ownPosition.getHeight();
+            /*if(stopped){
+                finish();
+
+            }*/
+            //Execute this code again after <sample_rate> milliseconds.
+            loopHandler.postDelayed(loopRunnable, 200);
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_height_sound_app);
         startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"), 0);
-        final Button startbutton = (Button) findViewById(R.id.button2);
-        final Button stopbutton = (Button) findViewById(R.id.button);
+        setContentView(R.layout.activity_height_sound_app);
+
+        /*final Button startbutton = (Button) findViewById(R.id.button2);
+        final Button stopbutton = (Button) findViewById(R.id.button);*/
         sound1 = MediaPlayer.create(this, R.raw.sound1);
         sound2 = MediaPlayer.create(this, R.raw.sound2);
         sound3 = MediaPlayer.create(this, R.raw.sound3);
@@ -44,14 +182,37 @@ public class height_sound_app extends AppCompatActivity {
         sound6 = MediaPlayer.create(this, R.raw.sound6);
         sound7 = MediaPlayer.create(this, R.raw.sound7);
         sound8 = MediaPlayer.create(this, R.raw.sound8);
-        sound1.setVolume(1,1);sound2.setVolume(1,1);sound3.setVolume(1,1);sound4.setVolume(1,1);
-        sound5.setVolume(1,1);sound6.setVolume(1,1);sound7.setVolume(1,1);sound8.setVolume(1, 1);
+        sound1.setVolume(0,0);
+        sound2.setVolume(0,0);
+        sound3.setVolume(0,0);
+        sound4.setVolume(0,0);
+        sound5.setVolume(0,0);
+        sound6.setVolume(0,0);
+        sound7.setVolume(0,0);
+        sound8.setVolume(0,0);
 
-        height=50;
-        /*sound8.start();
-        sound8.setLooping(true);*/
+        /*mp.setVolume(1,1);
+        contexto=this;*/
 
-        startbutton.setOnClickListener(new View.OnClickListener() {
+        //height=30;
+        sound1.start();
+        sound1.setLooping(true);
+        sound2.start();
+        sound2.setLooping(true);
+        sound3.start();
+        sound3.setLooping(true);
+        sound4.start();
+        sound4.setLooping(true);
+        sound5.start();
+        sound5.setLooping(true);
+        sound6.start();
+        sound6.setLooping(true);
+        sound7.start();
+        sound7.setLooping(true);
+        sound8.start();
+        sound8.setLooping(true);
+
+       /* startbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 /*long millis;
                 millis = currentTimeMillis();*/
@@ -59,95 +220,23 @@ public class height_sound_app extends AppCompatActivity {
                 //while (!stopped) {
 
                    // prevheight=height;
-                    if (height < 50) {
-                        sound1.start();
-                        sound1.setLooping(true);
 
-
-                    } else if (height < 70) {
-
-                        sound2.start();
-                        sound2.setLooping(true);
-
-
-                    } else if (height < 90) {
-
-                        sound3.start();
-                        sound3.setLooping(true);
-
-
-                    } else if (height < 110) {
-
-                        sound4.start();
-                        sound4.setLooping(true);
-
-
-                    } else if (height < 130) {
-
-                        sound5.start();
-                        sound5.setLooping(true);
-
-
-                    } else if (height < 150) {
-                        sound6.start();
-                        sound6.setLooping(true);
-
-
-                    } else if (height < 170) {
-
-                        sound7.start();
-                        sound7.setLooping(true);
-
-
-                    } else {
-
-                        sound8.start();
-                        sound8.setLooping(true);
-
-                    }
-
-                    //SystemClock.sleep(500);
-                    if (height != prevheight) {
-                        sound1.pause();
-                        sound1.seekTo(0);
-                        sound2.pause();
-                        sound2.seekTo(0);
-                        sound3.pause();
-                        sound3.seekTo(0);
-                        sound4.pause();
-                        sound4.seekTo(0);
-                        sound5.pause();
-                        sound5.seekTo(0);
-                        sound6.pause();
-                        sound6.seekTo(0);
-                        sound7.pause();
-                        sound7.seekTo(0);
-                        sound8.pause();
-                        sound8.seekTo(0);
-                    }
                     //height=160;
-                }
+
            // }
-        });
+       // });*/
 
 
-        stopbutton.setOnClickListener(new View.OnClickListener() {
+        /*stopbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 stopped=true;
-                sound1.release();
-                sound2.release();
-                sound3.release();
-                sound4.release();
-                sound5.release();
-                sound6.release();
-                sound7.release();
-                sound8.release();
+
                 startbutton.setText("de app is nu gestopt!!!");
             }
         });
 
         startbutton.setEnabled(true);
-        stopbutton.setEnabled(true);
+        stopbutton.setEnabled(true);*/
     }
 
     @Override
@@ -192,5 +281,32 @@ public class height_sound_app extends AppCompatActivity {
         if(patternDetector != null) {
             patternDetector.setup();
         }
+    }
+    public void START(View view) {
+        // Do something in response to button
+
+        loopHandler.post(loopRunnable);
+
+
+
+        //SystemClock.sleep(500);
+
+
+    }
+    public void STOP(View view) {
+        // Do something in response to button
+        stopped=true;
+        sound1.release();
+        sound2.release();
+        sound3.release();
+        sound4.release();
+        sound5.release();
+        sound6.release();
+        sound7.release();
+        sound8.release();
+        //mp.release();
+        finish();
+
+
     }
 }
