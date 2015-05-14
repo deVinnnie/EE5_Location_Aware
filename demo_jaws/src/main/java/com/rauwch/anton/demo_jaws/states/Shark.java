@@ -31,6 +31,7 @@ public class Shark extends GameState
 {
     private Calculator calc;
     private double distance;
+
     private Sprite sprite;
     private Viewport viewport;
     private Texture texture;
@@ -99,7 +100,7 @@ public class Shark extends GameState
             break; //Only read the position of the first device.
         }
 
-        Log.d("distance", "otherPostion x: " + otherPosition.getX() + "   y: " +otherPosition.getY());
+        //Log.d("distance", "otherPostion x: " + otherPosition.getX() + "   y: " +otherPosition.getY());
         Calc algorithmCalc = new Calc();
        distance = algorithmCalc.getDistance(ownPosition,otherPosition);
 
