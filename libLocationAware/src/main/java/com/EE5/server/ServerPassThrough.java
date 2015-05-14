@@ -2,6 +2,7 @@ package com.EE5.server;
 
 import android.os.Handler;
 
+import com.EE5.server.data.Device;
 import com.EE5.util.GlobalResources;
 
 /**
@@ -18,8 +19,8 @@ public class ServerPassThrough {
         public void run() {
             try {
                 Server server = GlobalResources.getInstance().getServer();
-                //server.getDevices().getPatternMap().put("0001", GlobalResources.getInstance().getDevice().getPattern());
-                server.getDevices().getMap().put("0001", GlobalResources.getInstance().getDevice().getPosition());
+                Device device = GlobalResources.getInstance().getDevice();
+                server.getDevices().add("0001", device.getPosition(), "");
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.EE5.client.AbstractClientInputThread;
 import com.EE5.client.Client;
 import com.EE5.client.LatencyTest;
+import com.EE5.server.data.DeviceList;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
 
@@ -39,30 +40,10 @@ public class PrimitiveClientInputThread extends AbstractClientInputThread {
                         double y = id.readDouble();
                         double z = id.readDouble();
                         double rotation = id.readDouble();
+                        String data = id.readUTF();
 
-                        /*double x1 = id.readDouble();
-                        double y1 = id.readDouble();
-
-                        double x2 = id.readDouble();
-                        double y2 = id.readDouble();
-
-                        double x3 = id.readDouble();
-                        double y3 = id.readDouble();
-
-                        double x4 = id.readDouble();
-                        double y4 = id.readDouble();
-
-                        double angle = id.readDouble();
-
-                        PatternCoordinator pc = new PatternCoordinator(
-                                new Point(x1,y1),
-                                new Point(x2,y2),
-                                new Point(x3,y3),
-                                new Point(x4,y4),
-                                angle
-                        );*/
-
-                        GlobalResources.getInstance().getDevices().getMap().put(device, new Position(x,y,rotation, z));
+                        DeviceList devices = GlobalResources.getInstance().getDevices();
+                        devices.add(device, new Position(x,y,rotation, z), data);
                     }
                 }
                 long timeDif = LatencyTest.getLatency();

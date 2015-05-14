@@ -5,6 +5,7 @@ import android.util.Log;
 import com.EE5.server.Server;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
+import com.EE5.util.Tuple;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -58,7 +59,7 @@ public class PrimitiveSocketTask extends SocketTask {
 
             String uuid = id.readUTF();
             Log.i("UUID",uuid);
-            this.getServer().getDevices().getMap().put(uuid,new Position(0,0,0,0));
+            this.getServer().getDevices().add(uuid, new Position(0,0,0,0), "");
 
             //Keep reading from socket.
             while(true){
@@ -66,72 +67,29 @@ public class PrimitiveSocketTask extends SocketTask {
                 double y = id.readDouble();
                 double z = id.readDouble();
                 double rotation = id.readDouble();
-
-                /*double x1 = id.readDouble();
-                double y1 = id.readDouble();
-
-                double x2 = id.readDouble();
-                double y2 = id.readDouble();
-
-                double x3 = id.readDouble();
-                double y3 = id.readDouble();
-
-                double x4 = id.readDouble();
-                double y4 = id.readDouble();
-
-                double angle = id.readDouble();
-
-                PatternCoordinator pattern = new PatternCoordinator(
-                        new Point(x1,y1),
-                        new Point(x2,y2),
-                        new Point(x3,y3),
-                        new Point(x4,y4),
-                        angle
-                );*/
-
-                //Log.i("Position", "" + "(" + posX + "," + posY  +"," + rotation + ")");
+                String data = id.readUTF();
 
                 Position position = new Position(x, y, rotation,z);
-                this.getServer().getDevices().getMap().put(uuid,position);
-                GlobalResources.getInstance().getDevices().getMap().put(
-                        uuid,
-                        position
-                );
+                this.getServer().getDevices().add(uuid, position, data);
+                GlobalResources.getInstance().getDevices().add(uuid, position, data);
 
                 //Iterate over all devices and send the stored position over the current connection.
-                for (Map.Entry<String, Position> entry : this.getServer().getDevices().getMap().entrySet())
+                for (Map.Entry<String, Tuple<Position, String>> entry : this.getServer().getDevices().getMap().entrySet())
                 {
                     //Send position when the device is not the originating device.
                     if(!entry.getKey().equals(uuid)) {
                         Log.i("ID", entry.getKey());
                         od.writeUTF(entry.getKey());
-                        Position pos = entry.getValue();
+                        Position entryPosition = entry.getValue().element1;
 
-                        od.writeDouble(pos.getX());
-                        od.writeDouble(pos.getY());
-                        od.writeDouble(pos.getHeight());
-                        od.writeDouble(pos.getRotation());
+                        od.writeDouble(entryPosition.getX());
+                        od.writeDouble(entryPosition.getY());
+                        od.writeDouble(entryPosition.getHeight());
+                        od.writeDouble(entryPosition.getRotation());
+
+                        String entryData = entry.getValue().element2;
+                        od.writeUTF(entryData);
                     }
-                    /*if(!entry.getKey().equals(uuid)) {
-                        Log.i("ID", entry.getKey());
-                        od.writeUTF(entry.getKey());
-
-                        PatternCoordinator pc = entry.getValue();
-
-                        od.writeDouble(pc.getNum1().x);
-                        od.writeDouble(pc.getNum1().y);
-
-                        od.writeDouble(pc.getNum2().x);
-                        od.writeDouble(pc.getNum2().y);
-
-                        od.writeDouble(pc.getNum3().x);
-                        od.writeDouble(pc.getNum3().y);
-
-                        od.writeDouble(pc.getNum4().x);
-                        od.writeDouble(pc.getNum4().y);
-
-                        od.writeDouble(pc.getAngle());
-                    }*/
                 }
 
                 this.getServer().alertify(1,null, 1);

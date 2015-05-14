@@ -27,3 +27,4 @@ proguard/
 
 /.idea/*
 *.iml
+/openCVLibrary2410/.idea/*

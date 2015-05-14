@@ -1,16 +1,30 @@
 package com.example.david.demo_height_sound;
 
+import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
-import android.support.v7.app.ActionBarActivity;
+/*import android.os.SystemClock;
+import android.support.v7.app.ActionBarActivity;*/
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
+//import android.widget.Button;
+
+import com.EE5.image_manipulation.PatternCoordinator;
+import com.EE5.image_manipulation.PatternDetector;
+import com.EE5.server.data.Position;
+import com.EE5.util.GlobalResources;
+
+/**Class for the implementation of app with its buttons and data for height --> linked to the sound**/
+public class height_sound_app extends AppCompatActivity {
 
 
-public class height_sound_app extends ActionBarActivity {
-
+    /*public Context contexto;
+   public MediaPlayer mp;*/
     protected MediaPlayer sound1;
     protected MediaPlayer sound2;
     protected MediaPlayer sound3;
@@ -20,13 +34,154 @@ public class height_sound_app extends ActionBarActivity {
     protected MediaPlayer sound7;
     protected MediaPlayer sound8;
     public double height;
+    private double beginheight;
+    private boolean stopped=false;
+    PatternCoordinator pattern;
+   // private double prevheight;*/
 
+
+    /** the handler with the instructions the program needs to complete when the app is running(after pressing the start button
+     * this is linking the height of the reference value with the real value read out from the position**/
+    private Handler loopHandler = new Handler();
+    private Runnable loopRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+
+            TextView myTextView = (TextView) findViewById(R.id.textView3);
+
+            myTextView.setText("" + height);
+
+           if (height <= (13*beginheight/20)) {
+
+
+               sound1.setVolume(1,1);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+            } else if (height <= (14*beginheight/20)) {
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(1,1);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+
+           } else if (height <= (beginheight*15/20)) {
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(1,1);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+            } else if (height < (beginheight*16/20)) {
+
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(1,1);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+
+            } else if (height < (beginheight*17/20)) {
+
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(1,1);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+
+            } else if (height < (beginheight*18/20)) {
+
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(1,1);
+               sound7.setVolume(0,0);
+               sound8.setVolume(0,0);
+
+
+            } else if (height < (beginheight*19/20)) {
+
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(1,1);
+               sound8.setVolume(0,0);
+
+
+            } else {
+
+               sound1.setVolume(0,0);
+               sound2.setVolume(0,0);
+               sound3.setVolume(0,0);
+               sound4.setVolume(0,0);
+               sound5.setVolume(0,0);
+               sound6.setVolume(0,0);
+               sound7.setVolume(0,0);
+               sound8.setVolume(1,1);
+
+            }
+
+            //height++;
+            height= ownPosition.getHeight();
+            /*if(stopped){
+                finish();
+
+            }*/
+            //Execute this code again after <sample_rate> milliseconds.
+            loopHandler.postDelayed(loopRunnable, 200);
+
+        }
+    };
+
+    /**when the application gets created, it should initialise the 8 sounds it needs to play without making any sound heard by the user
+     * it should also register the reference value depending on its starting height and return this value to the user by putting it in the textview**/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"), 0);
         setContentView(R.layout.activity_height_sound_app);
-        final Button startbutton = (Button) findViewById(R.id.button);
-        final Button stopbutton = (Button) findViewById(R.id.button2);
+
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        beginheight= ownPosition.getHeight();
+        /*final Button startbutton = (Button) findViewById(R.id.button2);
+        final Button stopbutton = (Button) findViewById(R.id.button);*/
         sound1 = MediaPlayer.create(this, R.raw.sound1);
         sound2 = MediaPlayer.create(this, R.raw.sound2);
         sound3 = MediaPlayer.create(this, R.raw.sound3);
@@ -35,179 +190,64 @@ public class height_sound_app extends ActionBarActivity {
         sound6 = MediaPlayer.create(this, R.raw.sound6);
         sound7 = MediaPlayer.create(this, R.raw.sound7);
         sound8 = MediaPlayer.create(this, R.raw.sound8);
-        sound1.setVolume(1,1);sound2.setVolume(1,1);sound3.setVolume(1,1);sound4.setVolume(1,1);
-        sound5.setVolume(1,1);sound6.setVolume(1,1);sound7.setVolume(1,1);sound8.setVolume(1,1);
+        sound1.setVolume(0,0);
+        sound2.setVolume(0,0);
+        sound3.setVolume(0,0);
+        sound4.setVolume(0,0);
+        sound5.setVolume(0,0);
+        sound6.setVolume(0,0);
+        sound7.setVolume(0,0);
+        sound8.setVolume(0,0);
+        TextView myTextView = (TextView) findViewById(R.id.textView6);
 
-        startbutton.setOnClickListener(new View.OnClickListener() {
+        myTextView.setText("" + beginheight);
+
+        /*mp.setVolume(1,1);
+        contexto=this;*/
+
+        //height=30;
+        sound1.start();
+        sound1.setLooping(true);
+        sound2.start();
+        sound2.setLooping(true);
+        sound3.start();
+        sound3.setLooping(true);
+        sound4.start();
+        sound4.setLooping(true);
+        sound5.start();
+        sound5.setLooping(true);
+        sound6.start();
+        sound6.setLooping(true);
+        sound7.start();
+        sound7.setLooping(true);
+        sound8.start();
+        sound8.setLooping(true);
+
+       /* startbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 /*long millis;
                 millis = currentTimeMillis();*/
+                    //stopped=false;
+                //while (!stopped) {
 
-                if (height < 50) {
-                    sound1.start();
-                    sound1.setLooping(true);
-                    sound2.pause();
-                    sound2.seekTo(0);
-                    sound3.pause();
-                    sound3.seekTo(0);
-                    sound4.pause();
-                    sound4.seekTo(0);
-                    sound5.pause();
-                    sound5.seekTo(0);
-                    sound6.pause();
-                    sound6.seekTo(0);
-                    sound7.pause();
-                    sound7.seekTo(0);
-                    sound8.pause();
-                    sound8.seekTo(0);
+                   // prevheight=height;
 
-                } else if (height < 70) {
-                    sound1.pause();
-                    sound1.seekTo(0);
-                    sound2.start();
-                    sound2.setLooping(true);
-                    sound3.pause();
-                    sound3.seekTo(0);
-                    sound4.pause();
-                    sound4.seekTo(0);
-                    sound5.pause();
-                    sound5.seekTo(0);
-                    sound6.pause();
-                    sound6.seekTo(0);
-                    sound7.pause();
-                    sound7.seekTo(0);
-                    sound8.pause();
-                    sound8.seekTo(0);
+                    //height=160;
 
-                } else if (height < 90) {
-                    sound1.pause();
-                    sound1.seekTo(0);
-                    sound2.pause();
-                    sound2.seekTo(0);
-                    sound3.start();
-                    sound3.setLooping(true);
-                    sound4.pause();
-                    sound4.seekTo(0);
-                    sound5.pause();
-                    sound5.seekTo(0);
-                    sound6.pause();
-                    sound6.seekTo(0);
-                    sound7.pause();
-                    sound7.seekTo(0);
-                    sound8.pause();
-                    sound8.seekTo(0);
-
-                } else if (height < 110) {
-                    sound1.pause();
-                    sound1.seekTo(0);
-                    sound2.pause();
-                    sound2.seekTo(0);
-                    sound3.pause();
-                    sound3.seekTo(0);
-                    sound4.start();
-                    sound4.setLooping(true);
-                    sound5.pause();
-                    sound5.seekTo(0);
-                    sound6.pause();
-                    sound6.seekTo(0);
-                    sound7.pause();
-                    sound7.seekTo(0);
-                    sound8.pause();
-                    sound8.seekTo(0);
-
-                } else if (height < 130) {
-                    sound1.pause();
-                    sound1.seekTo(0);
-                    sound2.pause();
-                    sound2.seekTo(0);
-                    sound3.pause();
-                    sound3.seekTo(0);
-                    sound4.pause();
-                    sound4.seekTo(0);
-                    sound5.start();
-                    sound5.setLooping(true);
-                    sound6.pause();
-                    sound6.seekTo(0);
-                    sound7.pause();
-                    sound7.seekTo(0);
-                    sound8.pause();
-                    sound8.seekTo(0);
-
-                } else if (height < 150) {
-                    sound1.pause();
-                    sound1.seekTo(0);
-                    sound2.pause();
-                    sound2.seekTo(0);
-                    sound3.pause();
-                    sound3.seekTo(0);
-                    sound4.pause();
-                    sound4.seekTo(0);
-                    sound5.pause();
-                    sound5.seekTo(0);
-                    sound6.start();
-                    sound6.setLooping(true);
-                    sound7.pause();
-                    sound7.seekTo(0);
-                    sound8.pause();
-                    sound8.seekTo(0);
-
-                } else if (height < 170) {
-                    sound1.pause();
-                    sound1.seekTo(0);
-                    sound2.pause();
-                    sound2.seekTo(0);
-                    sound3.pause();
-                    sound3.seekTo(0);
-                    sound4.pause();
-                    sound4.seekTo(0);
-                    sound5.pause();
-                    sound5.seekTo(0);
-                    sound6.pause();
-                    sound6.seekTo(0);
-                    sound7.start();
-                    sound7.setLooping(true);
-                    sound8.pause();
-                    sound8.seekTo(0);
-
-                } else {
-                    sound1.pause();
-                    sound1.seekTo(0);
-                    sound2.pause();
-                    sound2.seekTo(0);
-                    sound3.pause();
-                    sound3.seekTo(0);
-                    sound4.pause();
-                    sound4.seekTo(0);
-                    sound5.pause();
-                    sound5.seekTo(0);
-                    sound6.pause();
-                    sound6.seekTo(0);
-                    sound7.pause();
-                    sound7.seekTo(0);
-                    sound8.start();
-                    sound8.setLooping(true);
-
-                }
-            }
-        });
+           // }
+       // });*/
 
 
-        stopbutton.setOnClickListener(new View.OnClickListener() {
+        /*stopbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                sound1.stop();
-                sound2.stop();
-                sound3.stop();
-                sound4.stop();
-                sound5.stop();
-                sound6.stop();
-                sound7.stop();
-                sound8.stop();
-                startbutton.setText("er is gedrukt");
+                stopped=true;
+
+                startbutton.setText("de app is nu gestopt!!!");
             }
         });
 
         startbutton.setEnabled(true);
-        stopbutton.setEnabled(true);
+        stopbutton.setEnabled(true);*/
     }
 
     @Override
@@ -230,5 +270,99 @@ public class height_sound_app extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    /**when the application closes, it should stop the runnable, end the looping stop the sounds and release them**/
+    @Override
+    protected void onDestroy() {
+        loopHandler.removeCallbacks(loopRunnable);
+
+        sound1.setLooping(false);
+        sound2.setLooping(false);
+        sound3.setLooping(false);
+        sound4.setLooping(false);
+        sound5.setLooping(false);
+        sound6.setLooping(false);
+        sound7.setLooping(false);
+        sound8.setLooping(false);
+        sound1.stop();
+        sound2.stop();
+        sound3.stop();
+        sound4.stop();
+        sound5.stop();
+        sound6.stop();
+        sound7.stop();
+        sound8.stop();
+
+        sound1.release();
+        sound2.release();
+        sound3.release();
+        sound4.release();
+        sound5.release();
+        sound6.release();
+        sound7.release();
+        sound8.release();
+        super.onDestroy();
+    }
+
+    /**when the application is paused, the application should register its reference value**/
+    @Override
+    protected void onPause() {
+        super.onPause();
+        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        beginheight= ownPosition.getHeight();
+        TextView myTextView = (TextView) findViewById(R.id.textView6);
+
+        myTextView.setText("" + beginheight);
+        if(patternDetector != null) {
+            patternDetector.destroy();
+        }
+    }
+
+    /**when the application is resumed, the application should register its reference value**/
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        beginheight= ownPosition.getHeight();
+        TextView myTextView = (TextView) findViewById(R.id.textView6);
+
+        myTextView.setText("" + beginheight);
+        if(patternDetector != null) {
+            patternDetector.setup();
+        }
+    }
+    /**when the start button is pressed by the user, the application should start with the runnable looping process to link the height to a sound**/
+    public void START(View view) {
+        // Do something in response to button
+
+        loopHandler.post(loopRunnable);
+
+
+
+        //SystemClock.sleep(500);
+
+
+    }
+    /**when the stop button is pressed by the user, the application should close and call the ondestoy function.**/
+    public void STOP(View view) {
+        // Do something in response to button
+        stopped=true;
+
+        //mp.release();
+        finish();
+
+
+    }
+
+    /**when the getreference button is pressed by the user, the application should refresh its reference value for the height to sound linkings**/
+    public void get_reference(View view) {
+        // Do something in response to button
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        beginheight= ownPosition.getHeight();
+        TextView myTextView = (TextView) findViewById(R.id.textView6);
+        myTextView.setText("" + beginheight);
+
     }
 }

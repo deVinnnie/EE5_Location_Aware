@@ -22,7 +22,7 @@ import java.net.Socket;
  * ObjectSocketTask uses object serialisation and utilizes the ObjectInputStream and ObjectOutputStream classses.
  */
 public class ObjectSocketTask extends SocketTask{
-    private Device device;
+    //private Device device;
 
     public ObjectSocketTask(Socket socket, Server server) throws IOException {
         super(socket, server);
@@ -54,26 +54,23 @@ public class ObjectSocketTask extends SocketTask{
             Log.i("Server", "[ OK ] ObjectStreams Created.");
 
             DeviceList devices = this.getServer().getDevices();
-            GlobalResources.getInstance().setDevices(devices);
-
             //Keep reading from socket.
             while(true){
                 Device device = (Device) oInputStream.readObject(); //Will block until it has received a new object.
+                String data = (String) oInputStream.readObject();
                 if(device == null){
-                    devices.removeDevice(this.device);
+                    devices.removeDevice(device);
                     //this.getServer().alertify(0,null, 1);
                     //Log.d("Server", "Removing Device");
                     break;
                 }
-                this.device = device;
                 boolean present = devices.contains(device);
-                devices.addDevice(device);
+                devices.add(device.getId(), device.getPosition(), data);
+                //devices.addDevice(device);
+
+                GlobalResources.getInstance().getDevices().add(device.getId(),device.getPosition(), data);
 
                 this.getServer().alertify(1,null, 1);
-
-                if(!present) {
-                   // this.getServer().alertify(0,null, 1);
-                }
 
                 //System.out.print("Position: (" + device.getPosition().getX() + "," + device.getPosition().getY() + ")\n");
                 // "\r" Is the carriage return, it places the cursor back at the beginning of the line.

@@ -2,12 +2,19 @@ package com.EE5.math;
 
 import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.server.data.Position;
+import com.EE5.util.GlobalResources;
+import com.EE5.util.Point2D;
 import com.EE5.util.Point3D;
+import com.EE5.util.Vector;
+
+import org.opencv.core.Point;
 
 /**
  * Computes the x,y,z coordinates of the device using the outline of the detected pattern.
  */
 public class Calc {
+    private boolean convertToRealValues = true;
+
     //Defines the corner points of the pattern.
     double xa,xb,xc,xd;
     double ya,yb,yc,yd;
@@ -42,12 +49,14 @@ public class Calc {
     }
 
     /**
+     *  Be careful with the width and height parameters: The height value (typically 640px) is bigger than the width value (typically 480px).
+     *  This is unusual since photographs are (or at least should be) taken in landscape mode.
      *
      *  @param size The real life size of the pattern in cm (The length of one of the sides of the square)
      *             Size is in fact a misleading name, as it could be misinterpreted as the area of the square.
      *
-     *  @param width Width in pixels of the full image.
-     *  @param height Height in pixels of the full image.
+     *  @param width Width in pixels of the full image in portrait.
+     *  @param height Height in pixels of the full image in portrait.
      */
      public Calc(double size, double width, double height) {
          this(); //Call Default Constructor.
@@ -74,11 +83,21 @@ public class Calc {
      * Position (0,0,0) is when the pattern is in the centre.
      *
      * @param pattern Corner points of the pattern.
+     *                Num1 is the point at the white inner square.
+     *                Moving clockwise the points should correspond to Num2, Num3 and Num4.
      * @return A new point representing the position of the device.
      */
     public Point3D calculate(PatternCoordinator pattern){
         double X,Y,Z1,Z2,Z;
-        double xe,ye,xE,yE;
+
+        this.xB = 480;
+        this.yC = 640;
+        this.xD = 480;
+        this.yD = 640;
+        this.xA = 0;
+        this.xC = 0;
+        this.yB = 0;
+        
 
         this.xa = pattern.getNum1().x;
         this.ya = pattern.getNum1().y;
@@ -88,58 +107,241 @@ public class Calc {
         this.yc = pattern.getNum3().y;
         this.xd = pattern.getNum4().x;
         this.yd = pattern.getNum4().y;
+        double angle = pattern.getAngle();
 
         //Start with calculations.
-        double phix=(40.876*Math.PI)/180;
-        double phiy=(52.999*Math.PI)/180;
-        double fovx=size/(Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2)))*Math.abs(xA-xB);
-        double fovy=size/(Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2)))*Math.abs(yA-yC);
-        /*double fovx1=size/(Math.sqrt(Math.pow(xa1-xb1,2)+Math.pow(ya1-yb1,2)))*Math.abs(xA-xB);
-        double fovy1=size/(Math.sqrt(Math.pow(xa1-xb1,2)+Math.pow(ya1-yb1,2)))*Math.abs(yA-yC);*/
-        /*distance=133; //unit is cm
-        length=136.5; //unit is cm
-        wide=98.5;  //unit is cm*/
-        xe=(xa+xd)/2;
-        ye=(ya+yd)/2;
-        /*
-        int xe1 = (xa1+xd1)/2;
-        int ye1 = (ya1+yd1)/2;
-        */
+
+        /**
+         * Angle of view in radians for the y-direction or x-direction???
+         * Values based on real life measurements.
+         */
+        double phix= Math.toRadians(40.876);
+
+        /**
+         * Angle of view in radians for the y-direction or x-direction???
+         * Values based on real life measurements.
+         */
+        double phiy= Math.toRadians(52.999*Math.PI);
+
+        //Alpha
+        // (z/x) * 480
+        double canvasXSize = Math.abs(xA-xB);
+        double fovx= (this.size / (Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2)))) * canvasXSize;
+
+        //Beta
+        // (z/x) * 640
+        double canvasYSize = Math.abs(yA-yC);
+        double fovy= (this.size / (Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2)))) * canvasYSize;
+
+
+        //<editor-fold desc="Convert from Pixel Values to Real Values">
+        PatternCoordinator realPatternCoordinator;
+        if(convertToRealValues) {
+            xa *= (fovx / 480.0);
+            xb *= (fovx / 480.0);
+            xc *= (fovx / 480.0);
+            xd *= (fovx / 480.0);
+
+            xA *= (fovx / 480.0);
+            xB *= (fovx / 480.0);
+            xC *= (fovx / 480.0);
+            xD *= (fovx / 480.0);
+
+            ya *= (fovy / 640.0);
+            yb *= (fovy / 640.0);
+            yc *= (fovy / 640.0);
+            yd *= (fovy / 640.0);
+
+            yA *= (fovy / 640.0);
+            yB *= (fovy / 640.0);
+            yC *= (fovy / 640.0);
+            yD *= (fovy / 640.0);
+
+           realPatternCoordinator = new PatternCoordinator(
+                    new Point(pattern.getNum1().x * (fovx / 480.0), pattern.getNum1().y * (fovy / 640.0)),
+                    new Point(pattern.getNum2().x * (fovx / 480.0), pattern.getNum2().y * (fovy / 640.0)),
+                    new Point(pattern.getNum3().x * (fovx / 480.0), pattern.getNum3().y * (fovy / 640.0)),
+                    new Point(pattern.getNum4().x * (fovx / 480.0), pattern.getNum4().y * (fovy / 640.0)),
+                    pattern.getAngle()
+            );
+        }
+        else{
+            realPatternCoordinator = new PatternCoordinator(
+                    new Point(pattern.getNum1().x, pattern.getNum1().y),
+                    new Point(pattern.getNum2().x, pattern.getNum2().y),
+                    new Point(pattern.getNum3().x, pattern.getNum3().y),
+                    new Point(pattern.getNum4().x, pattern.getNum4().y),
+                    pattern.getAngle()
+            );
+        }
+        //</editor-fold>
+
+        //<editor-fold desc="Determine Centerpoint of Pattern.">
+        double xe,ye;
+        xe = (xa+xb+xc+xd)/4.0;
+        ye = (ya+yb+yc+yd)/4.0;
+        //</editor-fold>
+
+        //<editor-fold desc="Determine Centerpoint of Image Canvas.">
+        double xE,yE;
         xE=(xA+xD)/2;
         yE=(yA+yD)/2;
+        //</editor-fold>
 
-        //Z=size/length*distance/Math.sqrt((Math.pow(xa-xb,2)+Math.pow(ya-yb,2))/(Math.pow(xA-xB,2)+Math.pow(yA-yB,2)));//the diatance in Z axis
-        //Z2=size/wide*distance/Math.sqrt((Math.pow(xa-xc,2)+Math.pow(ya-yc,2))/(Math.pow(xA-xC,2)+Math.pow(yA-yC,2)));//the diatance in Z axis
-        //Z=(Z1+Z2)/2;
-        Z1=1/((2*Math.tan(phix/2))/fovx);
+        //Calculate height using field of view.
+        Z1=1/((2*Math.tan(phix/2))/fovx); // 1/2 * tan(phix/2) / fovx;
         Z2=1/((2*Math.tan(phiy/2))/fovy);
-        X=fovx/480*(xe-xE);
-        Y=fovy/640*(ye-yE);
-        //Y=Math.sqrt(Math.pow(xe-xE,2)+Math.pow(ye-yE,2));
-        //X=((Z*Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2))*0.5)/distance)*(xb+xc-xB-xC)/(xB-xC); //the distance in X axis
-        //Y=((Z*Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2))*0.5)/distance)*(ya+yd-yA-yD)/(yA-yD);//the distance in Y axis
+
+        //Use properties of vector for axis projection (dot product in particular) to transform the coordinates.
+        //<editor-fold desc="Calculate X-coordinate">
+        Point2D centre34 = this.getCentre(new Point2D(realPatternCoordinator.getNum3()), new Point2D(realPatternCoordinator.getNum4()));
+
+        Vector xDirection = new Vector(
+                centre34.getX() - xe,
+                centre34.getY() - ye
+        );
+        xDirection.normalize();
+
+        Vector toImageCenter = new Vector(
+                xE - xe,
+                yE - ye
+        );
+
+        double dotProductX = xDirection.dotProduct(toImageCenter);
+
+        double cosAlphaX = 0;
+        if(toImageCenter.getLength() != 0) {
+            cosAlphaX = dotProductX / (xDirection.getLength() * toImageCenter.getLength());
+        }
+        X = cosAlphaX * toImageCenter.getLength();
+        //</editor-fold>
+
+        //<editor-fold desc="Calculate Y-coordinate">
+        Point2D centre23 = this.getCentre(new Point2D(realPatternCoordinator.getNum2()), new Point2D(realPatternCoordinator.getNum3()));
+
+        Vector yDirection = new Vector(
+                centre23.getX() - xe,
+                centre23.getY() - ye
+        );
+        yDirection.normalize();
+
+        double dotProductY = yDirection.dotProduct(toImageCenter);
+        double cosAlphaY = 0;
+        if(toImageCenter.getLength() != 0) {
+            cosAlphaY = dotProductY / (yDirection.getLength() * toImageCenter.getLength());
+        }
+        Y = cosAlphaY * toImageCenter.getLength();
+        //</editor-fold>
+
         double rate=fovy/fovx;
-        double phipict=Math.atan((Math.abs(yc-yd))/(Math.abs(xc-xd)))*(180/Math.PI);
+        double phiPict=Math.toDegrees(
+                Math.atan(
+                    (Math.abs(yc-yd))/(Math.abs(xc-xd))
+                )
+        );
 
+        //<editor-fold desc="Calculate Rotation (Baseline -> X-axis)">
+        //Angle = Angle from baseline (y-as) of image to Pattern-based-X-axis.
+        //Baseline below x-axis = positive angle.
+        //x-axis above baseline = negative angle.
+        Vector imageBaselineDirection = new Vector(
+            0, 640
+        );
+        imageBaselineDirection.normalize();
 
-        /*
-        double testy = Math.abs(yd-yd1)*fovy/640;
-        double testx = Math.abs(xd-xd1)*fovx/480;
-        System.out.println("testy is: "+testy);
-        System.out.println("testx is: "+testx);
-        */
+        double dotProductBaseline = imageBaselineDirection.dotProduct(xDirection);
 
-        /*
-        System.out.println("the coordinate in x direction is: "+X);
-        System.out.println("the coordinate in y direction is: "+Y);
-        System.out.println("the coordinate in z direction is: "+Z1);
-        System.out.println("the coordinate in z2 direction is: "+Z2);
-        System.out.println("the rotation of the picture is: "+phipict);
-        System.out.println("the coordinate in fovx direction is: "+fovx);
-        System.out.println("the coordinate in fovy direction is: "+fovy);
-        System.out.println("rate is: " +rate);*/
+        //The crossproduct will be negative for negative angles, and positive for positive angles.
+        double crossProduct = imageBaselineDirection.crossProduct(xDirection);
+
+        double cosCorrectAngle = dotProductBaseline / (xDirection.getLength() * imageBaselineDirection.getLength());
+
+        //The dotproduct always returns a positive angle. Using the crossproduct the sign of the angle is determined.
+        double correctAngle = Math.signum(crossProduct) * Math.acos(cosCorrectAngle);
+        pattern.setAngle(Math.toDegrees(correctAngle));
+        //</editor-fold>
 
         return new Point3D(X,Y,Z1);
+    }
+
+    /**
+     * Convert from "Pattern Coordinate System" to "Device Centred Coordinate System".
+     * In the "Pattern Coordinate System" the origin is the center of the pattern.
+     * X- and Y-axis are defined based on the inner rectangle.
+     *
+     * |-------|                              ^
+     * |       |                              |  y-axis
+     * |o      |   ------ x-axis  ------>     |
+     * |-------|
+     *
+     *
+     * In the "Device Centered Coordinate System" the origin is the position of the device.
+     * The y-axis is parallel to the long side of the device (the 640px side) and points from the top of the device to the bottom.
+     * The origin is however not linked to a position on the screen. This is only getting the angles right!
+     *
+     * |-----------------------|
+     * |                       |
+     * |    ---  y-axis ---->  |
+     * |                       |
+     * |-----------------------|
+     *
+     *
+     * @param position Other Position
+     * @return position in Device Centred Coordinate System.
+     */
+    public Point2D convertToDeviceCentredCoordinates(Position position){
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+
+        double rotation = Math.toRadians(ownPosition.getRotation());
+
+        //Careful with convention, y is the baseline axis. X is up.
+        Vector xDeviceDirection = new Vector(
+                Math.sin(rotation),
+                Math.cos(rotation)
+        );
+        xDeviceDirection.normalize();
+
+        Vector centreToPoint = new Vector(
+            position.getX() - ownPosition.getX(),
+            position.getY() - ownPosition.getY()
+        );
+
+        double dotProductX = xDeviceDirection.dotProduct(centreToPoint);
+        double cosAlphaX = 0;
+        if(centreToPoint.getLength() != 0) {
+            cosAlphaX = dotProductX / (xDeviceDirection.getLength() * centreToPoint.getLength());
+        }
+        double X = cosAlphaX * centreToPoint.getLength();
+
+        //Careful with convention, y is the baseline axis. X is up.
+        Vector yDeviceDirection = new Vector(
+                Math.cos(rotation),
+                -Math.sin(rotation)
+        );
+        yDeviceDirection.normalize();
+
+        double dotProductY = yDeviceDirection.dotProduct(centreToPoint);
+        double cosAlphaY = 0;
+        if(centreToPoint.getLength() != 0) {
+            cosAlphaY = dotProductY / (yDeviceDirection.getLength() * centreToPoint.getLength());
+        }
+        double Y = cosAlphaY * centreToPoint.getLength();
+
+        return new Point2D(X,Y);
+    }
+
+    /**
+     * Calculates the centre between points. Shortcut for  [ 0.5 * (x1+x2) , 0.5 * (y1+y2) ]
+     *
+     * @param point1
+     * @param point2
+     * @return The centre between point1 and point2.
+     */
+    public Point2D getCentre(Point2D point1, Point2D point2){
+        return new Point2D(
+                (point1.getX() + point2.getX()) / 2.0,
+                (point1.getY() + point2.getY()) / 2.0
+        );
     }
 
     /**
@@ -192,5 +394,13 @@ public class Calc {
                 new Point3D(x2,y2,0)
         );
         return distance;
+    }
+
+    public boolean isConvertToRealValues() {
+        return convertToRealValues;
+    }
+
+    public void setConvertToRealValues(boolean convertToRealValues) {
+        this.convertToRealValues = convertToRealValues;
     }
 }

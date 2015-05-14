@@ -1,9 +1,10 @@
 package com.mygdx.game.android;
 
-import android.util.Log;
-
+import com.EE5.math.Calc;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
+import com.EE5.util.Point2D;
+import com.EE5.util.Tuple;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -25,16 +26,16 @@ public class Game extends ApplicationAdapter {
     public void create ()
     {
         calc = new Calculator();
-        calc.x1 = 0; calc.y1 = 0;
-        calc.x2 = 0; calc.y2 = 0;
-        calc.rotation = 90;
+        //calc.x1 = 0; calc.y1 = 0;
+        //calc.x2 = 0; calc.y2 = 0;
+        //calc.rotation = 90;
         batch = new SpriteBatch();
         img = new Texture("arrow.png");
         sprite = new Sprite(img);
         sprite.setPosition(Gdx.graphics.getWidth() / 2 - sprite.getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - sprite.getHeight() / 2);
         sprite.setOriginCenter();
-        sprite.setScale(0.5f,0.5f);
+        sprite.setScale(1,1);
         font = new BitmapFont();
 
         //Some code to use a 'fake', in other words simulated, pattern detection.
@@ -42,6 +43,15 @@ public class Game extends ApplicationAdapter {
         //detector.setPatternDetectorAlgorithm(new PatternDetectorAlgorithmMock());
         /*PatternDetectorAlgorithmInterface inter = GlobalResources.getInstance().getPatternDetector().getPatternDetectorAlgorithm();
         Log.i("Test", inter.getClass().toString());*/
+        GlobalResources.getInstance().setData("Hello World");
+
+        Position otherPosition = new Position(1.0,0.0,0.0,1.0);
+        for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
+            calc.x2 = entry.getValue().element1.getX();
+            calc.y2 = entry.getValue().element1.getY();
+            otherPosition = entry.getValue().element1;
+            break; //Only read the position of the first device.
+        }
     }
 
     @Override
@@ -51,25 +61,27 @@ public class Game extends ApplicationAdapter {
         batch.begin();
         sprite.draw(batch);
 
-        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
-        calc.x1 = ownPosition.getX();
-        calc.y1 = ownPosition.getY();
-        Log.d("arrows","Own postion " + calc.x1 + " " + calc.y1 );
+        Position otherPosition = new Position(0.0,0.0,0.0,0.0);
         //Iterate over other devices.
-        for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
-            calc.x2 = entry.getValue().getX();
-            calc.y2 = entry.getValue().getY();
-            Log.d("arrows","Own postion " + calc.x2 + " " + calc.y2 );
+        for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
+            calc.x2 = entry.getValue().element1.getX();
+            calc.y2 = entry.getValue().element1.getY();
+            otherPosition = entry.getValue().element1;
             break; //Only read the position of the first device.
         }
 
-        calc.rotation = ownPosition.getRotation();
-        int angle = (int) calc.calcAngle();
-        sprite.setRotation(angle);
+        Calc algorithmCalc = new Calc();
+        Point2D dcPoint = algorithmCalc.convertToDeviceCentredCoordinates(otherPosition);
+
+        double angle = -90; //Use correct offset to align with baseline.
+        angle += Math.toDegrees(Math.atan2(dcPoint.getX(), dcPoint.getY()));
+
+        sprite.setRotation( (float) angle);
         //batch.draw(img, 0, 0);
 
         //Draw Current Device Position.
-        String position = "("+ownPosition.getX() + ", " + ownPosition.getY()+")";
+        //String position = "("+Math.round(ownPosition.getX()) + ", " + Math.round(ownPosition.getY())+")" +  " " + ownPosition.getRotation() + "°";
+        String position = "("+Math.round(otherPosition.getX()) + ", " + Math.round(otherPosition.getY())+")" +  " " + otherPosition.getRotation() + "°";
         font.draw(batch, position, 50, 50);
 
         batch.end();

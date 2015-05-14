@@ -8,7 +8,7 @@ public class Position implements Serializable {
     private double y;
 
     /**
-     * Rotation in radians.
+     * Rotation in degrees.
      */
     private double rotation;
 

@@ -8,10 +8,6 @@ public abstract class AbstractClientOutputThread extends AbstractClientThread {
     private OutputStream outputStream;
     private Device device;
 
-    public OutputStream getOutputStream() {
-        return outputStream;
-    }
-
     public AbstractClientOutputThread(OutputStream out, Client client){
         super("Output_Thread", client);
         this.outputStream = out;
@@ -28,4 +24,9 @@ public abstract class AbstractClientOutputThread extends AbstractClientThread {
     public Device getDevice(){
         return this.device;
     }
+
+    public OutputStream getOutputStream() {
+        return outputStream;
+    }
+
 }

@@ -16,4 +16,5 @@
     <string name="action_use_as_server">Use as Server</string>
     <string name="use_as_client">Use as Client</string>
     <string name="title_activity_demo">Demo</string>
+    <string name="title_activity_setup">SetupActivity</string>
 </resources>

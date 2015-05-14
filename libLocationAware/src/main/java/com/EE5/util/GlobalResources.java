@@ -28,6 +28,11 @@ public class GlobalResources {
      */
     private DeviceList devices = new DeviceList();
 
+    /**
+     * Custom data field to be send for this device.
+     */
+    private String data = "";
+
     private PatternDetector patternDetector;
 
     // The constructor is private so that it can only be called from within the class.
@@ -79,6 +84,14 @@ public class GlobalResources {
 
     public void setPatternDetector(PatternDetector patternDetector) {
         this.patternDetector = patternDetector;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
     //</editor-fold>
 }

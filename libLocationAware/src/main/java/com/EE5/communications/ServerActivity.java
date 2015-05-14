@@ -23,6 +23,7 @@ import com.EE5.server.TCPServer;
 import com.EE5.server.data.Position;
 import com.EE5.server.socketTask.SocketTaskType;
 import com.EE5.util.GlobalResources;
+import com.EE5.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -94,10 +95,10 @@ public class ServerActivity extends Activity {
         ListView lstServerConnections = (ListView) findViewById(R.id.lst_server_connections);
         ArrayAdapter adapter = (ArrayAdapter<String>) lstServerConnections.getAdapter();
         adapter.clear();
-        for (Map.Entry<String, Position> entry : this.server.getConnectedDevices().getMap().entrySet())
+        for (Map.Entry<String, Tuple<Position, String>> entry : this.server.getConnectedDevices().getAll())
         {
             String id = entry.getKey();
-            Position pos = entry.getValue();
+            Position pos = entry.getValue().element1;
             adapter.insert(""+id+"\n(x:"+pos.getX()+",y:"+pos.getY()+",rot:"+pos.getRotation()+",z:"+pos.getHeight()+")", 0);
         }
         /*for (Map.Entry<String, PatternCoordinator> entry : this.server.getConnectedDevices().getPatternMap().entrySet())

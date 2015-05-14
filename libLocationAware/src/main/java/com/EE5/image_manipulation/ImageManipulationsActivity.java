@@ -30,6 +30,7 @@ import com.EE5.preferences.SettingsActivity;
 import com.EE5.server.Server;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
+import com.EE5.util.Tuple;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
@@ -42,6 +43,8 @@ import java.util.Map;
 
 public class ImageManipulationsActivity extends Activity {
 
+
+    public boolean OpenCVReady;
     /**
      * The code in onManagerConnected is called after the OpenCV stuff has loaded.
      * If you try this for instance in the onCreate method it will fail and you won't have a clue as to why it did so.
@@ -53,21 +56,30 @@ public class ImageManipulationsActivity extends Activity {
         public void onManagerConnected(int status) {
             switch (status) {
                 case LoaderCallbackInterface.SUCCESS: {
-                    Log.i("OpenCV", "OpenCV loaded successfully");
-                    if(GlobalResources.getInstance().getPatternDetector() == null) {
-                        //Only Execute this code if a PatternDetector already exists from a previous run.
-                        setupPatternDetector();
-                        setupCamera(); //Retrieve camera WITHOUT CameraBridgeViewBase and JavaImageView
+                    onOpenCVSuccessLoad();
+                    synchronized (ImageManipulationsActivity.this){
+                        ImageManipulationsActivity.this.notify();
                     }
                 }
                 break;
                 default: {
+                    Log.i("OpenCV", "OpenCV did not load correctly");
                     super.onManagerConnected(status);
                 }
                 break;
             }
         }
     };
+
+    private void onOpenCVSuccessLoad(){
+        Log.i("OpenCV", "OpenCV loaded successfully");
+        if(GlobalResources.getInstance().getPatternDetector() == null) {
+            //Only Execute this code if a PatternDetector already exists from a previous run.
+            setupPatternDetector();
+            setupCamera(); //Retrieve camera WITHOUT CameraBridgeViewBase and JavaImageView
+        }
+        this.OpenCVReady = true;
+    }
 
     private TextView tx_x1;
     private TextView tx_x2;
@@ -179,8 +191,10 @@ public class ImageManipulationsActivity extends Activity {
     }
 
     private void setupCamera(){
-        this.patternDetector.setup();
-        this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
+        if(this.patternDetector != null) {
+            this.patternDetector.setup();
+            this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
+        }
     }
 
     // For an overview of when and which events are called see:
@@ -203,7 +217,16 @@ public class ImageManipulationsActivity extends Activity {
             //patternDetector.getPatternDetectorAlgorithm().distance2 = 0;
             patternDetector.setup();
         }
+        Log.i("OpenCV", "OpenCV loading");
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this, mLoaderCallback);
+        synchronized (this) {
+            try {
+                this.wait(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public void onDestroy() {
@@ -315,9 +338,9 @@ public class ImageManipulationsActivity extends Activity {
             String list=""; //Temporary variable for building the text for the TextView overlay.
 
             //Iterate over all devices and save relevant information to TextView.
-            for (Map.Entry<String, Position> entry : server.getConnectedDevices().getMap().entrySet()) {
+            for (Map.Entry<String, Tuple<Position, String>> entry : server.getConnectedDevices().getAll()) {
                 String id = entry.getKey();
-                Position position = entry.getValue();
+                Position position = entry.getValue().element1;
                 list+=""+id +"\n";
                 DecimalFormat df = new DecimalFormat("#.##"); //Round to two decimal places.
 
@@ -326,6 +349,7 @@ public class ImageManipulationsActivity extends Activity {
 
                 double distance = Calc.getDistance(position, devicePosition);
                 list+="distance="+distance+"\n";
+                list+="data=" + entry.getValue().element2+"\n";
             }
 
             TextView server_display = (TextView) findViewById(R.id.server_display);

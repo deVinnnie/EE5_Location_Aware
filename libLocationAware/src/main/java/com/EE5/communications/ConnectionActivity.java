@@ -1,11 +1,15 @@
 package com.EE5.communications;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -22,6 +26,7 @@ import com.EE5.util.ConnectionException;
 import com.EE5.util.GlobalResources;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Presents the user with a 'Connect with Client' button.
@@ -92,6 +97,41 @@ public class ConnectionActivity extends Activity {
             }
         };
         sharedPref.registerOnSharedPreferenceChangeListener(prefListener);
+    }
+
+    public void showDeviceChooser(View view){
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_list);
+
+        //Show paired BluetoothDevices.
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+
+        final ArrayList<String> list = new ArrayList<String>();
+        for(BluetoothDevice device : pairedDevices) {
+            list.add(device.getName());
+        }
+        ListView listView = (ListView) dialog.findViewById(R.id.lst_bluetoothDevices);
+        dialog.setCancelable(true);
+        dialog.setTitle("Choose BluetoothDevice");
+        dialog.show();
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                (this,android.R.layout.simple_list_item_1, list);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(),"Target Device : " +list.get(position),
+                        Toast.LENGTH_SHORT).show();
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ConnectionActivity.this);
+                preferences.edit()
+                        .putInt("PREFS_BLUETOOTH_TARGET", position)
+                        .commit();
+                dialog.dismiss();
+            }
+        });
     }
 
     @Override
