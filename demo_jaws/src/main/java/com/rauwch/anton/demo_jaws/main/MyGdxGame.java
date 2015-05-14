@@ -1,11 +1,14 @@
 package com.rauwch.anton.demo_jaws.main;
 
+import android.util.Log;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.rauwch.anton.demo_jaws.handlers.Calculator;
 import com.rauwch.anton.demo_jaws.handlers.GameStateManager;
 import com.rauwch.anton.demo_jaws.handlers.Jukebox;
 
@@ -24,13 +27,12 @@ public class MyGdxGame implements ApplicationListener, InputProcessor
 
     private OrthographicCamera cam;
     private OrthographicCamera hudCam;
-
-
     private GameStateManager gsm;
 
     @Override
     public void create()
     {
+        Log.d("game", "start of game");
         Gdx.input.setInputProcessor(this);
         gsm = new GameStateManager(this);
         sb = new SpriteBatch();

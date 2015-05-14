@@ -1,5 +1,6 @@
 package com.rauwch.anton.demo_jaws.states;
 
+import com.EE5.util.GlobalResources;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.rauwch.anton.demo_jaws.R;
 import com.rauwch.anton.demo_jaws.handlers.GameStateManager;
 
 
@@ -26,11 +28,12 @@ public class Boat extends GameState
     {
         super(gsm);
         batch = new SpriteBatch();
-        texture = new Texture(Gdx.files.internal("boat.jpg"));
+        texture = new Texture("boat.jpg");
         sprite = new Sprite(texture);
         sprite.setPosition(Gdx.graphics.getWidth() / 2 - sprite.getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - sprite.getHeight() / 2);
-        sprite.setScale(2,2);
+        sprite.setScale(2, 2);
+        GlobalResources.getInstance().setData("Hello World");
     }
 
     public void handleInput()
@@ -46,7 +49,7 @@ public class Boat extends GameState
     public void render()
     {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.gl.glClearColor(100/255f, 150/255f, 199/255f, 1);
+        Gdx.gl.glClearColor(100 / 255f, 150 / 255f, 199 / 255f, 1);
 
         batch.begin();
         sprite.draw(batch);
