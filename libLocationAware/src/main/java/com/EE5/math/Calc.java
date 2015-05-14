@@ -42,10 +42,10 @@ public class Calc {
      * Assumes a default image size of 640px x 480px
      */
     public Calc() {
-        xA=0;yA=0;
+        /*xA=0;yA=0;
         xB=640;yB=0;
         xC=0;yC=480;
-        xD=640;yD=480;
+        xD=640;yD=480;*/
     }
 
     /**
@@ -64,18 +64,17 @@ public class Calc {
              the height is bigger then the width**/
          this.size = size;
 
-         //this.xB = width;
-         this.xB = 480;
-         //this.yC = height;
-         this.yC = 640;
-         //this.xD = width;
-         this.xD = 480;
-         //this.yD = height;
-         this.yD = 640;
          this.xA = 0;
-         this.ya = 0;
-         this.xC = 0;
+         this.yA = 0;
+
+         this.xB = 480;
          this.yB = 0;
+
+         this.xC = 0;
+         this.yC = 640;
+
+         this.xD = 480;
+         this.yD = 640;
     }
 
     /**
@@ -88,7 +87,7 @@ public class Calc {
      * @return A new point representing the position of the device.
      */
     public Point3D calculate(PatternCoordinator pattern){
-        double X,Y,Z1,Z2,Z;
+        double X,Y,Z1,Z2;
 
         this.xB = 480;
         this.yC = 640;
@@ -188,8 +187,11 @@ public class Calc {
         yE=(yA+yD)/2;
         //</editor-fold>
 
-        //Calculate height using field of view.
+        //Calculate height using field of view of x.
         Z1=1/((2*Math.tan(phix/2))/fovx); // 1/2 * tan(phix/2) / fovx;
+
+        //Calulate z using the field of view of y.
+        //This should result in a higher accuracy as the y axis has higher resolution (640px).
         Z2=1/((2*Math.tan(phiy/2))/fovy);
 
         //Use properties of vector for axis projection (dot product in particular) to transform the coordinates.
@@ -261,7 +263,7 @@ public class Calc {
         pattern.setAngle(Math.toDegrees(correctAngle));
         //</editor-fold>
 
-        return new Point3D(X,Y,Z1);
+        return new Point3D(X,Y,Z2);
     }
 
     /**
@@ -291,7 +293,10 @@ public class Calc {
      */
     public Point2D convertToDeviceCentredCoordinates(Position position){
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        return this.convertToDeviceCentredCoordinates(ownPosition, position);
+    }
 
+    public Point2D convertToDeviceCentredCoordinates(Position ownPosition, Position position){
         double rotation = Math.toRadians(ownPosition.getRotation());
 
         //Careful with convention, y is the baseline axis. X is up.
