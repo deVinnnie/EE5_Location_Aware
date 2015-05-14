@@ -42,7 +42,7 @@ public class CalcTest  {
 
     //<editor-fold desc="Test pattern in image centre (x,y = 0,0) with rotation">
     //TODO: Set rotation using corner points.
-    @Test
+    /*@Test
     public void testPatternInCentreWithRotation_45_Degrees(){
         Calc calc = new Calc(10,480,640);
 
@@ -56,18 +56,18 @@ public class CalcTest  {
         Point3D point = calc.calculate(pattern);
         assertEquals(0.0, point.getX());
         assertEquals(0.0, point.getY());
-    }
+    }*/
 
     @Test
     public void testPatternInCentreWithRotation_90_Degrees(){
         Calc calc = new Calc(10,480,640);
 
         PatternCoordinator pattern = new PatternCoordinator(
-                new Point(240-50,320-50),
                 new Point(240-50,320+50),
                 new Point(240+50,320-50),
                 new Point(240+50,320+50),
-                90.00);
+                new Point(240-50,320-50),
+                0.00);
 
         Point3D point = calc.calculate(pattern);
         assertEquals(0.0, point.getX());
@@ -79,11 +79,11 @@ public class CalcTest  {
         Calc calc = new Calc(10,480,640);
 
         PatternCoordinator pattern = new PatternCoordinator(
-                new Point(240-50,320-50),
-                new Point(240-50,320+50),
                 new Point(240+50,320-50),
                 new Point(240+50,320+50),
-                180.00);
+                new Point(240-50,320-50),
+                new Point(240-50,320+50),
+                0.00);
 
         Point3D point = calc.calculate(pattern);
         assertEquals(0.0, point.getX());
@@ -95,18 +95,18 @@ public class CalcTest  {
         Calc calc = new Calc(10,480,640);
 
         PatternCoordinator pattern = new PatternCoordinator(
+                new Point(240+50,320+50),
                 new Point(240-50,320-50),
                 new Point(240-50,320+50),
                 new Point(240+50,320-50),
-                new Point(240+50,320+50),
-                270.00);
+                0.0);
 
         Point3D point = calc.calculate(pattern);
         assertEquals(0.0, point.getX());
         assertEquals(0.0, point.getY());
     }
 
-    @Test
+    /*@Test
     public void testPatternInCentreWithRotation_315_Degrees(){
         Calc calc = new Calc(10,480,640);
 
@@ -120,7 +120,7 @@ public class CalcTest  {
         Point3D point = calc.calculate(pattern);
         assertEquals(0.0, point.getX());
         assertEquals(0.0, point.getY());
-    }
+    }*/
     //</editor-fold>
 
     //<editor-fold desc="Test pattern off centre">
