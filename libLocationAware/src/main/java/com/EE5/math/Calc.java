@@ -97,7 +97,6 @@ public class Calc {
         this.xA = 0;
         this.xC = 0;
         this.yB = 0;
-
         this.yA = 0;
 
         this.xa = pattern.getNum1().x;
