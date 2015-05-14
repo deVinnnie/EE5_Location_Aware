@@ -11,6 +11,7 @@ import com.EE5.image_manipulation.PatternDetector;
 import com.EE5.util.GlobalResources;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.castoryan.game.android.Game;
 
 
 public class MyLauncher extends AndroidApplication {
