@@ -32,7 +32,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class Game extends ApplicationAdapter {
     SpriteBatch batch;
-    Sprite sprite;
+    Sprite sprite,sp2;
     Texture bus;
     Texture stop;
     Texture people;
@@ -47,8 +47,9 @@ public class Game extends ApplicationAdapter {
         stop = new Texture("STOP.png");
         people = new Texture("people.png");
         sprite = new Sprite(people);
-        sprite.setPosition(100, 100);
-        sprite.setRotation(115);
+        sp2 = new Sprite(people);
+        //sprite.setPosition(100, 100);
+        //sprite.setRotation(115);
 
         font = new BitmapFont();
         font.setColor(Color.RED);
@@ -78,7 +79,7 @@ public class Game extends ApplicationAdapter {
         Gdx.input.setInputProcessor(inputProcessor);
 
         sprite.setX(20 * (int) ownPosition.getY() + 400);
-        sprite.setY(20*(int)ownPosition.getX()+700);
+        sprite.setY(20* (int)ownPosition.getX()+700);
 
 //        if(inputProcessor.touchDragged(xx,yy,zz)){
 //            sprite.setX(Gdx.input.getX());
@@ -93,12 +94,22 @@ public class Game extends ApplicationAdapter {
 //
 //        //Iterate over other devices.
         //Iterator
+        double pX2=0,pY2=0,pAngle=0;
+
         for (Map.Entry<String,Tuple<Position,String>> entry: GlobalResources.getInstance().getDevices().getAll()) {
             String name = entry.getKey();
-            calc.x2 = entry.getValue().element1.getX();
-            calc.y2 = entry.getValue().element1.getY();
+            pX2 = entry.getValue().element1.getX();
+            pY2 = entry.getValue().element1.getY();
+            pAngle = entry.getValue().element1.getRotation();
+//            calc.x2 = entry.getValue().element1.getX();
+//            calc.y2 = entry.getValue().element1.getY();
             break; //Only read the position of the first device.
         }
+
+        sp2.setX( 20 * (int) pY2 + 400);
+        sp2.setY( 20 * (int) pX2 + 700 );
+        sp2.setRotation( -(int)pAngle );
+        sp2.draw(batch);
 //
 //        calc.rotation = ownPosition.getRotation();
 //        int angle = (int) calc.calcAngle();
