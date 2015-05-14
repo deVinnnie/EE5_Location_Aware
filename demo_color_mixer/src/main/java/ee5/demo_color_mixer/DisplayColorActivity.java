@@ -1,16 +1,15 @@
 package ee5.demo_color_mixer;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
@@ -18,46 +17,90 @@ import com.EE5.util.Tuple;
 
 import java.util.Map;
 
-public class DisplayColorActivity extends ActionBarActivity {
+public class DisplayColorActivity extends Activity {
+    String msg = "Android : ";
+    int x;
     private Calculator calc;
+    private Handler loopHandler = new Handler();
+    private Runnable loopRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            TextView myTextView = (TextView) findViewById(R.id.myTextView);
+            TextView otherTextView = (TextView) findViewById(R.id.otherTextView);
+            String myColor = myTextView.getText().toString();
+            String otherColor = otherTextView.getText().toString();
+
+            changeColor(myColor, otherColor, x);
+            x++;
+
+            //Execute this code again after <sample_rate> milliseconds.
+            loopHandler.postDelayed(loopRunnable, 200);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_color);
-
-        calc = new Calculator();
-
-        // Get the colors from the intent
-        Intent intent = getIntent();
-        String myColor = intent.getStringExtra(ColorSelectActivity.EXTRA_MYCOLOR);
-        String otherColor = intent.getStringExtra(ColorSelectActivity.EXTRA_OTHERCOLOR);
-
-        // Show selected colors as text.
-        TextView myTextView = (TextView) findViewById(R.id.myTextView);
-        TextView otherTextView = (TextView) findViewById(R.id.otherTextView);
-        myTextView.setText(myColor);
-        otherTextView.setText(otherColor);
-
-        // Show my color as background
-        BackgroundColor firstColor;
-        switch (myColor) {
-            case "Red":
-                firstColor = BackgroundColor.RED;
-                break;
-            case "Yellow":
-                firstColor = BackgroundColor.YELLOW;
-                break;
-            case "Blue":
-                firstColor = BackgroundColor.BLUE;
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid color: " + myColor);
-        }
-        RelativeLayout background = (RelativeLayout) findViewById(R.id.myBackground);
-        background.setBackgroundColor(Color.argb(firstColor.getA(), firstColor.getR(), firstColor.getG(), firstColor.getB()));
+        setupColors();
     }
 
+
+
+    /** Called when the activity is about to become visible. */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setupColors();
+        Log.d(msg, "The onStart() event");
+    }
+
+    /** Called when the activity has become visible. */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(msg, "The onResume() event");
+    }
+
+    /** Called when another activity is taking focus. */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(msg, "The onPause() event");
+    }
+
+    /** Called when the activity is no longer visible. */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(msg, "The onStop() event");
+    }
+
+    /** Called just before the activity is destroyed. */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        loopHandler.removeCallbacks(loopRunnable);
+        x = 0;
+        Log.d(msg, "The onDestroy() event");
+    }
+
+    /** Activity being restarted from stopped state. */
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setupColors();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,118 +124,76 @@ public class DisplayColorActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        if (hasFocus) {
-
-            final Handler myHandler = new Handler();
-
-            (new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    TextView myTextView = (TextView) findViewById(R.id.myTextView);
-                    TextView otherTextView = (TextView) findViewById(R.id.otherTextView);
-                    final String myColor = myTextView.getText().toString();
-                    final String otherColor = otherTextView.getText().toString();
-                    myHandler.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            changeColor(myColor, otherColor);
-                        }
-                    });
-                }
-            })).start();
+    public void changeColor(String myColor, String otherColor, int x) {
+        RelativeLayout background = (RelativeLayout) findViewById(R.id.myBackground);
+        /*BackgroundColor mixedColor = checkColor(myColor);
+        boolean inRange = checkDistance();
+        while (!inRange) {
+            inRange = checkDistance();
         }
+        while(inRange) {
+            mixedColor.setR(calculateR(myColor, otherColor));
+            mixedColor.setG(calculateG(myColor, otherColor));
+            mixedColor.setB(calculateB(myColor, otherColor));
+            background.setBackgroundColor(Color.argb(mixedColor.getA(), mixedColor.getR(), mixedColor.getG(), mixedColor.getB()));
+            inRange = checkDistance();
+        }*/
+
+            /*mixedColor.setR(calculateR(myColor, otherColor, x));
+            mixedColor.setG(calculateG(myColor, otherColor));
+            mixedColor.setB(calculateB(myColor, otherColor));*/
+            background.setBackgroundColor(Color.argb(255, calculateR(myColor, otherColor, x), 0, 255));
     }
 
-    public void changeColor(String myColor, String otherColor) {
-        RelativeLayout background = (RelativeLayout) findViewById(R.id.myBackground);
-        BackgroundColor mixedColor;
-        boolean isChanged = false;
-        while (!isChanged) {
-            if (checkDistance()) {
-                isChanged = true;
-            }
-        }
+    private int calculateR(String myColor, String otherColor, int x) {
+        int rValue;
+        BackgroundColor mColor = checkColor(myColor);
+        BackgroundColor oColor = checkColor(otherColor);
+        //rValue = Math.min(((mColor.getR()) + (oColor.getR()-(2*calc.calcDistance()))), 255);
+        rValue = Math.min(((mColor.getR()) + (oColor.getR()-255+x)), 255);
+        return rValue;
+    }
 
-        switch(myColor) {
+    private int calculateG(String myColor, String otherColor) {
+        int gValue;
+        BackgroundColor mColor = checkColor(myColor);
+        BackgroundColor oColor = checkColor(otherColor);
+        gValue = Math.min(((mColor.getG()) + (oColor.getG()-(2*calc.calcDistance()))),255);
+        return gValue;
+    }
+
+    private int calculateB(String myColor, String otherColor) {
+        int bValue;
+        BackgroundColor mColor = checkColor(myColor);
+        BackgroundColor oColor = checkColor(otherColor);
+        bValue = Math.min(((mColor.getB()) + (oColor.getB()-(2*calc.calcDistance()))),255);
+        return bValue;
+    }
+
+    private BackgroundColor checkColor(String color) {
+        BackgroundColor bColor;
+        switch (color) {
             case "Red":
-                switch (otherColor) {
-                    case "Red":
-                        mixedColor = BackgroundColor.WHITE;
-                        Context context = getApplicationContext();
-                        CharSequence text = "You can not mix two equal colors. Go back to color selection.";
-                        int duration = Toast.LENGTH_LONG;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.show();
-                        break;
-                    case "Blue":
-                        mixedColor = BackgroundColor.PURPLE;
-                        break;
-                    case "Yellow":
-                        mixedColor = BackgroundColor.ORANGE;
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Invalid color: " + otherColor);
-                }
+                bColor = BackgroundColor.RED;
                 break;
-            case "Yellow":
-                switch (otherColor) {
-                    case "Yellow":
-                        mixedColor = BackgroundColor.WHITE;
-                        Context context = getApplicationContext();
-                        CharSequence text = "You can not mix two equal colors. Go back to color selection.";
-                        int duration = Toast.LENGTH_LONG;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.show();
-                        break;
-                    case "Blue":
-                        mixedColor = BackgroundColor.GREEN;
-                        break;
-                    case "Red":
-                        mixedColor = BackgroundColor.ORANGE;
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Invalid color: " + otherColor);
-                }
+            case "Green":
+                bColor = BackgroundColor.GREEN;
                 break;
             case "Blue":
-                switch (otherColor) {
-                    case "Blue":
-                        mixedColor = BackgroundColor.WHITE;
-                        Context context = getApplicationContext();
-                        CharSequence text = "You can not mix two equal colors. Go back to color selection.";
-                        int duration = Toast.LENGTH_LONG;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.show();
-                        break;
-                    case "Red":
-                        mixedColor = BackgroundColor.PURPLE;
-                        break;
-                    case "Yellow":
-                        mixedColor = BackgroundColor.GREEN;
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Invalid color: " + otherColor);
-                }
+                bColor = BackgroundColor.BLUE;
                 break;
             default:
-                throw new IllegalArgumentException("Invalid color: " + myColor);
+                throw new IllegalArgumentException("Invalid color: " + color);
         }
-        background.setBackgroundColor(Color.argb(mixedColor.getA(), mixedColor.getR(), mixedColor.getG(), mixedColor.getB()));
+        return bColor;
     }
 
     /**
-     * Returns true when the distance between two phones is less than 5 cm.
-     * @return isClose
+     * Returns true when the distance between two phones is between 10 and 100 cm.
+     * @return inRange
      */
     public boolean checkDistance() {
-        boolean isClose = false;
+        /*boolean inRange = false;
 
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
         calc.setX1(ownPosition.getX());
@@ -205,12 +206,37 @@ public class DisplayColorActivity extends ActionBarActivity {
             break; //Only read the position of the first device.
         }
 
-        double distance = calc.calcDistance();
+        int distance = calc.calcDistance();
 
-        if (distance <= 5) {
-            isClose = true;
+        if (distance >= 10 && distance <= 100) {
+            inRange = true;
         }
 
-        return isClose;
+        return inRange;*/
+        return true;
+    }
+
+    private void setupColors() {
+        calc = new Calculator();
+        x = 0;
+
+        // Get the colors from the intent
+        Intent intent = getIntent();
+        String myColor = intent.getStringExtra(ColorSelectActivity.EXTRA_MYCOLOR);
+        String otherColor = intent.getStringExtra(ColorSelectActivity.EXTRA_OTHERCOLOR);
+
+        // Show selected colors as text.
+        TextView myTextView = (TextView) findViewById(R.id.myTextView);
+        TextView otherTextView = (TextView) findViewById(R.id.otherTextView);
+        myTextView.setText(myColor);
+        otherTextView.setText(otherColor);
+
+        // Show my color as background
+        BackgroundColor firstColor = checkColor(myColor);
+        RelativeLayout background = (RelativeLayout) findViewById(R.id.myBackground);
+        background.setBackgroundColor(Color.argb(firstColor.getA(), firstColor.getR(), firstColor.getG(), firstColor.getB()));
+
+        // Start thread to change colors
+        loopHandler.post(loopRunnable);
     }
 }

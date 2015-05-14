@@ -1,8 +1,8 @@
 package ee5.demo_color_mixer;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,31 +12,16 @@ import android.widget.Spinner;
 import com.EE5.image_manipulation.PatternDetector;
 import com.EE5.util.GlobalResources;
 
-public class ColorSelectActivity extends ActionBarActivity {
+public class ColorSelectActivity extends Activity {
     public final static String EXTRA_MYCOLOR = "ee5.colormixer.MYCOLOR";
     public final static String EXTRA_OTHERCOLOR = "ee5.colormixer.OTHERCOLOR";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_color_select);
-
-        //Start new Activity and block until it returns.
         startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"), 0);
-        //----------------------------------------------
-
-        Spinner mySpinner = (Spinner) findViewById(R.id.my_colors_spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.my_colors_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        mySpinner.setAdapter(adapter);
-
-        // Initialize other spinner
-        Spinner otherSpinner = (Spinner) findViewById(R.id.other_colors_spinner);
-        otherSpinner.setAdapter(adapter);
+        setContentView(R.layout.activity_color_select);
+        setupColorSelect();
     }
 
 
@@ -62,11 +47,24 @@ public class ColorSelectActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /** Called when the activity is about to become visible. */
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStart() {
+        super.onStart();
+        setupColorSelect();
     }
 
+    /** Called when the activity has become visible. */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        if(patternDetector != null) {
+            patternDetector.setup();
+        }
+    }
+
+    /** Called when another activity is taking focus. */
     @Override
     protected void onPause() {
         super.onPause();
@@ -76,9 +74,33 @@ public class ColorSelectActivity extends ActionBarActivity {
         }
     }
 
+    /** Called when the activity is no longer visible. */
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStop() {
+        super.onStop();
+    }
+
+    /** Called just before the activity is destroyed. */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    /** Activity being restarted from stopped state. */
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setupColorSelect();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
         PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
         if(patternDetector != null) {
             patternDetector.setup();
@@ -96,5 +118,20 @@ public class ColorSelectActivity extends ActionBarActivity {
         intent.putExtra(EXTRA_MYCOLOR, myColor);
         intent.putExtra(EXTRA_OTHERCOLOR, otherColor);
         startActivity(intent);
+    }
+
+    private void setupColorSelect() {
+        Spinner mySpinner = (Spinner) findViewById(R.id.my_colors_spinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.my_colors_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        mySpinner.setAdapter(adapter);
+
+        // Initialize other spinner
+        Spinner otherSpinner = (Spinner) findViewById(R.id.other_colors_spinner);
+        otherSpinner.setAdapter(adapter);
     }
 }

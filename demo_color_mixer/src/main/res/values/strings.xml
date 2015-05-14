@@ -11,8 +11,8 @@
 
     <string-array name="my_colors_array">
         <item>Red</item>
+        <item>Green</item>
         <item>Blue</item>
-        <item>Yellow</item>
     </string-array>
 
     <string name="title_activity_display_color">My Color</string>

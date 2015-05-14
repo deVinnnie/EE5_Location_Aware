@@ -10,11 +10,11 @@ public class Calculator  {
 
     }
 
-    public double calcDistance() {
-        double distance;
+    public int calcDistance() {
+        int distance;
         double xDiff = x2 - x1;
         double yDiff = y2 - y1;
-        distance = Math.sqrt(xDiff*xDiff + yDiff*yDiff);
+        distance = (int) Math.sqrt(xDiff*xDiff + yDiff*yDiff);
         return distance;
     }
 

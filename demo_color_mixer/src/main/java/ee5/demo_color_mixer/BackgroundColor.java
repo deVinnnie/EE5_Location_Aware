@@ -19,16 +19,37 @@ public enum BackgroundColor {
         this.g = g;
         this.b = b;
     }
+
     public int getA() {
         return a;
     }
+
     public int getR() {
         return r;
     }
+
     public int getG() {
         return g;
     }
+
     public int getB() {
         return b;
     }
+
+    public void setA(int a) {
+        this.a = a;
+    }
+
+    public void setR(int r) {
+        this.r = r;
+    }
+
+    public void setG(int g) {
+        this.g = g;
+    }
+
+    public void setB(int b) {
+        this.b = b;
+    }
+
 }
