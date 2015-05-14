@@ -34,6 +34,7 @@ public class height_sound_app extends AppCompatActivity {
     protected MediaPlayer sound7;
     protected MediaPlayer sound8;
     public double height;
+    private double beginheight;
     private boolean stopped=false;
     PatternCoordinator pattern;
    // private double prevheight;*/
@@ -49,7 +50,7 @@ public class height_sound_app extends AppCompatActivity {
 
             myTextView.setText("" + height);
 
-           if (height <= 50) {
+           if (height <= (13*beginheight/20)) {
 
 
                sound1.setVolume(1,1);
@@ -62,7 +63,7 @@ public class height_sound_app extends AppCompatActivity {
                sound8.setVolume(0,0);
 
 
-            } else if (height <= 70) {
+            } else if (height <= (14*beginheight/20)) {
 
                sound1.setVolume(0,0);
                sound2.setVolume(1,1);
@@ -75,7 +76,7 @@ public class height_sound_app extends AppCompatActivity {
 
 
 
-           } else if (height <= 90) {
+           } else if (height <= (beginheight*15/20)) {
 
                sound1.setVolume(0,0);
                sound2.setVolume(0,0);
@@ -87,7 +88,7 @@ public class height_sound_app extends AppCompatActivity {
                sound8.setVolume(0,0);
 
 
-            } else if (height < 110) {
+            } else if (height < (beginheight*16/20)) {
 
 
                sound1.setVolume(0,0);
@@ -101,7 +102,7 @@ public class height_sound_app extends AppCompatActivity {
 
 
 
-            } else if (height < 130) {
+            } else if (height < (beginheight*17/20)) {
 
 
                sound1.setVolume(0,0);
@@ -115,7 +116,7 @@ public class height_sound_app extends AppCompatActivity {
 
 
 
-            } else if (height < 150) {
+            } else if (height < (beginheight*18/20)) {
 
 
                sound1.setVolume(0,0);
@@ -128,7 +129,7 @@ public class height_sound_app extends AppCompatActivity {
                sound8.setVolume(0,0);
 
 
-            } else if (height < 170) {
+            } else if (height < (beginheight*19/20)) {
 
 
                sound1.setVolume(0,0);
@@ -172,6 +173,8 @@ public class height_sound_app extends AppCompatActivity {
         startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"), 0);
         setContentView(R.layout.activity_height_sound_app);
 
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        beginheight= ownPosition.getHeight();
         /*final Button startbutton = (Button) findViewById(R.id.button2);
         final Button stopbutton = (Button) findViewById(R.id.button);*/
         sound1 = MediaPlayer.create(this, R.raw.sound1);
@@ -190,6 +193,9 @@ public class height_sound_app extends AppCompatActivity {
         sound6.setVolume(0,0);
         sound7.setVolume(0,0);
         sound8.setVolume(0,0);
+        TextView myTextView = (TextView) findViewById(R.id.textView6);
+
+        myTextView.setText("" + beginheight);
 
         /*mp.setVolume(1,1);
         contexto=this;*/
@@ -262,6 +268,33 @@ public class height_sound_app extends AppCompatActivity {
     }
     @Override
     protected void onDestroy() {
+        loopHandler.removeCallbacks(loopRunnable);
+
+        sound1.setLooping(false);
+        sound2.setLooping(false);
+        sound3.setLooping(false);
+        sound4.setLooping(false);
+        sound5.setLooping(false);
+        sound6.setLooping(false);
+        sound7.setLooping(false);
+        sound8.setLooping(false);
+        sound1.stop();
+        sound2.stop();
+        sound3.stop();
+        sound4.stop();
+        sound5.stop();
+        sound6.stop();
+        sound7.stop();
+        sound8.stop();
+
+        sound1.release();
+        sound2.release();
+        sound3.release();
+        sound4.release();
+        sound5.release();
+        sound6.release();
+        sound7.release();
+        sound8.release();
         super.onDestroy();
     }
 
@@ -269,6 +302,11 @@ public class height_sound_app extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        beginheight= ownPosition.getHeight();
+        TextView myTextView = (TextView) findViewById(R.id.textView6);
+
+        myTextView.setText("" + beginheight);
         if(patternDetector != null) {
             patternDetector.destroy();
         }
@@ -278,6 +316,11 @@ public class height_sound_app extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        beginheight= ownPosition.getHeight();
+        TextView myTextView = (TextView) findViewById(R.id.textView6);
+
+        myTextView.setText("" + beginheight);
         if(patternDetector != null) {
             patternDetector.setup();
         }
@@ -296,14 +339,7 @@ public class height_sound_app extends AppCompatActivity {
     public void STOP(View view) {
         // Do something in response to button
         stopped=true;
-        sound1.release();
-        sound2.release();
-        sound3.release();
-        sound4.release();
-        sound5.release();
-        sound6.release();
-        sound7.release();
-        sound8.release();
+
         //mp.release();
         finish();
 
