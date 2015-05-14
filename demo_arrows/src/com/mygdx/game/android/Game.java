@@ -1,5 +1,7 @@
 package com.mygdx.game.android;
 
+import android.util.Log;
+
 import com.EE5.math.Calc;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
@@ -64,26 +66,26 @@ public class Game extends ApplicationAdapter {
         Position otherPosition = new Position(0.0,0.0,0.0,0.0);
         //Iterate over other devices.
         for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
-            calc.x2 = entry.getValue().element1.getX();
-            calc.y2 = entry.getValue().element1.getY();
-            otherPosition = entry.getValue().element1;
+            //otherPosition = entry.getValue().element1;
             break; //Only read the position of the first device.
         }
 
         Calc algorithmCalc = new Calc();
         Point2D dcPoint = algorithmCalc.convertToDeviceCentredCoordinates(otherPosition);
+        Log.i("dcPoint", "("+ dcPoint.getX() +"," + dcPoint.getY() +  ")");
 
-        double angle = -90; //Use correct offset to align with baseline.
-        angle += Math.toDegrees(Math.atan2(dcPoint.getX(), dcPoint.getY()));
+        double correction = -90; //Use correct offset to align with baseline.
+        double angle = Math.toDegrees(Math.atan2(dcPoint.getX(), dcPoint.getY()));
+        Log.i("Angle", ""+angle);
 
-        sprite.setRotation( (float) angle);
+        sprite.setRotation( (float) (correction+angle));
         //batch.draw(img, 0, 0);
 
         //Draw Current Device Position.
-        //String position = "("+Math.round(ownPosition.getX()) + ", " + Math.round(ownPosition.getY())+")" +  " " + ownPosition.getRotation() + "°";
-        String position = "("+Math.round(otherPosition.getX()) + ", " + Math.round(otherPosition.getY())+")" +  " " + otherPosition.getRotation() + "°";
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        String position = "("+Math.round(ownPosition.getX()) + ", " + Math.round(ownPosition.getY())+")" +  " rot: " + ownPosition.getRotation() + "°";
+        //String position = "("+Math.round(otherPosition.getX()) + ", " + Math.round(otherPosition.getY())+")" +  " " + otherPosition.getRotation() + "°";
         font.draw(batch, position, 50, 50);
-
         batch.end();
     }
 }
