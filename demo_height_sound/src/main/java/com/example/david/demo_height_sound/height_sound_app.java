@@ -19,7 +19,7 @@ import com.EE5.image_manipulation.PatternDetector;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
 
-
+/**Class for the implementation of app with its buttons and data for height --> linked to the sound**/
 public class height_sound_app extends AppCompatActivity {
 
 
@@ -39,6 +39,9 @@ public class height_sound_app extends AppCompatActivity {
     PatternCoordinator pattern;
    // private double prevheight;*/
 
+
+    /** the handler with the instructions the program needs to complete when the app is running(after pressing the start button
+     * this is linking the height of the reference value with the real value read out from the position**/
     private Handler loopHandler = new Handler();
     private Runnable loopRunnable = new Runnable() {
         @Override
@@ -167,6 +170,8 @@ public class height_sound_app extends AppCompatActivity {
         }
     };
 
+    /**when the application gets created, it should initialise the 8 sounds it needs to play without making any sound heard by the user
+     * it should also register the reference value depending on its starting height and return this value to the user by putting it in the textview**/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -266,6 +271,7 @@ public class height_sound_app extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    /**when the application closes, it should stop the runnable, end the looping stop the sounds and release them**/
     @Override
     protected void onDestroy() {
         loopHandler.removeCallbacks(loopRunnable);
@@ -298,6 +304,7 @@ public class height_sound_app extends AppCompatActivity {
         super.onDestroy();
     }
 
+    /**when the application is paused, the application should register its reference value**/
     @Override
     protected void onPause() {
         super.onPause();
@@ -312,6 +319,7 @@ public class height_sound_app extends AppCompatActivity {
         }
     }
 
+    /**when the application is resumed, the application should register its reference value**/
     @Override
     protected void onResume() {
         super.onResume();
@@ -325,6 +333,7 @@ public class height_sound_app extends AppCompatActivity {
             patternDetector.setup();
         }
     }
+    /**when the start button is pressed by the user, the application should start with the runnable looping process to link the height to a sound**/
     public void START(View view) {
         // Do something in response to button
 
@@ -336,6 +345,7 @@ public class height_sound_app extends AppCompatActivity {
 
 
     }
+    /**when the stop button is pressed by the user, the application should close and call the ondestoy function.**/
     public void STOP(View view) {
         // Do something in response to button
         stopped=true;
@@ -345,6 +355,8 @@ public class height_sound_app extends AppCompatActivity {
 
 
     }
+
+    /**when the getreference button is pressed by the user, the application should refresh its reference value for the height to sound linkings**/
     public void get_reference(View view) {
         // Do something in response to button
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
