@@ -31,6 +31,12 @@ public class Game extends ApplicationAdapter {
         sprite = new Sprite(people);
         sprite.setPosition(500, 500);
         sprite.setRotation(115);
+
+
+
+        MyInputProcessor inputProcessor = new MyInputProcessor();
+        Gdx.input.setInputProcessor(inputProcessor);
+
 //        sprite.setPosition(Gdx.graphics.getWidth() / 2 - sprite.getWidth() / 2,
 //                Gdx.graphics.getHeight() / 2 - sprite.getHeight() / 2);
 //        sprite.setOriginCenter();
@@ -50,6 +56,8 @@ public class Game extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         sprite.draw(batch);
+
+
 
 //        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
 //        calc.x1 = ownPosition.getX();
