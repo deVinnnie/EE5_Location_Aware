@@ -15,10 +15,10 @@
         android:textSize="30sp"
         android:background="#ffff0000"
         android:onClick="STOP"
-        android:layout_alignParentTop="true"
+        android:layout_marginTop="130dp"
+        android:layout_below="@+id/textView5"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="127dp" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -29,10 +29,9 @@
         android:textStyle="normal|bold|italic"
         android:background="#ff00ff00"
         android:onClick="START"
-        android:layout_below="@+id/button"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="84dp" />
+        android:layout_alignTop="@+id/button"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,19 +39,54 @@
         android:id="@+id/textView3"
         android:hint="Height"
         android:textSize="30dp"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/button"
-        android:layout_toEndOf="@+id/button"
-        android:editable="true" />
+        android:editable="true"
+        android:layout_below="@+id/textView5"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="46dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Height: "
         android:id="@+id/textView5"
-        android:layout_alignTop="@+id/textView3"
+        android:textSize="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView6"
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/textView7"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textSize="30dp" />
+        android:textSize="25dp"
+        android:editable="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView7"
+        android:layout_below="@+id/button2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="52dp"
+        android:textSize="25dp"
+        android:text="Reference Height:" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="refresh reference"
+        android:id="@+id/button3"
+        android:layout_alignTop="@+id/textView5"
+        android:layout_alignRight="@+id/button2"
+        android:layout_alignEnd="@+id/button2"
+        android:background="#ffffff00"
+        android:textSize="20dp"
+        android:onClick="get_reference" />
 
 </RelativeLayout>

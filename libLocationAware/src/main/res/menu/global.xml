@@ -6,4 +6,6 @@
         android:orderInCategory="100"/>
     <item android:id="@+id/action_use_as_client" android:title="@string/use_as_client"
         android:orderInCategory="100"/>
+    <item android:id="@+id/action_calibrate" android:title="Calibrate"
+        android:orderInCategory="100"/>
 </menu>

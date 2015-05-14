@@ -191,8 +191,10 @@ public class ImageManipulationsActivity extends Activity {
     }
 
     private void setupCamera(){
-        this.patternDetector.setup();
-        this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
+        if(this.patternDetector != null) {
+            this.patternDetector.setup();
+            this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
+        }
     }
 
     // For an overview of when and which events are called see:
@@ -215,13 +217,11 @@ public class ImageManipulationsActivity extends Activity {
             //patternDetector.getPatternDetectorAlgorithm().distance2 = 0;
             patternDetector.setup();
         }
-
         Log.i("OpenCV", "OpenCV loading");
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this, mLoaderCallback);
-
         synchronized (this) {
             try {
-                this.wait(10000);
+                this.wait(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

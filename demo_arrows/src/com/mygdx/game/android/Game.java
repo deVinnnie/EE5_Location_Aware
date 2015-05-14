@@ -1,7 +1,5 @@
 package com.mygdx.game.android;
 
-import android.util.Log;
-
 import com.EE5.math.Calc;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
@@ -46,6 +44,14 @@ public class Game extends ApplicationAdapter {
         /*PatternDetectorAlgorithmInterface inter = GlobalResources.getInstance().getPatternDetector().getPatternDetectorAlgorithm();
         Log.i("Test", inter.getClass().toString());*/
         GlobalResources.getInstance().setData("Hello World");
+
+        Position otherPosition = new Position(1.0,0.0,0.0,1.0);
+        for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
+            calc.x2 = entry.getValue().element1.getX();
+            calc.y2 = entry.getValue().element1.getY();
+            otherPosition = entry.getValue().element1;
+            break; //Only read the position of the first device.
+        }
     }
 
     @Override
@@ -55,16 +61,12 @@ public class Game extends ApplicationAdapter {
         batch.begin();
         sprite.draw(batch);
 
-        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
         Position otherPosition = new Position(0.0,0.0,0.0,0.0);
-        //calc.x1 = ownPosition.getX();//* Math.cos(Math.toRadians(ownPosition.getRotation()))- ownPosition.getY()*Math.sin(Math.toRadians(ownPosition.getRotation()));
-        //calc.y1 = ownPosition.getY();//* Math.cos(Math.toRadians(ownPosition.getRotation()))+ ownPosition.getX()*Math.sin(Math.toRadians(ownPosition.getRotation()));
-        //Log.d("arrows","Own postion " + calc.x1 + " " + calc.y1 );
         //Iterate over other devices.
         for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
             calc.x2 = entry.getValue().element1.getX();
             calc.y2 = entry.getValue().element1.getY();
-            Log.i("T", entry.getValue().element2);
+            otherPosition = entry.getValue().element1;
             break; //Only read the position of the first device.
         }
 
@@ -72,13 +74,14 @@ public class Game extends ApplicationAdapter {
         Point2D dcPoint = algorithmCalc.convertToDeviceCentredCoordinates(otherPosition);
 
         double angle = -90; //Use correct offset to align with baseline.
-        angle += Math.toDegrees(Math.atan2(dcPoint.getY(), dcPoint.getX()));
+        angle += Math.toDegrees(Math.atan2(dcPoint.getX(), dcPoint.getY()));
 
-        sprite.setRotation( (float) 90);
+        sprite.setRotation( (float) angle);
         //batch.draw(img, 0, 0);
 
         //Draw Current Device Position.
-        String position = "("+Math.round(ownPosition.getX()) + ", " + Math.round(ownPosition.getY())+")" +  " " + ownPosition.getRotation() + "°";
+        //String position = "("+Math.round(ownPosition.getX()) + ", " + Math.round(ownPosition.getY())+")" +  " " + ownPosition.getRotation() + "°";
+        String position = "("+Math.round(otherPosition.getX()) + ", " + Math.round(otherPosition.getY())+")" +  " " + otherPosition.getRotation() + "°";
         font.draw(batch, position, 50, 50);
 
         batch.end();

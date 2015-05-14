@@ -14,7 +14,7 @@ public class AndroidLauncher extends AndroidApplication {
         super.onCreate(savedInstanceState);
 
         //Start new Activity and block until it returns.
-        startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"),0);
+        startActivityForResult(new Intent("com.EE5.SetupActivity"),0);
         //----------------------------------------------
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
