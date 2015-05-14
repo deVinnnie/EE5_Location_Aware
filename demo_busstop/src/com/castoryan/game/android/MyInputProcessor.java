@@ -1,7 +1,5 @@
 package com.castoryan.game.android;
 
-import android.widget.Toast;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
@@ -9,57 +7,47 @@ import com.badlogic.gdx.InputProcessor;
  * Created by CastorYan on 5/14/2015.
  */
 public class MyInputProcessor implements InputProcessor {
-
-
-    public MyInputProcessor(){
-
+    @Override
+    public boolean keyDown (int keycode) {
+        return true;
     }
 
+    @Override
+    public boolean keyUp (int keycode) {
+        return true;
+    }
+
+    @Override
+    public boolean keyTyped (char character) {
+        return true;
+    }
 
     @Override
     public boolean touchDown (int x, int y, int pointer, int button) {
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        return false;
+        System.out.println("touch down at x=" + Gdx.input.getX()
+                + ", y=" + Gdx.input.getY());
+        return true;
     }
-
 
     @Override
     public boolean touchUp (int x, int y, int pointer, int button) {
-        Gdx.gl.glClearColor(0, 0, 1, 1);
-        return false;
+        System.out.println("touch up at x=" + Gdx.input.getX()
+                + ", y=" + Gdx.input.getY());
+        return true;
     }
-
-
 
     @Override
     public boolean touchDragged (int x, int y, int pointer) {
-        return false;
+        return true;
     }
 
     @Override
-    public boolean mouseMoved(int x, int y){
-        return false;
+    public boolean mouseMoved (int x, int y) {
+        return true;
     }
 
     @Override
-     public boolean keyDown(int a){
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int a){
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char a){
-        return false;
-    }
-
-    @Override
-    public  boolean scrolled(int x){
-        Gdx.gl.glClearColor(1, 1, 0, 0);
-        return false;
+    public boolean scrolled (int amount) {
+        return true;
     }
 }
-
