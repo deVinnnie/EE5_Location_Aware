@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.EE5.server.Server;
 import com.EE5.server.data.Position;
+import com.EE5.util.GlobalResources;
 import com.EE5.util.Tuple;
 
 import java.io.DataInputStream;
@@ -70,6 +71,7 @@ public class PrimitiveSocketTask extends SocketTask {
 
                 Position position = new Position(x, y, rotation,z);
                 this.getServer().getDevices().add(uuid, position, data);
+                GlobalResources.getInstance().getDevices().add(uuid, position, data);
 
                 //Iterate over all devices and send the stored position over the current connection.
                 for (Map.Entry<String, Tuple<Position, String>> entry : this.getServer().getDevices().getMap().entrySet())

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.EE5.server.Server;
 import com.EE5.server.data.Device;
 import com.EE5.server.data.DeviceList;
+import com.EE5.util.GlobalResources;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,7 +66,9 @@ public class ObjectSocketTask extends SocketTask{
                 }
                 boolean present = devices.contains(device);
                 devices.add(device.getId(), device.getPosition(), data);
-                devices.addDevice(device);
+                //devices.addDevice(device);
+
+                GlobalResources.getInstance().getDevices().add(device.getId(),device.getPosition(), data);
 
                 this.getServer().alertify(1,null, 1);
 
