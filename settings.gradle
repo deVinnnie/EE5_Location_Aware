@@ -1,4 +1,4 @@
-include ':openCVLibrary2410'
+include ':openCVLibrary2410', ':demo_jaws'
 include ':libLocationAware'
 include ':libgdx-core'
 include ':demo_height_sound'
@@ -7,5 +7,6 @@ include ':demo_arrows'
 include ':demo_parachute'
 include ':demo_color_mixer'
 include ':demo_busstop'
+include ':demo_jaws'
 
 
