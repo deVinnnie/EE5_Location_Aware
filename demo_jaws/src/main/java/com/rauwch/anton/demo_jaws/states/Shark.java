@@ -2,6 +2,7 @@ package com.rauwch.anton.demo_jaws.states;
 
 import android.util.Log;
 
+import com.EE5.server.Server;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
 import com.EE5.util.Tuple;
@@ -33,10 +34,10 @@ public class Shark extends GameState
     private SpriteBatch batch;
 
     AssetManager assetManager;
-    private int state;
+    private int state = 0;
 
 
-    private int prevState;
+    private int prevState = 0;
 
     private OrthographicCamera b2dCam;
 
@@ -80,9 +81,13 @@ public class Shark extends GameState
         for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
             calc.x2 = entry.getValue().element1.getX();
             calc.y2 = entry.getValue().element1.getY();
+            Log.d("checkserver", "check other phone x: " + calc.x2 + " y: " + calc.y2 );
             Log.i("T", entry.getValue().element2);
             break; //Only read the position of the first device.
         }
+
+
+
         calc.calcDistance();
         changeStat();
         if(prevState != state)
@@ -99,22 +104,22 @@ public class Shark extends GameState
         Jukebox.stopAll();
         switch (state){
             case 0:
-                Jukebox.stopAll();
+
                 break;
             case 1:
-               Jukebox.loop("slow");
+               Jukebox.play("slow");
                 break;
             case 2:
-                Jukebox.loop("mid");
+                Jukebox.play("mid");
                 break;
             case 3:
-                Jukebox.loop("fast");
+                Jukebox.play("fast");
                 break;
             case 4:
-                Jukebox.loop("faster");
+                Jukebox.play("faster");
                 break;
             case 5:
-                Jukebox.loop("extreem");
+                Jukebox.play("extreem");
                 break;
 
         }
@@ -130,7 +135,7 @@ public class Shark extends GameState
 
     private void changeStat()
     {
-        Log.d("distance", " the distance is " + calc.distance);
+
         if(calc.distance > 100)
             state=0;
         else if(calc.distance > 50)
@@ -141,10 +146,10 @@ public class Shark extends GameState
             state = 3;
         else if(calc.distance >10)
             state = 4;
-        else if(calc.distance >=0)
+        else if(calc.distance >0)
             state = 5;
-        
 
+        Log.d("distance", " the distance is " + calc.distance + " with state" + state);
     }
     public int getState() {
         return state;

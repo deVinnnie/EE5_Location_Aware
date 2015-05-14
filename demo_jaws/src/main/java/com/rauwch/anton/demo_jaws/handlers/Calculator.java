@@ -15,7 +15,7 @@ public class Calculator
 
     public void calcDistance()
     {
-        Log.d("distance","calculating distance" + "x1: " + x1 + " y1: " + y1 + " x2: " + x2 + " y2: " + y2 );
+        Log.d("distance","calculating distance" + "x1: " + Math.round(x1) + " y1: " + Math.round(y1) + " x2: " + Math.round(x2) + " y2: " + Math.round(y2) );
         double xDiff = x2 - x1;
         double yDiff = y2 - y1;
         distance = Math.sqrt(xDiff*xDiff + yDiff*yDiff);

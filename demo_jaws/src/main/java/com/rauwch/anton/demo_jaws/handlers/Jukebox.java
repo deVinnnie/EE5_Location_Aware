@@ -1,6 +1,7 @@
 package com.rauwch.anton.demo_jaws.handlers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
 
@@ -11,26 +12,24 @@ import java.util.HashMap;
  */
 public class Jukebox
 {
-    private static HashMap<String, Sound> sounds;
+    private static HashMap<String, Music> sounds;
 
     static
     {
-        sounds = new HashMap<String, Sound>();
+        sounds = new HashMap<String, Music>();
     }
 
     public static void load(String path, String name)
     {
-        Sound sound = Gdx.audio.newSound(Gdx.files.internal(path));
-        sounds.put(name,sound);
+        Music sound = Gdx.audio.newMusic(Gdx.files.internal(path));
+        sounds.put(name, sound);
     }
     public static void play(String name)
     {
         sounds.get(name).play();
+        sounds.get(name).setLooping(true);
     }
-    public static void loop(String name)
-    {
-        sounds.get(name).loop();
-    }
+
     public  static void stop(String name)
     {
         sounds.get(name).stop();
@@ -38,7 +37,7 @@ public class Jukebox
 
     public static void stopAll()
     {
-        for(Sound s : sounds.values())
+        for(Music s : sounds.values())
         {
             s.stop();
         }
