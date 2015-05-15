@@ -11,6 +11,8 @@ import com.EE5.basic_demo.R;
 import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.image_manipulation.PatternDetectorAlgorithm;
 import com.EE5.math.Calc;
+import com.EE5.server.data.Position;
+import com.EE5.util.Point2D;
 import com.EE5.util.Point3D;
 
 import org.opencv.android.Utils;
@@ -43,7 +45,7 @@ public class AlgorithmToCalcTest extends InstrumentationTestCase {
         );
     }
 
-    /*@SmallTest
+    @SmallTest
     public void testWithImage_1(){
         this.makeTestImage(R.drawable.stationary_rotation);
         this.runAlgorithm();
@@ -51,14 +53,13 @@ public class AlgorithmToCalcTest extends InstrumentationTestCase {
         Calc calc = new Calc(10,480,640);
         Point3D point1 = calc.calculate(this.pc);
 
-
         this.makeTestImage(R.drawable.stationary_rotation2);
         this.runAlgorithm();
         Point3D point2 = calc.calculate(this.pc);
 
-        assertEquals(point1.getX(), point2.getX(), 0.01);
-        assertEquals(point1.getY(), point2.getY(), 0.01);
-    }*/
+        assertEquals(point1.getX(), point2.getX(), 0.4);
+        assertEquals(point1.getY(), point2.getY(), 0.4);
+    }
 
     @SmallTest
     public void testWithImage_2(){
@@ -95,6 +96,30 @@ public class AlgorithmToCalcTest extends InstrumentationTestCase {
         assertEquals(point1.getY(), point2.getY(), 4.0);
     }
 
+    //<editor-fold desc="Test the logic for the arrows demo with simulated images.">
+    public void testWithSimulatedImage_1(){
+        Calc calc = new Calc(10,480,640);
+        calc.setConvertToRealValues(false);
+
+        this.makeTestImage(R.drawable.pattern_red_1);
+        this.runAlgorithm();
+
+        Point3D point1 = calc.calculate(this.pc);
+        Position devicePosition1 = new Position(point1.getX(), point1.getY(), this.pc.getAngle(), point1.getZ());
+
+        this.makeTestImage(R.drawable.pattern_red_2);
+        this.runAlgorithm();
+
+        Point3D point2 = calc.calculate(this.pc);
+        Position devicePosition2 = new Position(point2.getX(), point2.getY(), this.pc.getAngle(), point2.getZ());
+
+        Point2D dcPoint = calc.convertToDeviceCentredCoordinates(devicePosition1, devicePosition2);
+        double angle = Math.toDegrees(Math.atan2(dcPoint.getX(), dcPoint.getY()));
+
+        assertEquals(135, angle,0.5);
+    }
+    //</editor-fold>
+
     public void makeTestImage(int id){
         Drawable dh = resources.getDrawable(id);
         this.testBitmap =((BitmapDrawable)dh).getBitmap();
@@ -110,7 +135,7 @@ public class AlgorithmToCalcTest extends InstrumentationTestCase {
     }
 
     public void runAlgorithm(){
-        for(int i=0; i < 100;i++){
+        for(int i=0; i < 50;i++){
             pc = algo.find(testImage, testImageGray);
         }
 
