@@ -53,6 +53,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
      * @param rgba Color image
      * @param gray2 Grayscale image
      * @return Corner points and angle of the pattern.
+     *         Careful x and y axis are corrected to be compatible with Calc.java convention!!!!!!
      */
     public PatternCoordinator find(Mat rgba, Mat gray2) {
         double extra_angle = 0;
@@ -244,7 +245,15 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             if(out_send.getNum2() !=  null) {
                 pc = new PatternCoordinator(out_send.getNum1(), out_send.getNum2(), out_send.getNum3(), out_send.getNum4(), finalangle);
             }
-            return pc;
+
+            PatternCoordinator flipped = new PatternCoordinator(
+                    new Point(pc.getNum1().y, pc.getNum1().x),
+                    new Point(pc.getNum2().y, pc.getNum2().x),
+                    new Point(pc.getNum3().y, pc.getNum3().x),
+                    new Point(pc.getNum4().y, pc.getNum4().x),
+                    0.0
+            );
+            return flipped;
         }
 
     }
