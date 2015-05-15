@@ -40,6 +40,11 @@ public class Vector {
         return dotProduct;
     }
 
+    /**
+     *
+     * @param vector2
+     * @return 0 when the two vectors are parallel (0 or 180degrees)
+     */
     public double crossProduct(Vector vector2){
         return (this.getX()*vector2.getY() - this.getY()*vector2.getX());
     }

@@ -84,6 +84,7 @@ public class Calc {
      * @param pattern Corner points of the pattern.
      *                Num1 is the point at the white inner square.
      *                Moving clockwise the points should correspond to Num2, Num3 and Num4.
+     *                X-axis is 480side, Y-axis is the 640side. Make sure the pattern is in the right coordinates!
      * @return A new point representing the position of the device.
      */
     public Point3D calculate(PatternCoordinator pattern){
@@ -194,7 +195,21 @@ public class Calc {
         //This should result in a higher accuracy as the y axis has higher resolution (640px).
         Z2=1/((2*Math.tan(phiy/2))/fovy);
 
-        //Use properties of vector for axis projection (dot product in particular) to transform the coordinates.
+        /*Use properties of vector for axis projection (dot product in particular) to transform the coordinates.
+           The xDirection and yDirection are the base vectors for the axis of the pattern.
+           The coordinates are relative to the screen (0,0) is the TopLeft corner of the image.
+           The y-axis is the 640 side
+           The x-axis is the 480 side.
+           A scale factor may have been applied, but the principle remains the same.
+
+        |    ---------------> y
+        |     |-------|                              ^
+      x |     |       |                              |  yDirection
+        |     |o      |   ------ xDirection  ------> |
+        |     |-------|
+        `
+         (xe,ye) centre of the pattern.
+        */
         //<editor-fold desc="Calculate X-coordinate">
         Point2D centre34 = this.getCentre(new Point2D(realPatternCoordinator.getNum3()), new Point2D(realPatternCoordinator.getNum4()));
 
