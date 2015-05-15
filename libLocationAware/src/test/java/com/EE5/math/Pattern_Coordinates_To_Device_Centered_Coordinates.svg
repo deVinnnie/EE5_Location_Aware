@@ -199,6 +199,66 @@
          style="fill:#8800aa;fill-opacity:1;fill-rule:evenodd;stroke:#660080;stroke-width:1pt;stroke-opacity:1"
          transform="matrix(-0.8,0,0,-0.8,-10,0)" />
     </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-3-6-1"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4176-3-4-9"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#8800aa;fill-opacity:1;fill-rule:evenodd;stroke:#660080;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-3-5-5-4"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4176-3-8-6-2"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#8800aa;fill-opacity:1;fill-rule:evenodd;stroke:#660080;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-3-7"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4176-3-7"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#8800aa;fill-opacity:1;fill-rule:evenodd;stroke:#660080;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-3-5-8"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4176-3-8-9"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#8800aa;fill-opacity:1;fill-rule:evenodd;stroke:#660080;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -207,9 +267,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="600.12303"
-     inkscape:cy="392.06751"
+     inkscape:zoom="2.8"
+     inkscape:cx="421.68171"
+     inkscape:cy="135.56677"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      showgrid="false"
@@ -231,7 +291,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -264,18 +324,18 @@
          sodipodi:role="line"
          id="tspan5670"
          x="561.13293"
-         y="384.37991">yDev</tspan></text>
+         y="384.37991">xDev</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:23.38711166px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="539.99396"
+       x="564.27966"
        y="525.81653"
        id="text5668-5"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan5670-1"
-         x="539.99396"
-         y="525.81653">xDev</tspan></text>
+         x="564.27966"
+         y="525.81653">yDev</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -374,16 +434,16 @@
        id="path8261"
        inkscape:connector-curvature="0" />
     <path
-       style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#cccccc;stroke-width:3.27203989;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#cccccc;stroke-width:2.20000005;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6.60000015, 2.20000005;stroke-dashoffset:0;stroke-opacity:1"
        id="path8253-2"
        sodipodi:type="arc"
-       sodipodi:cx="-412.59451"
-       sodipodi:cy="519.49005"
+       sodipodi:cx="-413.27029"
+       sodipodi:cy="518.89429"
        sodipodi:rx="37.072372"
        sodipodi:ry="37.072372"
-       sodipodi:start="1.4554796"
+       sodipodi:start="1.5252815"
        sodipodi:end="2.2838642"
-       d="m -408.32892,556.3162 a 37.072372,37.072372 0 0 1 -28.51675,-8.78614 l 24.25116,-28.04001 z"
+       d="m -411.58353,555.92827 a 37.072372,37.072372 0 0 1 -25.93793,-8.99398 l 24.25117,-28.04 z"
        transform="matrix(0.07436297,-0.99723124,0.99723124,0.07436297,0,0)" />
     <rect
        style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#999999;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
@@ -595,5 +655,17 @@
          x="686.94476"
          y="252.61118"
          style="font-size:5px;fill:#ffffff">-</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="524.64026"
+       y="475.72958"
+       id="text4316"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4318"
+         x="524.64026"
+         y="475.72958"
+         style="font-size:12.5px">Rotation</tspan></text>
   </g>
 </svg>
