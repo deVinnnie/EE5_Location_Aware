@@ -279,7 +279,7 @@ public class Calc {
      *
      * In the "Device Centered Coordinate System" the origin is the position of the device.
      * The y-axis is parallel to the long side of the device (the 640px side) and points from the top of the device to the bottom.
-     * The origin is however not linked to a position on the screen. This is only getting the angles right!
+     * The origin is however not linked to a position on the screen. This is only for getting the angles right!
      *
      * |-----------------------|
      * |                       |
