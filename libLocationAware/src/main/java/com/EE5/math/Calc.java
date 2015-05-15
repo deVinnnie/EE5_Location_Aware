@@ -274,7 +274,13 @@ public class Calc {
         double cosCorrectAngle = dotProductBaseline / (xDirection.getLength() * imageBaselineDirection.getLength());
 
         //The dotproduct always returns a positive angle. Using the crossproduct the sign of the angle is determined.
-        double correctAngle = Math.signum(crossProduct) * Math.acos(cosCorrectAngle);
+        double signAngle = Math.signum(crossProduct);
+        if(crossProduct == 0){
+            //If the crossProduct is zero, the signum function will return zero.
+            //The resulting angle would always be zero, even if it was in fact 180 degrees. (cosine = -1)
+            signAngle = 1;
+        }
+        double correctAngle = signAngle * Math.acos(cosCorrectAngle);
         pattern.setAngle(Math.toDegrees(correctAngle));
         //</editor-fold>
 
