@@ -66,13 +66,15 @@ public class Game extends ApplicationAdapter {
         Position otherPosition = new Position(0.0,0.0,0.0,0.0);
         //Iterate over other devices.
         for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
-            //otherPosition = entry.getValue().element1;
+            otherPosition = entry.getValue().element1;
             break; //Only read the position of the first device.
         }
 
         Calc algorithmCalc = new Calc();
         Point2D dcPoint = algorithmCalc.convertToDeviceCentredCoordinates(otherPosition);
         Log.i("dcPoint", "("+ dcPoint.getX() +"," + dcPoint.getY() +  ")");
+
+        //TODO Debug rotation in SetupActivity. (y moves to the wrong side when turning device)
 
         double correction = -90; //Use correct offset to align with baseline.
         double angle = Math.toDegrees(Math.atan2(dcPoint.getX(), dcPoint.getY()));
