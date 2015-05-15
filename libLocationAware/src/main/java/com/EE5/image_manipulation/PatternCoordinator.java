@@ -70,13 +70,13 @@ public class PatternCoordinator implements Serializable{
 
     @Override
     public String toString(){
-        String string = "\n";
-        string += "("+ this.getNum1().x  + "," + this.getNum1().y + ")\n";
-        string += "("+ this.getNum2().x  + "," + this.getNum2().y + ")\n";
-        string += "("+ this.getNum3().x  + "," + this.getNum3().y + ")\n";
-        string += "("+ this.getNum4().x  + "," + this.getNum4().y + ")\n";
-        string += "("+ this.getAngle() + ")\n";
+        String format = "(%.2f, %.2f) (%.2f, %.2f) (%.2f, %.2f) (%.2f, %.2f) (rot:%.2f)";
+        String string = String.format(format,
+                this.getNum1().x, this.getNum1().y,
+                this.getNum2().x, this.getNum2().y,
+                this.getNum3().x, this.getNum3().y,
+                this.getNum4().x, this.getNum4().y,
+                this.getAngle());
         return string;
-
     }
 }
