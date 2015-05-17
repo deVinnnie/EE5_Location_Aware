@@ -9,6 +9,7 @@ import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
 import com.EE5.util.Point3D;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.highgui.Highgui;
@@ -56,6 +57,15 @@ public class PatternDetector {
                         Mat rgba = new Mat();
                         Mat gray = new Mat();
                         mCamera.retrieve(rgba, Highgui.CV_CAP_ANDROID_COLOR_FRAME_RGB);
+
+                        if(camera == 1) {
+                            //Flip the image around the openCv x-axis (== Calc y-axis) if the front facing camera is used.
+                            //See: http://answers.opencv.org/question/8804/ipad-camera-input-is-rotated-180-degrees/
+                            Core.flip(rgba, rgba, 1);
+                        }
+
+                        /*Bitmap bitmap = Bitmap.createBitmap(rgba.cols(), rgba.rows(), Bitmap.Config.ARGB_8888);
+                        Utils.matToBitmap(rgba, bitmap);*/
 
                         //Convert to grayscale.
                         Imgproc.cvtColor(rgba, gray, Imgproc.COLOR_RGB2GRAY);
