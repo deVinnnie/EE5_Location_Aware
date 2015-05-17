@@ -320,7 +320,7 @@ public class Calc {
     public Point2D convertToDeviceCentredCoordinates(Position ownPosition, Position position){
         double rotation = Math.toRadians(ownPosition.getRotation());
 
-        //Careful with convention, y is the baseline axis. X is up.
+        //Careful with convention, yDevice is the baseline axis. xDevice is down.
         Vector xDeviceDirection = new Vector(
                 Math.sin(rotation),
                 Math.cos(rotation)
@@ -339,7 +339,7 @@ public class Calc {
         }
         double X = cosAlphaX * centreToPoint.getLength();
 
-        //Careful with convention, y is the baseline axis. X is up.
+        //Careful with convention, yDevice is the baseline axis. xDevice is down.
         Vector yDeviceDirection = new Vector(
                 Math.cos(rotation),
                 -Math.sin(rotation)

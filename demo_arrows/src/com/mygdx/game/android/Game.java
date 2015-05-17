@@ -74,8 +74,6 @@ public class Game extends ApplicationAdapter {
         Point2D dcPoint = algorithmCalc.convertToDeviceCentredCoordinates(otherPosition);
         Log.i("dcPoint", "("+ dcPoint.getX() +"," + dcPoint.getY() +  ")");
 
-        //TODO Debug rotation in SetupActivity. (y moves to the wrong side when turning device)
-
         double correction = -90; //Use correct offset to align with baseline.
         double angle = Math.toDegrees(Math.atan2(dcPoint.getX(), dcPoint.getY()));
         Log.i("Angle", ""+angle);
