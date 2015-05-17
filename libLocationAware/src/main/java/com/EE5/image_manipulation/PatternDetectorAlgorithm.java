@@ -66,7 +66,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
 
         Imgproc.threshold(gray2, mIntermediateMat, 80, 255, Imgproc.THRESH_BINARY); //Apply tresholding, result is stored in 'mIntermediateMat'
         //Imgproc.threshold(gray2, mIntermediateMat, 80, 255, Imgproc.THRESH_OTSU);
-        //Imgproc.Canny(mIntermediateMat, mIntermediateMat, 80, 90);                           //mIntermediateMat is a Mat format variable in field
+        //Imgproc.Canny(mIntermediateMat, mIntermediateMat, 80, 90); //mIntermediateMat is a Mat format variable in field
 
 
         //Let OpenCV find contours, the result of this operation is stored in 'contour'.
@@ -77,6 +77,15 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
 
         MatOfPoint squ_in  = new MatOfPoint();
         MatOfPoint squ_out = new MatOfPoint();
+
+        PatternCoordinator detectedPattern  = new PatternCoordinator(
+                //Pattern in center.
+                new Point(320-50,240-50),
+                new Point(320+50,240-50),
+                new Point(320-50,240+50),
+                new Point(320+50,240+50),
+                0.00
+        );
 
         if(setupflag == false)
         {
@@ -120,15 +129,6 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
                 distance2 = 0;
             }
             distance2 = distance2 + 2;
-            PatternCoordinator pc = new PatternCoordinator(
-                    //Pattern in center.
-                    new Point(320-50,240-50),
-                    new Point(320+50,240-50),
-                    new Point(320-50,240+50),
-                    new Point(320+50,240+50),
-                    0.00
-            );
-            return pc;
         }
         else {
             con_in_range = getContoursBySize(distance2, contour);
@@ -158,9 +158,6 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             List<MatOfPoint> appro_con = new ArrayList<MatOfPoint>();
             appro_con.add(new MatOfPoint(appo.toArray()));
 
-            //Imgproc.cvtColor(mIntermediateMat, rgba, Imgproc.COLOR_GRAY2BGRA, 4); //Convert to rgba;
-            //When this line is commented the following commands will draw on the original rgba image.
-
             //Overlay the image with some useful lines.
             //Imgproc.drawContours(image, contour, -1, orange, 4);
             //Imgproc.drawContours(image,outterContours,-1,new Scalar(120,120,255),4);
@@ -176,10 +173,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             Core.rectangle(rgba, a, b, dark_blue, 3);
 
             Point out[] = new Point[4];
-            //Point out_send[];// = new Point[4];
-
             NewMtx2.points(out);
-
             PatternCoordinator out_send = Cal_Pointnum(out, innerCenter);
 
             if(out_send.getNum2() !=  null) {
@@ -235,7 +229,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             //Core.putText(image, String.valueOf(outterCenter.x)+" "+outterCenter.y, new Point(50, 650), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
 
             long stopTime = System.currentTimeMillis();
-            String sss = String.valueOf(stopTime - startTime);
+            String elapsedTime = String.valueOf(stopTime - startTime);
             //Log.i(TAG2, "spend_time for one frame = " + sss + " ms");
             //Log.i(TAG,"The coordinator is = " + sss);
 
@@ -246,16 +240,15 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
                 pc = new PatternCoordinator(out_send.getNum1(), out_send.getNum2(), out_send.getNum3(), out_send.getNum4(), finalangle);
             }
 
-            PatternCoordinator flipped = new PatternCoordinator(
+            detectedPattern = new PatternCoordinator(
                     new Point(pc.getNum1().y, pc.getNum1().x),
                     new Point(pc.getNum2().y, pc.getNum2().x),
                     new Point(pc.getNum3().y, pc.getNum3().x),
                     new Point(pc.getNum4().y, pc.getNum4().x),
                     0.0
             );
-            return flipped;
         }
-
+        return detectedPattern;
     }
 
     private PatternCoordinator Cal_Pointnum(Point[] point, Point in_center){
