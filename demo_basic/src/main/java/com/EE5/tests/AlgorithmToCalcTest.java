@@ -45,6 +45,7 @@ public class AlgorithmToCalcTest extends InstrumentationTestCase {
         );
     }
 
+    //<editor-fold desc="Test that position remains the same when rotating around the camera.">
     @SmallTest
     public void testWithImage_1(){
         this.makeTestImage(R.drawable.stationary_rotation);
@@ -95,6 +96,7 @@ public class AlgorithmToCalcTest extends InstrumentationTestCase {
         assertEquals(point1.getX(), point2.getX(), 4.0);
         assertEquals(point1.getY(), point2.getY(), 4.0);
     }
+    //</editor-fold>
 
     //<editor-fold desc="Test the logic for the arrows demo with simulated images.">
     public void testWithSimulatedImage_1(){
@@ -120,6 +122,7 @@ public class AlgorithmToCalcTest extends InstrumentationTestCase {
     }
     //</editor-fold>
 
+    //<editor-fold desc="Helper Methods">
     public void makeTestImage(int id){
         Drawable dh = resources.getDrawable(id);
         this.testBitmap =((BitmapDrawable)dh).getBitmap();
@@ -141,4 +144,5 @@ public class AlgorithmToCalcTest extends InstrumentationTestCase {
 
         Utils.matToBitmap(testImage, testBitmap);
     }
+    //</editor-fold>
 }

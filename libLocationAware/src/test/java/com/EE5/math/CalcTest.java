@@ -349,7 +349,7 @@ public class CalcTest  {
     }
 
     @Test
-    public void testCoordinateTranslation_GetAngleToOrigin(){
+    public void testCoordinateTranslation_GetAngleToOrigin1(){
         Calc calc = new Calc(10,480,640);
 
         Position ownPosition = new Position(
@@ -362,10 +362,7 @@ public class CalcTest  {
         Position otherPosition = new Position(0,0,0,0);
 
         Point2D point = calc.convertToDeviceCentredCoordinates(ownPosition, otherPosition);
-
-        double correction = -90; //Use correct offset to align with baseline.
         double angle = Math.toDegrees(Math.atan2(point.getX(), point.getY()));
-
         assertEquals(180.0, angle, 0.0);
     }
 
@@ -381,13 +378,28 @@ public class CalcTest  {
         );
 
         Position otherPosition = new Position(0,0,0,0);
-
         Point2D point = calc.convertToDeviceCentredCoordinates(ownPosition, otherPosition);
-
-        double correction = -90; //Use correct offset to align with baseline.
         double angle = Math.toDegrees(Math.atan2(point.getX(), point.getY()));
 
         assertEquals(0, angle, 0.0);
+    }
+
+    @Test
+    public void testCoordinateTranslation_GetAngleToOrigin3(){
+        Calc calc = new Calc(10,480,640);
+
+        Position ownPosition = new Position(
+                12.0,
+                0.0,
+                45.0,
+                10.0
+        );
+
+        Position otherPosition = new Position(0,0,0,0);
+        Point2D point = calc.convertToDeviceCentredCoordinates(ownPosition, otherPosition);
+        double angle = Math.toDegrees(Math.atan2(point.getX(), point.getY()));
+
+        assertEquals(-135, angle, 0.0);
     }
     //</editor-fold>
 
