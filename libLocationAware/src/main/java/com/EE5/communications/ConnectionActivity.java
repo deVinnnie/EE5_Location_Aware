@@ -100,6 +100,7 @@ public class ConnectionActivity extends Activity {
     }
 
     public void showDeviceChooser(View view){
+        //See also: http://stackoverflow.com/questions/25597523/select-a-bluetooth-device-from-listview-and-open-a-new-intent-android
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_list);
 

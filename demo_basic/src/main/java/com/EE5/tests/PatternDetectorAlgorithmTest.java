@@ -26,6 +26,12 @@ public class PatternDetectorAlgorithmTest extends InstrumentationTestCase {
     private PatternDetectorAlgorithm algo;
     private PatternCoordinator pc;
 
+    //See also:
+    // http://stackoverflow.com/questions/4671923/what-is-the-purpose-of-smalltest-mediumtest-and-largetest-annotations-in-an
+    // http://stackoverflow.com/questions/19730908/writing-test-cases-for-opencv-for-android
+    // http://stackoverflow.com/questions/16591504/android-studio-import-existing-unit-tests-unable-to-find-instrumentation-info
+    // https://www.bignerdranch.com/blog/triumph-android-studio-1-2-sneaks-in-full-testing-support/
+    // www.vogella.com/tutorials/AndroidTesting/article.html
     @Override
     protected void setUp() throws Exception{
         super.setUp();
@@ -164,6 +170,7 @@ public class PatternDetectorAlgorithmTest extends InstrumentationTestCase {
     }
 
     public void makeTestImage(int id){
+        //See also: http://stackoverflow.com/questions/8131596/loading-an-image-using-opencv-in-android
         Drawable dh = resources.getDrawable(id);
         this.testBitmap =((BitmapDrawable)dh).getBitmap();
 

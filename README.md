@@ -51,3 +51,10 @@ Long answer (CLI):
 * Make a new commit with `git commit -m 'Some Useful desciption'`
 * Push the commit(s) with `git push` to send the commits to the main repository.
 * Use `git pull` to download commits from the main repository.
+
+Various links
+-------------
+
+* [Java Synchronisation (Monitors)](http://www.programcreek.com/2011/12/monitors-java-synchronization-mechanism/)
+* [Git branching and merging](http://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging)
+* [Android Activities onStart, onCreate, onResume etc...](http://www.tutorialspoint.com/android/android_acitivities.htm)
