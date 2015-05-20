@@ -20,6 +20,35 @@ Project Modules Explained
                 You need to press return (the physical button) to get to the actual app. (The first view is to setup the camera and networking)
                 New projects based on this one will need to copy some lines within the main build.gradle file and change the name of the project accordingly.
 
+Coupling demo applications to library code.
+-------------------------------------------
+
+Edit the build.gradle file and make sure the dependencies are correct:
+
+    dependencies {
+        ...
+        compile project(':libLocationAware')
+    }
+
+Add the following to the AndroidManifest.xml in the application tag.
+
+    <activity
+        android:name="com.EE5.SetupActivity"
+        android:configChanges="keyboardHidden|orientation"
+
+        android:screenOrientation="portrait" >
+        <intent-filter>
+            <action android:name="com.EE5.SetupActivity" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+
+Make sure the SetupActivity is launched using:
+
+    startActivityForResult(new Intent("com.EE5.SetupActivity"),0);
+
+Use `startActivityForResult()` for a blocking call. Use `startActivity()` otherwise.
+
 Accessing Position Data
 -----------------------
 
