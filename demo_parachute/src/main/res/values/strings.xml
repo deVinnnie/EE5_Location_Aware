@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">demo_parachute</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_setup">Setup</string>
 </resources>

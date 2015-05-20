@@ -9,25 +9,32 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.EE5.SetupActivity;
+import com.EE5.util.GlobalResources;
+
 public class MainActivity extends Activity {
     private RelativeLayout.LayoutParams params;
     private RelativeLayout layout;
     private ImageView iv;
+    private int y;
 
     private Handler loopHandler = new Handler();
     private Runnable loopRunnable = new Runnable() {
         @Override
         public void run() {
-            if(params.topMargin < layout.getHeight()) {
-                MainActivity.this.params.topMargin+=4;
+            y++;
+            if(y < layout.getHeight()) {
+                MainActivity.this.params.topMargin=y;
             }
             else{
-                MainActivity.this.params.topMargin=0;
+                MainActivity.this.params.topMargin = y =0;
             }
             layout.updateViewLayout(iv, params);
 
+            GlobalResources.getInstance().setData(""+y);
+
             //Execute this code again after <sample_rate> milliseconds.
-            loopHandler.postDelayed(loopRunnable, 100);
+            loopHandler.postDelayed(loopRunnable, 50);
         }
     };
 
@@ -44,6 +51,7 @@ public class MainActivity extends Activity {
         params = new RelativeLayout.LayoutParams(300, 400);
         params.leftMargin = 0;
         params.topMargin = 0;
+        params.bottomMargin = -400;
         //layout.addView(iv,params);
         layout.updateViewLayout(iv, params);
 
@@ -54,20 +62,11 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        Intent setupIntent = new Intent(this, SetupActivity.class);
+        MenuItem setup = menu.findItem(R.id.action_setup);
+        setup.setIntent(setupIntent);
+
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
