@@ -75,7 +75,6 @@ public class SetupActivity extends Activity {
             return true;
         }
 
-
         if (id == R.id.action_calibrate){
         }
         return super.onOptionsItemSelected(item);
@@ -97,7 +96,7 @@ public class SetupActivity extends Activity {
         if(patternDetector != null) {
             patternDetector.setup();
         }
-        timerHandler.postDelayed(timerRunnable, 500);
+        timerHandler.postDelayed(timerRunnable, 0);
     }
 
     private Handler timerHandler = new Handler();
