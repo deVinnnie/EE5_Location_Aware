@@ -1,7 +1,7 @@
 Building Instructions
 ---------------------
 
-Use 'Import Project' in Android Studio (Don't use 'Open Project')
+Use 'Import Project' in Android Studio (Don't use 'Open Project', unless you have no 'Import' option)
 Point to the repository directory (Default under Windows: 'Documents/Github/EE5_Location_Aware')
 
 Make sure to run 'Sync Project with gradle files' (Tools->Android) so that the .iml files are regenerated.
@@ -30,22 +30,12 @@ Edit the build.gradle file and make sure the dependencies are correct:
         compile project(':libLocationAware')
     }
 
-Add the following to the AndroidManifest.xml in the application tag.
-
-    <activity
-        android:name="com.EE5.SetupActivity"
-        android:configChanges="keyboardHidden|orientation"
-
-        android:screenOrientation="portrait" >
-        <intent-filter>
-            <action android:name="com.EE5.SetupActivity" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
-    </activity>
+Don't copy any activity definitions from the library manifest file to the application manifest.
+(Previous instructions are no longer valid. This was the way to do it before the ManifestMerger became active by default)
 
 Make sure the SetupActivity is launched using:
 
-    startActivityForResult(new Intent("com.EE5.SetupActivity"),0);
+    startActivityForResult(new Intent(getApplicationContext(), com.EE5.SetupActivity.class),0);
 
 Use `startActivityForResult()` for a blocking call. Use `startActivity()` otherwise.
 

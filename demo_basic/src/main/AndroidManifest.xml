@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.EE5.basic_demo" >
 
     <application
@@ -11,11 +12,8 @@
         <!-- http://stackoverflow.com/questions/9839176/launch-activity-from-another-application-android/9839568#9839568 -->
         <activity
             android:name="com.EE5.SetupActivity"
-            android:configChanges="keyboardHidden|orientation">
-            <intent-filter>
-                <action android:name="com.EE5.SetupActivity" />
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
+            android:configChanges="keyboardHidden|orientation"
+            tools:node="replace">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
