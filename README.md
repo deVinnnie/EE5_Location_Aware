@@ -16,7 +16,7 @@ Project Modules Explained
                 This can be used as the basis for an application only based on Android.
 * libgdx-core : For libgdx.
 * openCVLibrary2410 : Used by library code, contains the OpenCV framework.
-* demo_arrows : The pointing arrows demo using libgdx. This app first launches the ImageManipulationsActivity.
+* demo_arrows : The pointing arrows demo using libgdx. This app first launches the SetupActivity.
                 You need to press return (the physical button) to get to the actual app. (The first view is to setup the camera and networking)
                 New projects based on this one will need to copy some lines within the main build.gradle file and change the name of the project accordingly.
 
