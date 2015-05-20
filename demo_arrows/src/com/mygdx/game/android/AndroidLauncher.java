@@ -3,6 +3,7 @@ package com.mygdx.game.android;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.EE5.SetupActivity;
 import com.EE5.image_manipulation.PatternDetector;
 import com.EE5.util.GlobalResources;
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -18,16 +19,18 @@ public class AndroidLauncher extends AndroidApplication {
         //----------------------------------------------
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new Game(), config);
+        Game game = new Game();
+        game.setLauncher(this);
+        initialize(game, config);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        /*PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
         if(patternDetector != null) {
             patternDetector.destroy();
-        }
+        }*/
     }
 
     @Override
@@ -46,5 +49,10 @@ public class AndroidLauncher extends AndroidApplication {
         if(patternDetector != null) {
             patternDetector.setup();
         }
+    }
+
+    public void returnToSetupActivity(){
+        Intent intent = new Intent(this, SetupActivity.class);
+        startActivity(intent);
     }
 }

@@ -14,46 +14,57 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.Map;
 
+//import android.view.InputEvent;
+
 public class Game extends ApplicationAdapter {
+    Stage stage;
     SpriteBatch batch;
     Sprite sprite;
     Texture img;
     Calculator calc;
     BitmapFont font;
+    TextButton button;
+    TextureAtlas buttonAtlas;
+    TextButton.TextButtonStyle textButtonStyle;
+
+    AndroidLauncher launcher;
+
+    public void setLauncher(AndroidLauncher launcher) {
+        this.launcher = launcher;
+    }
 
     @Override
     public void create ()
     {
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Log.i("","Down");
+                launcher.returnToSetupActivity();
+                return true;
+            }
+        });
+
         calc = new Calculator();
-        //calc.x1 = 0; calc.y1 = 0;
-        //calc.x2 = 0; calc.y2 = 0;
-        //calc.rotation = 90;
         batch = new SpriteBatch();
         img = new Texture("arrow.png");
         sprite = new Sprite(img);
         sprite.setPosition(Gdx.graphics.getWidth() / 2 - sprite.getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - sprite.getHeight() / 2);
         sprite.setOriginCenter();
-        sprite.setScale(1,1);
+        sprite.setScale(1, 1);
         font = new BitmapFont();
-
-        //Some code to use a 'fake', in other words simulated, pattern detection.
-        //PatternDetector detector = GlobalResources.getInstance().getPatternDetector();
-        //detector.setPatternDetectorAlgorithm(new PatternDetectorAlgorithmMock());
-        /*PatternDetectorAlgorithmInterface inter = GlobalResources.getInstance().getPatternDetector().getPatternDetectorAlgorithm();
-        Log.i("Test", inter.getClass().toString());*/
-        GlobalResources.getInstance().setData("Hello World");
-
-        Position otherPosition = new Position(1.0,0.0,0.0,1.0);
-        for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
-            calc.x2 = entry.getValue().element1.getX();
-            calc.y2 = entry.getValue().element1.getY();
-            otherPosition = entry.getValue().element1;
-            break; //Only read the position of the first device.
-        }
     }
 
     @Override
@@ -87,5 +98,10 @@ public class Game extends ApplicationAdapter {
         //String position = "("+Math.round(otherPosition.getX()) + ", " + Math.round(otherPosition.getY())+")" +  " " + otherPosition.getRotation() + "°";
         font.draw(batch, position, 50, 50);
         batch.end();
+        stage.draw();
+    }
+
+    public void dispose() {
+        stage.dispose();
     }
 }
