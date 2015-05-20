@@ -29,13 +29,6 @@
         android:defaultValue="500"
        />
 
-    <!--<EditTextPreference
-        android:defaultValue="TCP"
-        android:key="connection_type"
-        android:title="Connection Type"
-        android:inputType="text"
-        />-->
-
     <ListPreference
         android:key="connection_type"
         android:title="Connection Type"

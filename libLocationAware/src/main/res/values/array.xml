@@ -3,13 +3,11 @@
 
     <string-array name="connection_types">
         <item>Bluetooth</item>
-        <!--<item>Byte</item>-->
         <item>TCP</item>
     </string-array>
 
     <string-array name="connection_settings">
         <item>"Bluetooth"</item>
-        <!--<item>"Byte"</item>-->
         <item>"TCP"</item>
     </string-array>
 
