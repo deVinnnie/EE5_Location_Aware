@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.EE5.R;
-import com.EE5.client.Client;
 import com.EE5.client.IDGenerator;
 import com.EE5.communications.connection.Connection;
 import com.EE5.communications.connection.ConnectionFactory;
@@ -45,10 +44,13 @@ public class ConnectionActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
+        GlobalResources global = GlobalResources.getInstance();
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String deviceId = IDGenerator.generate(sharedPref);
-        Client.currentDevice = new Device(deviceId);
+        global.setDevice(
+                new Device(deviceId)
+        );
         ArrayAdapter<String> arrayAdapter;
 
         //Hook up event listeners.
@@ -70,7 +72,6 @@ public class ConnectionActivity extends Activity {
         });
         this.btnDisconnect.setEnabled(false);
 
-        GlobalResources global = GlobalResources.getInstance();
         //If a connection is not yet made it will be null.
         if(global.getConnection() != null){
             //Retrieve the arrayAdapter used previously and later pass it through to the ListView.

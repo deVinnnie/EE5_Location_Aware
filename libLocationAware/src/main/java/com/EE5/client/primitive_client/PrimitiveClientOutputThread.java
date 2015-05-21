@@ -32,7 +32,8 @@ public class PrimitiveClientOutputThread extends AbstractClientOutputThread{
     public void transmit()throws IOException, InterruptedException{
         od = new DataOutputStream(this.getOutputStream());
         Log.i("Connection", "[ OK ] Sending positions");
-        od.writeUTF(Client.currentDevice.getId());
+        String id = GlobalResources.getInstance().getDevice().getId();
+        od.writeUTF(id);
 
         synchronized (this) {
             //Wait for first "message" to arrive.

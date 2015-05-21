@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.EE5.server.data.Device;
 import com.EE5.server.socketTask.SocketTaskType;
 import com.EE5.util.ConnectionException;
 
@@ -27,11 +26,6 @@ public abstract class Client extends AsyncTask<Void, String, Void> {
 
     private SocketTaskType socketTaskType;
     private Context context;
-
-    /**
-     * @deprecated
-     */
-    public static Device currentDevice;
 
     /**
      * Place to store an exception should an error occur during the lifetime of the Client instance.
