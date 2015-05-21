@@ -34,7 +34,7 @@ public class Game extends ApplicationAdapter {
     SpriteBatch batch;
     Sprite sprite,sp2;
     Texture bus;
-    Texture stop;
+    Texture people_red;
     Texture people;
     Calculator calc;
     BitmapFont font;
@@ -44,10 +44,10 @@ public class Game extends ApplicationAdapter {
 
         batch = new SpriteBatch();
         bus = new Texture("BUS.png");
-        stop = new Texture("STOP.png");
+        people_red = new Texture("people_red.png");
         people = new Texture("people.png");
         sprite = new Sprite(people);
-        sp2 = new Sprite(people);
+        sp2 = new Sprite(people_red);
         //sprite.setPosition(100, 100);
         //sprite.setRotation(115);
 

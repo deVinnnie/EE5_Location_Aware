@@ -43,4 +43,8 @@ public class DeviceList implements Serializable {
     public boolean contains(Device device){
         return this.list.containsKey(device.getId());
     }
+
+    public int get_Size(){
+        return list.size();
+    }
 }
