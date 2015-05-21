@@ -127,7 +127,7 @@ public class DisplayColorActivity extends Activity {
         BackgroundColor mColor = checkColor(myColor);
         BackgroundColor oColor = checkColor(otherColor);
         if (oColor.getR() == 255) {
-            rValue = Math.min(((mColor.getR()) + (oColor.getR() - (2 * calc.calcDistance()))), 255);
+            rValue = Math.min(((mColor.getR()) + (oColor.getR() - (5 * calc.calcDistance()))), 255);
         }
         else {
             rValue = Math.min(((mColor.getR()) + (oColor.getR())), 255);
@@ -140,7 +140,7 @@ public class DisplayColorActivity extends Activity {
         BackgroundColor mColor = checkColor(myColor);
         BackgroundColor oColor = checkColor(otherColor);
         if (oColor.getG() == 255) {
-            gValue = Math.min(((mColor.getG()) + (oColor.getG() - (2 * calc.calcDistance()))), 255);
+            gValue = Math.min(((mColor.getG()) + (oColor.getG() - (5 * calc.calcDistance()))), 255);
         }
         else {
             gValue = Math.min(((mColor.getG()) + (oColor.getG())), 255);
@@ -153,7 +153,7 @@ public class DisplayColorActivity extends Activity {
         BackgroundColor mColor = checkColor(myColor);
         BackgroundColor oColor = checkColor(otherColor);
         if (oColor.getB() == 255) {
-            bValue = Math.min(((mColor.getB()) + (oColor.getB() - (2 * calc.calcDistance()))), 255);
+            bValue = Math.min(((mColor.getB()) + (oColor.getB() - (5 * calc.calcDistance()))), 255);
         }
         else {
             bValue = Math.min(((mColor.getB()) + (oColor.getB())), 255);
@@ -180,7 +180,7 @@ public class DisplayColorActivity extends Activity {
     }
 
     /**
-     * Returns true when the distance between two phones is between 1 and 100 cm.
+     * Returns true when the distance between two phones is between 1 and 50 cm.
      * @return inRange
      */
     private boolean checkDistance() {
@@ -194,14 +194,12 @@ public class DisplayColorActivity extends Activity {
         for (Map.Entry<String, Tuple<Position,String>> entry : GlobalResources.getInstance().getDevices().getAll()) {
             calc.setX2(entry.getValue().element1.getX());
             calc.setY2(entry.getValue().element1.getY());
-            Log.d("checkserver", "check other phone x: " + calc.getX2() + " y: " + calc.getY2());
-            Log.i("T", entry.getValue().element2);
             break; //Only read the position of the first device.
         }
 
         int distance = calc.calcDistance();
 
-        if (distance >= 1 && distance <= 100) {
+        if (distance >= 1 && distance <= 50) {
             inRange = true;
         }
 
