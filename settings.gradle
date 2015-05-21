@@ -1,4 +1,4 @@
-include ':openCVLibrary2410', ':demo_height_sound', ':siyao_app', ':', ':demo_jaws', ':demo_landscape'
+include ':openCVLibrary2410', ':demo_height_sound', ':siyao_app', ':slaver', ':', ':demo_jaws', ':demo_landscape'
 include ':libLocationAware'
 include ':libgdx-core'
 include ':demo_height_sound'

@@ -4,6 +4,7 @@ import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
 import com.EE5.util.Point3D;
+import com.EE5.util.Tuple;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -15,7 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import com.example.slaver;
 import java.util.Map;
 
 public class MainActivity extends ActionBarActivity {
@@ -36,7 +37,7 @@ public class MainActivity extends ActionBarActivity {
 
                 String str1 = et1.getText().toString();
                 number1 = Integer.parseInt(str1);
-                number2 = 2;
+                number2 = number_slave;
                 number3 = number2 + number1;
                 number4 = number1 * number2;
                 //System.out.println(number3);
@@ -46,13 +47,14 @@ public class MainActivity extends ActionBarActivity {
 
                // GlobalResources.getInstance().setData();
 
-                for (Map.Entry<String, Position> entry : GlobalResources.getInstance().getDevices().getMap().entrySet()) {
-                    otherPosition = entry.getValue();
+                for (Map.Entry<String, Tuple<Position, String>> entry : GlobalResources.getInstance().getDevices().getAll()){
+                    otherPosition = entry.getValue().element1;
                     break; //Only read the position of the first device.
                 }
 
-                double distance = Calc.getDistance(ownPosition,otherPosition);
-               if(distance<20) {
+               // double distance = Calc.getDistance(ownPosition,otherPosition);
+               // int distance=15;
+               if(distance < 20) {
                    display(number3);
                }
                 else{
