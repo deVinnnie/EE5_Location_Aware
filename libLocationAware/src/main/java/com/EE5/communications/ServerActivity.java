@@ -46,9 +46,6 @@ public class ServerActivity extends Activity {
         Handler handler = new Handler(Looper.getMainLooper()){
             @Override
             public void handleMessage(Message msg) {
-                /*if(msg.what==0){
-                    ServerActivity.this.updateList();
-                }*/
                 if(msg.what==1){
                     ServerActivity.this.updatePositionsList();
                 }
@@ -64,7 +61,8 @@ public class ServerActivity extends Activity {
         if(this.server == null) {
             if (type.equals("Bluetooth")) {
                 this.server = new BluetoothServer(socketTaskType, handler);
-            } else {
+            }
+            else {
                 //TCP - default.
                 //The TCP connection needs some more information to setup.
                 int port = Integer.parseInt(sharedPref.getString("server_port", "8080"));
@@ -99,18 +97,10 @@ public class ServerActivity extends Activity {
         {
             String id = entry.getKey();
             Position pos = entry.getValue().element1;
-            adapter.insert(""+id+"\n(x:"+pos.getX()+",y:"+pos.getY()+",rot:"+pos.getRotation()+",z:"+pos.getHeight()+")", 0);
+            String line = String.format("%s (x: %.2f, y: %.2f, rot: %.2f, z: %.2f)", id,
+                                pos.getX(), pos.getY(), pos.getRotation(), pos.getHeight());
+            adapter.insert(line,0);
         }
-        /*for (Map.Entry<String, PatternCoordinator> entry : this.server.getConnectedDevices().getPatternMap().entrySet())
-        {
-            String id = entry.getKey();
-            PatternCoordinator pc = entry.getValue();
-            adapter.insert(""+id+"\n("+Math.round(pc.getNum1().x)+","+Math.round(pc.getNum1().y)+")  ("
-                    +Math.round(pc.getNum2().x)+","+Math.round(pc.getNum2().y)+")  ("
-                    +Math.round(pc.getNum3().x)+","+Math.round(pc.getNum3().y)+")  ("
-                    +Math.round(pc.getNum4().x)+","+Math.round(pc.getNum4().y)+")"
-                    , 0);
-        }*/
         ((ArrayAdapter) lstServerConnections.getAdapter()).notifyDataSetChanged();
     }
 
@@ -126,12 +116,6 @@ public class ServerActivity extends Activity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 }
