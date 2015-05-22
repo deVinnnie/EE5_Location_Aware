@@ -115,13 +115,13 @@ public class Calc {
          * Angle of view in radians for the x-direction.
          * Values based on real life measurements.
          */
-        double phix= Math.toRadians(40.876);
+        double phix= Math.toRadians(40.747);
 
         /**
          * Angle of view in radians for the y-direction.
          * Values based on real life measurements.
          */
-        double phiy= Math.toRadians(52.999);
+        double phiy= Math.toRadians(52.322);
 
         //Alpha
         // (z/x) * 480
