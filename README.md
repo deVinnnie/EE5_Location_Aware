@@ -71,6 +71,20 @@ Long answer (CLI):
 * Push the commit(s) with `git push` to send the commits to the main repository.
 * Use `git pull` to download commits from the main repository.
 
+Installing OpenCVManager
+------------------------
+
+This method is to be used on the development phones. These do not have a Google Account and thus cannot access the Google Play Store.
+The OpenCVManager apk is located in the OpenCV android sdk.
+
+Use the following commands to push the apk to the phone.
+(Assumes the phone is connected to computer, and recognized by adb)
+
+    cd OpenCV-2.4.10-android-sdk/apk/
+    adb install OpenCV_2.4.10_Manager_2.19_armeabi.apk
+
+A similar approach can be used to install the apk on a simulator. The apk directory contains different .apk files for different architectures. Make sure you pick the right one.
+
 Various links
 -------------
 
