@@ -1,20 +1,17 @@
 package com.example.david.demo_height_sound;
 
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
-/*import android.os.SystemClock;
-import android.support.v7.app.ActionBarActivity;*/
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-//import android.widget.Button;
 
-import com.EE5.image_manipulation.PatternCoordinator;
 import com.EE5.image_manipulation.PatternDetector;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
@@ -22,9 +19,6 @@ import com.EE5.util.GlobalResources;
 /**Class for the implementation of app with its buttons and data for height --> linked to the sound**/
 public class height_sound_app extends AppCompatActivity {
 
-
-    /*public Context contexto;
-   public MediaPlayer mp;*/
     protected MediaPlayer sound1;
     protected MediaPlayer sound2;
     protected MediaPlayer sound3;
@@ -35,9 +29,7 @@ public class height_sound_app extends AppCompatActivity {
     protected MediaPlayer sound8;
     public double height;
     private double beginheight;
-    private boolean stopped=false;
-    PatternCoordinator pattern;
-   // private double prevheight;*/
+
 
 
     /** the handler with the instructions the program needs to complete when the app is running(after pressing the start button
@@ -48,14 +40,14 @@ public class height_sound_app extends AppCompatActivity {
         public void run() {
 
             Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
-
+            RelativeLayout background = (RelativeLayout) findViewById(R.id.myBackground);
             TextView myTextView = (TextView) findViewById(R.id.textView3);
 
             myTextView.setText("" + height);
 
            if (height <= (13*beginheight/20)) {
 
-
+               background.setBackgroundColor(Color.argb(255,255,255,255));
                sound1.setVolume(1,1);
                sound2.setVolume(0,0);
                sound3.setVolume(0,0);
@@ -68,6 +60,7 @@ public class height_sound_app extends AppCompatActivity {
 
             } else if (height <= (14*beginheight/20)) {
 
+               background.setBackgroundColor(Color.argb(255,204,153,128));
                sound1.setVolume(0,0);
                sound2.setVolume(1,1);
                sound3.setVolume(0,0);
@@ -81,6 +74,7 @@ public class height_sound_app extends AppCompatActivity {
 
            } else if (height <= (beginheight*15/20)) {
 
+               background.setBackgroundColor(Color.argb(255,255,51,255));
                sound1.setVolume(0,0);
                sound2.setVolume(0,0);
                sound3.setVolume(1,1);
@@ -93,7 +87,7 @@ public class height_sound_app extends AppCompatActivity {
 
             } else if (height < (beginheight*16/20)) {
 
-
+               background.setBackgroundColor(Color.argb(255,0,0,128));
                sound1.setVolume(0,0);
                sound2.setVolume(0,0);
                sound3.setVolume(0,0);
@@ -103,11 +97,10 @@ public class height_sound_app extends AppCompatActivity {
                sound7.setVolume(0,0);
                sound8.setVolume(0,0);
 
-
-
             } else if (height < (beginheight*17/20)) {
 
 
+               background.setBackgroundColor(Color.argb(255,51,153,255));
                sound1.setVolume(0,0);
                sound2.setVolume(0,0);
                sound3.setVolume(0,0);
@@ -122,6 +115,7 @@ public class height_sound_app extends AppCompatActivity {
             } else if (height < (beginheight*18/20)) {
 
 
+               background.setBackgroundColor(Color.argb(255,0,0,255));
                sound1.setVolume(0,0);
                sound2.setVolume(0,0);
                sound3.setVolume(0,0);
@@ -135,6 +129,7 @@ public class height_sound_app extends AppCompatActivity {
             } else if (height < (beginheight*19/20)) {
 
 
+               background.setBackgroundColor(Color.argb(255,102,255,255));
                sound1.setVolume(0,0);
                sound2.setVolume(0,0);
                sound3.setVolume(0,0);
@@ -147,6 +142,7 @@ public class height_sound_app extends AppCompatActivity {
 
             } else {
 
+               background.setBackgroundColor(Color.argb(255,0,255,255));
                sound1.setVolume(0,0);
                sound2.setVolume(0,0);
                sound3.setVolume(0,0);
@@ -158,12 +154,9 @@ public class height_sound_app extends AppCompatActivity {
 
             }
 
-            //height++;
-            height= ownPosition.getHeight();
-            /*if(stopped){
-                finish();
 
-            }*/
+            height= ownPosition.getHeight();
+
             //Execute this code again after <sample_rate> milliseconds.
             loopHandler.postDelayed(loopRunnable, 200);
 
@@ -180,8 +173,7 @@ public class height_sound_app extends AppCompatActivity {
 
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
         beginheight= ownPosition.getHeight();
-        /*final Button startbutton = (Button) findViewById(R.id.button2);
-        final Button stopbutton = (Button) findViewById(R.id.button);*/
+
         sound1 = MediaPlayer.create(this, R.raw.sound1);
         sound2 = MediaPlayer.create(this, R.raw.sound2);
         sound3 = MediaPlayer.create(this, R.raw.sound3);
@@ -190,6 +182,7 @@ public class height_sound_app extends AppCompatActivity {
         sound6 = MediaPlayer.create(this, R.raw.sound6);
         sound7 = MediaPlayer.create(this, R.raw.sound7);
         sound8 = MediaPlayer.create(this, R.raw.sound8);
+
         sound1.setVolume(0,0);
         sound2.setVolume(0,0);
         sound3.setVolume(0,0);
@@ -198,14 +191,10 @@ public class height_sound_app extends AppCompatActivity {
         sound6.setVolume(0,0);
         sound7.setVolume(0,0);
         sound8.setVolume(0,0);
-        TextView myTextView = (TextView) findViewById(R.id.textView6);
 
+        TextView myTextView = (TextView) findViewById(R.id.textView6);
         myTextView.setText("" + beginheight);
 
-        /*mp.setVolume(1,1);
-        contexto=this;*/
-
-        //height=30;
         sound1.start();
         sound1.setLooping(true);
         sound2.start();
@@ -222,32 +211,6 @@ public class height_sound_app extends AppCompatActivity {
         sound7.setLooping(true);
         sound8.start();
         sound8.setLooping(true);
-
-       /* startbutton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                /*long millis;
-                millis = currentTimeMillis();*/
-                    //stopped=false;
-                //while (!stopped) {
-
-                   // prevheight=height;
-
-                    //height=160;
-
-           // }
-       // });*/
-
-
-        /*stopbutton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                stopped=true;
-
-                startbutton.setText("de app is nu gestopt!!!");
-            }
-        });
-
-        startbutton.setEnabled(true);
-        stopbutton.setEnabled(true);*/
     }
 
     @Override
@@ -284,6 +247,7 @@ public class height_sound_app extends AppCompatActivity {
         sound6.setLooping(false);
         sound7.setLooping(false);
         sound8.setLooping(false);
+
         sound1.stop();
         sound2.stop();
         sound3.stop();
@@ -301,6 +265,7 @@ public class height_sound_app extends AppCompatActivity {
         sound6.release();
         sound7.release();
         sound8.release();
+
         super.onDestroy();
     }
 
@@ -339,21 +304,10 @@ public class height_sound_app extends AppCompatActivity {
 
         loopHandler.post(loopRunnable);
 
-
-
-        //SystemClock.sleep(500);
-
-
     }
     /**when the stop button is pressed by the user, the application should close and call the ondestoy function.**/
     public void STOP(View view) {
-        // Do something in response to button
-        stopped=true;
-
-        //mp.release();
         finish();
-
-
     }
 
     /**when the getreference button is pressed by the user, the application should refresh its reference value for the height to sound linkings**/
