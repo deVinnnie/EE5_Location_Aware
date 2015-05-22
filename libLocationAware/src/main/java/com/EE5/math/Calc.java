@@ -112,13 +112,13 @@ public class Calc {
         //Start with calculations.
 
         /**
-         * Angle of view in radians for the y-direction or x-direction???
+         * Angle of view in radians for the x-direction.
          * Values based on real life measurements.
          */
         double phix= Math.toRadians(40.876);
 
         /**
-         * Angle of view in radians for the y-direction or x-direction???
+         * Angle of view in radians for the y-direction.
          * Values based on real life measurements.
          */
         double phiy= Math.toRadians(52.999);
