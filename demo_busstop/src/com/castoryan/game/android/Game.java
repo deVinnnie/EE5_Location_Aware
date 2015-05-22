@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.castoryan.game.android.MyInputProcessor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,56 +32,75 @@ import java.util.Map;
 import javax.microedition.khronos.opengles.GL10;
 
 public class Game extends ApplicationAdapter {
+    HashMap<String,Sprite> sp_list;
     SpriteBatch batch;
-    Sprite sprite,sp2;
-    Texture bus;
-    Texture people_red;
-    Texture people;
+    Sprite sp_phone,sp_myphone;
+    Texture background;
+    Texture myphone;
+    Texture phone;
     Calculator calc;
     BitmapFont font;
-
+    double steplength;
+    final double vof_length = 182;
+    final double vof_width  = 134;
     @Override
     public void create () {
-
+        sp_list = new HashMap<String, Sprite>();
         batch = new SpriteBatch();
-        bus = new Texture("BUS.png");
-        people_red = new Texture("people_red.png");
-        people = new Texture("people.png");
-        sprite = new Sprite(people);
-        sp2 = new Sprite(people_red);
-        //sprite.setPosition(100, 100);
-        //sprite.setRotation(115);
+        background = new Texture("axis.png");
 
+        myphone = new Texture("myphone.png");
+        phone = new Texture("p4013.png");
+
+
+        sp_phone = new Sprite(phone);
+        sp_myphone = new Sprite(myphone);
+        sp_phone.setSize(Gdx.graphics.getHeight()*0.1f,Gdx.graphics.getWidth()*0.1f);
+        sp_myphone.setSize(Gdx.graphics.getHeight()*0.1f,Gdx.graphics.getWidth()*0.1f);
         font = new BitmapFont();
         font.setColor(Color.RED);
-        font.setScale(2,2);
+        font.setScale(2, 2);
 
+        steplength = Gdx.graphics.getHeight()/vof_length;
     }
 
     @Override
     public void render () {
 
-        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
-        DeviceList otherPosition = GlobalResources.getInstance().getDevices();
-        //Position otherPosition = new Position(0.0,0.0,0.0,0.0);
+        int num_dev = GlobalResources.getInstance().getDevices().getAll().size();
+        for(Map.Entry<String,Tuple<Position,String>> entry: GlobalResources.getInstance().getDevices().getAll()){
+            String name = entry.getKey();
+            Sprite sprite1 = new Sprite(phone);
+            sp_list.put(name,sprite1);
+        }
 
+        Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();
+        //DeviceList otherPosition = GlobalResources.getInstance().getDevices();
+        //Position otherPosition = new Position(0.0,0.0,0.0,0.0);
+        double length = Math.sqrt(Math.pow(ownPosition.getX(),2)+ Math.pow(ownPosition.getY(), 2));
+        double degree = ownPosition.getRotation();
         Gdx.gl.glClearColor(1, 1, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        sprite.setRotation(-(int) ownPosition.getRotation());
-        sprite.draw(batch);
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        sp_myphone.setRotation(-(int) ownPosition.getRotation());
+        sp_myphone.draw(batch);
+
+
         String st = "ownPosition is x=" + ownPosition.getX() +
-                ", y = " + ownPosition.getY() + "angle is " + ownPosition.getRotation();
+                ", y = " + ownPosition.getY();
+        String st2 ="device number is "+GlobalResources.getInstance().getDevices().getAll().size(); //"angle is " + ownPosition.getRotation()+"image width is"+Gdx.graphics.getWidth();
         font.draw(batch, st, 200, 200);
+        font.draw(batch, st2, 200, 160);
 
 
 
         MyInputProcessor inputProcessor = new MyInputProcessor();
         Gdx.input.setInputProcessor(inputProcessor);
 
-        sprite.setX(20 * (int) ownPosition.getY() + 400);
-        sprite.setY(20* (int)ownPosition.getX()+700);
-
+        sp_myphone.setCenterX(Gdx.graphics.getWidth() / 2 + (int) (steplength * ownPosition.getX()));
+        sp_myphone.setCenterY(Gdx.graphics.getHeight() / 2 + (int) (steplength * ownPosition.getY()));
 //        if(inputProcessor.touchDragged(xx,yy,zz)){
 //            sprite.setX(Gdx.input.getX());
 //            sprite.setY(900-Gdx.input.getY());
@@ -96,20 +116,23 @@ public class Game extends ApplicationAdapter {
         //Iterator
         double pX2=0,pY2=0,pAngle=0;
 
-        for (Map.Entry<String,Tuple<Position,String>> entry: GlobalResources.getInstance().getDevices().getAll()) {
+         for (Map.Entry<String,Tuple<Position,String>> entry: GlobalResources.getInstance().getDevices().getAll()) {
             String name = entry.getKey();
-            pX2 = entry.getValue().element1.getX();
-            pY2 = entry.getValue().element1.getY();
-            pAngle = entry.getValue().element1.getRotation();
-//            calc.x2 = entry.getValue().element1.getX();
-//            calc.y2 = entry.getValue().element1.getY();
-            break; //Only read the position of the first device.
+
+             pX2 = entry.getValue().element1.getX();
+             pY2 = entry.getValue().element1.getY();
+             pAngle = entry.getValue().element1.getRotation();
+             sp_phone = sp_list.get(name);
+             sp_phone.setSize(Gdx.graphics.getHeight()*0.1f,Gdx.graphics.getWidth()*0.1f);
+             sp_phone.setCenterX(Gdx.graphics.getWidth() / 2 + (int) (steplength * pX2));
+             sp_phone.setCenterY(Gdx.graphics.getHeight() / 2 + (int) (steplength * pY2));
+             sp_phone.setRotation( -(int)pAngle );
+             sp_phone.draw(batch);
+            //break; //Only read the position of the first device.
         }
 
-        sp2.setX( 20 * (int) pY2 + 400);
-        sp2.setY( 20 * (int) pX2 + 700 );
-        sp2.setRotation( -(int)pAngle );
-        sp2.draw(batch);
+
+
 //
 //        calc.rotation = ownPosition.getRotation();
 //        int angle = (int) calc.calcAngle();
