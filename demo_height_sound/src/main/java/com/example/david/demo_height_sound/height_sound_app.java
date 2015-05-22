@@ -168,7 +168,7 @@ public class height_sound_app extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"), 0);
+        startActivityForResult(new Intent(getApplicationContext(), com.EE5.SetupActivity.class),0);
         setContentView(R.layout.activity_height_sound_app);
 
         Position ownPosition = GlobalResources.getInstance().getDevice().getPosition();

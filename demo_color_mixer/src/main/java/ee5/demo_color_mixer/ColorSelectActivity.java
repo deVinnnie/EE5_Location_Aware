@@ -20,7 +20,7 @@ public class ColorSelectActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_color_select);
-        startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"), 0);
+        startActivityForResult(new Intent(getApplicationContext(), com.EE5.SetupActivity.class),0);
         setupColorSelect();
     }
 
