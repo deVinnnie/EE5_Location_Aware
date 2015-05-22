@@ -96,6 +96,18 @@ public class AlgorithmToCalcTest extends InstrumentationTestCase {
         assertEquals(point1.getX(), point2.getX(), 4.0);
         assertEquals(point1.getY(), point2.getY(), 4.0);
     }
+
+    @SmallTest
+    public void testWithImageBlankImage(){
+        //A blank image should return (0,0);
+        this.makeTestImage(R.drawable.pattern_test_blank_image);
+        this.runAlgorithm();
+
+        Calc calc = new Calc(10,480,640);
+        Point3D point = calc.calculate(this.pc);
+        assertEquals(0, point.getX(),0.01);
+        assertEquals(0, point.getY(),0.01);
+    }
     //</editor-fold>
 
     //<editor-fold desc="Test the logic for the arrows demo with simulated images.">
