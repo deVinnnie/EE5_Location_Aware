@@ -58,6 +58,8 @@ public class Game extends ApplicationAdapter {
             Log.d("noNan","noNan");
             calc.x1 = ownPosition.getX();
             calc.y1 = ownPosition.getY();
+            GlobalResources.getInstance().getDevice().
+            Log.d("local","x1: " + calc.x1 + " y1: " + calc.y1);
         }
         //Log.d("arrows","Own postion " + calc.x1 + " " + calc.y1 );
         //Iterate over other devices.
