@@ -1,7 +1,6 @@
 package com.EE5.image_manipulation;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
@@ -23,10 +22,7 @@ import android.widget.Toast;
 
 import com.EE5.R;
 import com.EE5.client.IDGenerator;
-import com.EE5.communications.ConnectionActivity;
-import com.EE5.communications.ServerActivity;
 import com.EE5.math.Calc;
-import com.EE5.preferences.SettingsActivity;
 import com.EE5.server.Server;
 import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
@@ -231,10 +227,6 @@ public class ImageManipulationsActivity extends Activity {
 
     public void onDestroy() {
         super.onDestroy();
-        /*if(isFinishing() && this.patternDetector != null) {
-            //this.patternDetector.destroy();
-            Log.d("destroy","destroy");
-        }*/
         //'patternDetector.destroy()' is not called here because onDestroy() is called after onPause().
         //The destroy method is already called in onPause()
     }
@@ -243,31 +235,8 @@ public class ImageManipulationsActivity extends Activity {
     //<editor-fold desc="Options">
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.global, menu);
-
         mItemPreviewRGBA  = menu.add("Preview RGBA");
         mItemPreviewCanny = menu.add("Canny");
-
-        //Fill the option menu with Menu Items to other activities.
-        //Each Item is defined with with an intent specifying the class name of the corresponding activity.
-        //Clicks on a menu item are handled in the onOptionsItemsSelected method.
-
-        //Link to the Preferences screen.
-        Intent prefsIntent = new Intent(this, SettingsActivity.class);
-        MenuItem preferences = menu.findItem(R.id.action_settings);
-        preferences.setIntent(prefsIntent);
-
-        //Option to start as server.
-        Intent serverIntent = new Intent(this, ServerActivity.class);
-        MenuItem useAsServer = menu.findItem(R.id.action_use_as_server);
-        useAsServer.setIntent(serverIntent);
-
-        //Option to start as client.
-        Intent clientIntent = new Intent(this, ConnectionActivity.class);
-        MenuItem useAsClient = menu.findItem(R.id.action_use_as_client);
-        useAsClient.setIntent(clientIntent);
-
         return true;
     }
 
@@ -284,15 +253,8 @@ public class ImageManipulationsActivity extends Activity {
         }
 
         //Now check the other options...
-        int id = item.getItemId();
+        return super.onOptionsItemSelected(item);
 
-        if (id == R.id.action_settings) {
-            startActivity(item.getIntent());
-            return true;
-        }
-        else{
-            return super.onOptionsItemSelected(item);
-        }
     }
     //</editor-fold>
 
@@ -323,7 +285,6 @@ public class ImageManipulationsActivity extends Activity {
         Utils.matToBitmap(this.patternDetector.image, bitmap, true);
         iv.setImageBitmap(bitmap);
         tx_x2.setText(String.valueOf(patternDetector.getPatternDetectorAlgorithm().getDistance2()));
-
     }
 
     /**

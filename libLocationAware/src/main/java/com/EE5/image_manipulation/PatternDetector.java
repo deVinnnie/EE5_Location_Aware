@@ -104,7 +104,6 @@ public class PatternDetector {
      */
     private int camera = 1;
 
-
     public static final int VIEW_MODE_RGBA = 0;
     public static final int VIEW_MODE_CANNY = 2; //Canny edge detector
     private int viewMode = VIEW_MODE_RGBA;

@@ -20,7 +20,7 @@ import java.util.List;
 public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterface{
     public double ra;
     public int ii;
-    int distance;
+    public int distance;
     public int distance2;
     boolean setupflag;
 
@@ -36,7 +36,6 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         setupflag = false;
         ii = 0;
     }
-
 
     /**
      * Do magic!
