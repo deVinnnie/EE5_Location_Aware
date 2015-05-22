@@ -95,7 +95,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             //Find the right contour for the pattern.
             pContour = findPattern(squareContours);
             Imgproc.drawContours(rgba, squareContours, -1, orange, 4);
-            /** tot hier werkt het goed **/
+
             if (pContour.size() == 2) {
                 squ_out = pContour.get(1);
                 squ_in = pContour.get(0);
@@ -158,13 +158,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             appro_con.add(new MatOfPoint(appo.toArray()));
 
             //Overlay the image with some useful lines.
-            //Imgproc.drawContours(image, contour, -1, orange, 4);
-            //Imgproc.drawContours(image,outterContours,-1,new Scalar(120,120,255),4);
             Imgproc.drawContours(rgba, squareContours, -1, orange, 4);
-            //Original:Imgproc.drawContours(image, pContour, -1, light_green, 4);
-            //Imgproc.drawContours(image, pContour, -1, light_green, 2);
-            //Imgproc.drawContours(image, pContour, 0, light_green, 2);
-            //Core.line(image, innerCenter, outterCenter, orange, 2);
 
             //Outer
             Point a = new Point(NewMtx2.boundingRect().x, NewMtx2.boundingRect().y);
@@ -223,17 +217,10 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             String angle = "rotate angle is (" + String.valueOf(finalangle) + ")";
             Core.putText(rgba, angle, new Point(50, 450), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
 
-            //Core.putText(image, String.valueOf(pContour.size()), new Point(50, 550), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
-            //Core.putText(image, String.valueOf(innerCenter.x)+" "+innerCenter.y, new Point(50, 600), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
-            //Core.putText(image, String.valueOf(outterCenter.x)+" "+outterCenter.y, new Point(50, 650), Core.FONT_HERSHEY_SIMPLEX, 1, light_blue);
-
             long stopTime = System.currentTimeMillis();
             String elapsedTime = String.valueOf(stopTime - startTime);
-            //Log.i(TAG2, "spend_time for one frame = " + sss + " ms");
-            //Log.i(TAG,"The coordinator is = " + sss);
+            //Log.i("Algorithm", "Spend time for one frame = " + elapsedTime + " ms");
 
-            //PatternCoordinator pc = new PatternCoordinator(out_send[0],out_send[1],out_send[2],out_send[3],finalangle);
-            //PatternCoordinator pc = new PatternCoordinator(out[0],out[1],out[2],out[3],finalangle);
             PatternCoordinator pc = new PatternCoordinator(new Point(),new Point(),new Point(),new Point(),0.0);
             if(out_send.getNum2() !=  null) {
                 pc = new PatternCoordinator(out_send.getNum1(), out_send.getNum2(), out_send.getNum3(), out_send.getNum4(), finalangle);
@@ -259,6 +246,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             dis = Math.sqrt(Math.pow(in_center.x - point[i].x,2)+Math.pow(in_center.y-point[i].y,2));
             if(dis<min_dis){
                 min_dis = dis;
+                //TODO Remove IF-statements and replace with something 'clever'
                 if(i == 0){
                     point_send[0] = point[0];
                     point_send[1] = point[1];
