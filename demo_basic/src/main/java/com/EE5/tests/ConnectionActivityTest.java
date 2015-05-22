@@ -2,13 +2,15 @@ package com.EE5.tests;
 
 import android.content.Intent;
 import android.test.ActivityUnitTestCase;
-import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.SmallTest;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.EE5.communications.ConnectionActivity;
 
+/**
+ * Example ActivityUnitTestCase.
+ *
+ */
 public class ConnectionActivityTest extends ActivityUnitTestCase<ConnectionActivity> {
     private ConnectionActivity activity;
     private TextView mFirstTestText;
@@ -46,14 +48,5 @@ public class ConnectionActivityTest extends ActivityUnitTestCase<ConnectionActiv
 
         // Check whether both are equal, otherwise test fails
         //assertEquals(expected, actual);
-    }
-
-    @LargeTest
-    public void testButtons(){
-        Button view = (Button) activity.findViewById(com.EE5.R.id.buttonConnect);
-        assertNotNull("Button not allowed to be null", view);
-        /*view.performClick();
-        Connection connection = GlobalResources.getInstance().getConnection();
-        assertNotNull("Connection should have been created.", connection);*/
     }
 }

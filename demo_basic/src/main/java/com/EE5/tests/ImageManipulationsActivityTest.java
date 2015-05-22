@@ -6,8 +6,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.EE5.image_manipulation.ImageManipulationsActivity;
 
-import org.opencv.core.Mat;
-
 public class ImageManipulationsActivityTest extends ActivityUnitTestCase<ImageManipulationsActivity> {
     private ImageManipulationsActivity activity;
 
@@ -37,13 +35,5 @@ public class ImageManipulationsActivityTest extends ActivityUnitTestCase<ImageMa
     public void testOpenCVReady(){
         boolean openCVReady = activity.OpenCVReady;
         assertTrue(openCVReady);
-    }
-
-    @SmallTest
-    public void testWithImage(){
-        Mat im = new Mat();
-        //Highgui.imread("");
-        //Bitmap bitmap = new Bitmap();
-
     }
 }
