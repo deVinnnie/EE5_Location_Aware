@@ -136,27 +136,30 @@ public class Calc {
 
 
         //<editor-fold desc="Convert from Pixel Values to Real Values">
+        //For testing purposes this extra if statement is introduced.
+        //It enables the test to turn off the conversion to real values.
+        // This is handy because real life values are harder to predict and simulate.
         PatternCoordinator realPatternCoordinator;
         if(convertToRealValues) {
-            xa *= (fovx / 480.0);
-            xb *= (fovx / 480.0);
-            xc *= (fovx / 480.0);
-            xd *= (fovx / 480.0);
+            xa *= (fovx / canvasXSize);
+            xb *= (fovx / canvasXSize);
+            xc *= (fovx / canvasXSize);
+            xd *= (fovx / canvasXSize);
 
-            xA *= (fovx / 480.0);
-            xB *= (fovx / 480.0);
-            xC *= (fovx / 480.0);
-            xD *= (fovx / 480.0);
+            xA *= (fovx / canvasXSize);
+            xB *= (fovx / canvasXSize);
+            xC *= (fovx / canvasXSize);
+            xD *= (fovx / canvasXSize);
 
-            ya *= (fovy / 640.0);
-            yb *= (fovy / 640.0);
-            yc *= (fovy / 640.0);
-            yd *= (fovy / 640.0);
+            ya *= (fovy / canvasYSize);
+            yb *= (fovy / canvasYSize);
+            yc *= (fovy / canvasYSize);
+            yd *= (fovy / canvasYSize);
 
-            yA *= (fovy / 640.0);
-            yB *= (fovy / 640.0);
-            yC *= (fovy / 640.0);
-            yD *= (fovy / 640.0);
+            yA *= (fovy / canvasYSize);
+            yB *= (fovy / canvasYSize);
+            yC *= (fovy / canvasYSize);
+            yD *= (fovy / canvasYSize);
 
            realPatternCoordinator = new PatternCoordinator(
                     new Point(pattern.getNum1().x * (fovx / 480.0), pattern.getNum1().y * (fovy / 640.0)),
