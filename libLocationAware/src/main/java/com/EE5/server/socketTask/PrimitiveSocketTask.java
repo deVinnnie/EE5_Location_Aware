@@ -24,7 +24,6 @@ import java.util.Map;
  * It chunks each part of the data and sends it as a primitive data type.
  */
 public class PrimitiveSocketTask extends SocketTask {
-
     public PrimitiveSocketTask(Socket socket, Server server) throws IOException {
         super(socket, server);
     }
@@ -74,7 +73,7 @@ public class PrimitiveSocketTask extends SocketTask {
                 GlobalResources.getInstance().getDevices().add(uuid, position, data);
 
                 //Iterate over all devices and send the stored position over the current connection.
-                for (Map.Entry<String, Tuple<Position, String>> entry : this.getServer().getDevices().getMap().entrySet())
+                for (Map.Entry<String, Tuple<Position, String>> entry : this.getServer().getDevices().getAll())
                 {
                     //Send position when the device is not the originating device.
                     if(!entry.getKey().equals(uuid)) {
@@ -99,8 +98,6 @@ public class PrimitiveSocketTask extends SocketTask {
                 od.flush();
             }
 
-            //oOutputStream.close();
-            //oInputStream.close();
             //Log.i("Server", "[ OK ] OutputStream and InputStream closed.");
         }
         catch (Exception e) {
