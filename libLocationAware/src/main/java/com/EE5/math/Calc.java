@@ -126,12 +126,13 @@ public class Calc {
         //Alpha
         // (z/x) * 480
         double canvasXSize = Math.abs(xA-xB);
-        double fovx= (this.size / (Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2)))) * canvasXSize;
+        double patternSidePx = (Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2)));
+        double fovx= (this.size / patternSidePx) * canvasXSize;
 
         //Beta
-        // (z/x) * 640
+        // (z/y) * 640
         double canvasYSize = Math.abs(yA-yC);
-        double fovy= (this.size / (Math.sqrt(Math.pow(xa-xb,2)+Math.pow(ya-yb,2)))) * canvasYSize;
+        double fovy= (this.size / patternSidePx) * canvasYSize;
 
 
         //<editor-fold desc="Convert from Pixel Values to Real Values">
