@@ -63,7 +63,7 @@ public class Game extends ApplicationAdapter {
         sprite.setPosition(Gdx.graphics.getWidth() / 2 - sprite.getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - sprite.getHeight() / 2);
         sprite.setOriginCenter();
-        sprite.setScale(1, 1);
+        sprite.setScale(0.5f, 0.5f);
         font = new BitmapFont();
     }
 
