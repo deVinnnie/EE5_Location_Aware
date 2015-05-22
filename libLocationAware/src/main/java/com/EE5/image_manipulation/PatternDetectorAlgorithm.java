@@ -310,6 +310,8 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         return squareContours;
     }
 
+    //<editor-fold desc="Unused Code">
+    /*
     private List<MatOfPoint> getContoursSquare(List<MatOfPoint> con_in_range){
         Point point_right = new Point();
         Point point_left = new Point();
@@ -394,8 +396,9 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             }
         }
         return squareContours;
-    }
+    }*/
 
+    /*
     private MatOfPoint getContoursOutter(List<MatOfPoint> squareContour ){
         MatOfPoint outterCon = new MatOfPoint();
         MatOfPoint sqr = new MatOfPoint() ;
@@ -410,9 +413,9 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             }
         }
         return outterCon;
-    }
+    }*/
 
-    private MatOfPoint getContoursInner(List<MatOfPoint> squareContour,MatOfPoint outterContours ){
+    /*private MatOfPoint getContoursInner(List<MatOfPoint> squareContour,MatOfPoint outterContours ){
         MatOfPoint innerCon = new MatOfPoint();
         double areaOut = Imgproc.contourArea(outterContours);
         Iterator<MatOfPoint> squareCon = squareContour.iterator();
@@ -423,7 +426,8 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
             }
         }
         return innerCon;
-    }
+    }*/
+    //</editor-fold>
 
     private Point getShapeCenter(MatOfPoint shapeContour){
         Iterator<Point> con_point = shapeContour.toList().iterator();
