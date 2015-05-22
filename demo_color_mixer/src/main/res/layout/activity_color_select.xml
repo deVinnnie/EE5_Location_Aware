@@ -18,7 +18,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_send"
+        android:text="@string/button_set_colors"
         android:onClick="setColors"
         android:layout_gravity="bottom"
         android:layout_alignParentBottom="true"

@@ -100,7 +100,7 @@ public class ColorSelectActivity extends Activity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    /** Called when the user clicks the Send button */
+    /** Called when the user clicks the Set colors button */
     public void setColors(View view) {
         // Do something in response to button
         Intent intent = new Intent(this, DisplayColorActivity.class);
