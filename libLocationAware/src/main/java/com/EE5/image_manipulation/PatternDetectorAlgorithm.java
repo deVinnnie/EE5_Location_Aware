@@ -57,10 +57,7 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         List<MatOfPoint> contour = new ArrayList<MatOfPoint>(); //List of all the contours
 
         Mat mIntermediateMat = new Mat();
-        Imgproc.threshold(gray2, mIntermediateMat, 80, 255, Imgproc.THRESH_BINARY); //Apply tresholding, result is stored in 'mIntermediateMat'
 
-        //Let OpenCV find contours, the result of this operation is stored in 'contour'.
-        Imgproc.findContours(mIntermediateMat, contour, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
         List<MatOfPoint> con_in_range;
         List<MatOfPoint> squareContours;
         List<MatOfPoint> pContour;
@@ -78,6 +75,10 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
                 0.00
         );
 
+        //Apply tresholding, result is stored in 'mIntermediateMat'
+        Imgproc.threshold(gray2, mIntermediateMat, 80, 255, Imgproc.THRESH_BINARY);
+        //Let OpenCV find contours, the result of this operation is stored in 'contour'.
+        Imgproc.findContours(mIntermediateMat, contour, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
         //Filter out contours with the wrong size.
         con_in_range = getContoursBySize(distance2, contour);
         //Filter out non square contours.
@@ -252,31 +253,38 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
                 //If the current point is closer to the white square then rearrange the points
                 // so that the current point is the first point.
                 min_dis = distance;
-                //TODO Remove IF-statements and replace with something 'clever'
-                if(i == 0){
-                    point_send[0] = point[0];
-                    point_send[1] = point[1];
-                    point_send[2] = point[2];
-                    point_send[3] = point[3];
-                }
-                if(i == 1) {
-                    point_send[0] = point[1];
-                    point_send[1] = point[2];
-                    point_send[2] = point[3];
-                    point_send[3] = point[0];
-                }
-                if(i == 2) {
-                    point_send[0] = point[2];
-                    point_send[1] = point[3];
-                    point_send[2] = point[0];
-                    point_send[3] = point[1];
-                }
-                if(i == 3) {
-                    point_send[0] = point[3];
-                    point_send[1] = point[0];
-                    point_send[2] = point[1];
-                    point_send[3] = point[2];
-                }
+                switch (i){
+                    case 0:
+                        point_send[0] = point[0];
+                        point_send[1] = point[1];
+                        point_send[2] = point[2];
+                        point_send[3] = point[3];
+                        break;
+                    case 1:
+                        point_send[0] = point[1];
+                        point_send[1] = point[2];
+                        point_send[2] = point[3];
+                        point_send[3] = point[0];
+                        break;
+                    case 2:
+                        point_send[0] = point[2];
+                        point_send[1] = point[3];
+                        point_send[2] = point[0];
+                        point_send[3] = point[1];
+                        break;
+                    case 3:
+                        point_send[0] = point[3];
+                        point_send[1] = point[0];
+                        point_send[2] = point[1];
+                        point_send[3] = point[2];
+                        break;
+                    default:
+                        point_send[0] = point[0];
+                        point_send[1] = point[1];
+                        point_send[2] = point[2];
+                        point_send[3] = point[3];
+                        break;
+                    }
             }
         }
         PatternCoordinator pc = new PatternCoordinator(point_send[0],point_send[1],point_send[2],point_send[3],distance);
@@ -327,125 +335,6 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
         }
         return squareContours;
     }
-
-    //<editor-fold desc="Unused Code">
-    /*
-    private List<MatOfPoint> getContoursSquare(List<MatOfPoint> con_in_range){
-        Point point_right = new Point();
-        Point point_left = new Point();
-        Point point_top = new Point();
-        Point point_bottom = new Point();
-
-        double p_x_max = 0;
-        double p_x_min = 0;
-        double p_y_max = 0;
-        double p_y_min = 0;
-
-        List<MatOfPoint> squareContours = new ArrayList<MatOfPoint>();
-        List<Point> cl = new ArrayList<Point>();
-        Iterator<Point> con;
-        Iterator<MatOfPoint> each_con = con_in_range.iterator();
-
-        while(each_con.hasNext()){
-            MatOfPoint contours = each_con.next();
-            cl = contours.toList();             //transform contour to points of list
-
-            con = cl.iterator();
-            int i = 0,j = 0;
-            while(con.hasNext()){
-                Point p = con.next();
-                if(i == 0){
-                    point_bottom = p;
-                    point_top = p;
-                    point_right = p;
-                    point_left = p;
-                }
-                else {
-                    if (p.x >= point_right.x) {
-                        point_right = p;
-                        //p_x_max = p.x;
-                        if (p.y <= point_right.y) {
-                            point_right = p;
-                        }
-                    }
-                    if (p.x <= point_left.x) {
-                        point_left = p;
-                        p_x_min = p.x;
-                        if (p.y >= point_left.y) {
-                            point_left = p;
-                        }
-                    }
-                    if (p.y <= point_top.y) {
-                        point_top = p;
-                        p_y_max = p.y;
-                        if (p.x >= point_top.x) {
-                            point_top = p;
-                        }
-                    }
-                    if (p.y >= point_bottom.y) {
-                        point_bottom = p;
-                        //p_y_min = p.y;
-                        if (p.x <= point_bottom.x) {
-                            point_bottom = p;
-                        }
-                    }
-                }
-                i++;
-            }
-            //point_top.x = p_y_min;
-
-            //determine the shape of square
-            double length1 = Math.sqrt(Math.pow(point_top.x-point_left.x,2)+Math.pow(point_top.y-point_left.y,2));
-            double length2 = Math.sqrt(Math.pow(point_left.x-point_bottom.x,2)+Math.pow(point_left.y-point_bottom.y,2));
-            double length3 = Math.sqrt(Math.pow(point_bottom.x-point_right.x,2)+Math.pow(point_bottom.y-point_right.y,2));
-            double length4 = Math.sqrt(Math.pow(point_top.x-point_right.x,2)+Math.pow(point_top.y-point_right.y,2));
-            double areadiff = (length2-length1)+(length4-length3)+(length3-length2)+(length4-length2);
-
-            double slope1 = (point_top.y-point_left.y)/(point_top.x-point_left.x);
-            double slope2 = (point_right.y-point_top.y)/(point_right.x-point_top.x);
-            double slope3 = (point_bottom.y-point_right.y)/(point_bottom.x-point_right.x);
-            double slope4 = (point_left.y-point_bottom.y)/(point_left.x-point_bottom.x);
-
-            double an1 = slope1*slope2*slope3*slope4;
-
-            //The product of slope is around 1, and the sum of length differences of each edge is low.
-            if((0.6 <an1)&(an1<1.4)&(Math.abs(areadiff)<50)){
-                squareContours.add(contours);
-            }
-        }
-        return squareContours;
-    }*/
-
-    /*
-    private MatOfPoint getContoursOutter(List<MatOfPoint> squareContour ){
-        MatOfPoint outterCon = new MatOfPoint();
-        MatOfPoint sqr = new MatOfPoint() ;
-
-        Iterator<MatOfPoint> squareCon = squareContour.iterator();
-        double maxSquareArea = 0;
-        while(squareCon.hasNext()){
-            sqr = squareCon.next();
-            double SquareArea = Imgproc.contourArea(sqr);
-            if(SquareArea > maxSquareArea) {
-                outterCon = sqr;
-            }
-        }
-        return outterCon;
-    }*/
-
-    /*private MatOfPoint getContoursInner(List<MatOfPoint> squareContour,MatOfPoint outterContours ){
-        MatOfPoint innerCon = new MatOfPoint();
-        double areaOut = Imgproc.contourArea(outterContours);
-        Iterator<MatOfPoint> squareCon = squareContour.iterator();
-        while (squareCon.hasNext()) {
-            MatOfPoint sqr = squareCon.next();
-            if ((Imgproc.contourArea(sqr) < 0.5*areaOut) & (Imgproc.contourArea(sqr) > 0.1*areaOut)) {
-                innerCon = sqr;
-            }
-        }
-        return innerCon;
-    }*/
-    //</editor-fold>
 
     /**
      *
