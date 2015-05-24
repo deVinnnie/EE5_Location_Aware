@@ -253,32 +253,40 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
                 //If the current point is closer to the white square then rearrange the points
                 // so that the current point is the first point.
                 min_dis = distance;
+
+                int index = i;
+                point_send[0] = point[index]; //Place the current point first.
+                //Increase index each time to move clockwise through the points. Use modulo 4 so that after three comes zero. (4/4 = 1 -> Remainder = 0)
+                point_send[1] = point[++index % 4];
+                point_send[2] = point[++index % 4];
+                point_send[3] = point[++index % 4];
+                /*
                 switch (i){
                     case 0:
                         point_send[0] = point[0];
                         point_send[1] = point[1];
                         point_send[2] = point[2];
                         point_send[3] = point[3];
-                        //break;
+                        break; //Break statements needed to prevent fallthrough.
                     case 1:
                         point_send[0] = point[1];
                         point_send[1] = point[2];
                         point_send[2] = point[3];
                         point_send[3] = point[0];
-                        //break;
+                        break;
                     case 2:
                         point_send[0] = point[2];
                         point_send[1] = point[3];
                         point_send[2] = point[0];
                         point_send[3] = point[1];
-                        //break;
+                        break;
                     case 3:
                         point_send[0] = point[3];
                         point_send[1] = point[0];
                         point_send[2] = point[1];
                         point_send[3] = point[2];
-                       // break;
-                    }
+                        break;
+                    }*/
             }
         }
         PatternCoordinator pc = new PatternCoordinator(point_send[0],point_send[1],point_send[2],point_send[3],distance);
