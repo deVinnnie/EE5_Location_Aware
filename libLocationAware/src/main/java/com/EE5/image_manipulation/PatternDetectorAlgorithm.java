@@ -259,31 +259,25 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
                         point_send[1] = point[1];
                         point_send[2] = point[2];
                         point_send[3] = point[3];
-                        break;
+                        //break;
                     case 1:
                         point_send[0] = point[1];
                         point_send[1] = point[2];
                         point_send[2] = point[3];
                         point_send[3] = point[0];
-                        break;
+                        //break;
                     case 2:
                         point_send[0] = point[2];
                         point_send[1] = point[3];
                         point_send[2] = point[0];
                         point_send[3] = point[1];
-                        break;
+                        //break;
                     case 3:
                         point_send[0] = point[3];
                         point_send[1] = point[0];
                         point_send[2] = point[1];
                         point_send[3] = point[2];
-                        break;
-                    default:
-                        point_send[0] = point[0];
-                        point_send[1] = point[1];
-                        point_send[2] = point[2];
-                        point_send[3] = point[3];
-                        break;
+                       // break;
                     }
             }
         }
@@ -294,16 +288,16 @@ public class PatternDetectorAlgorithm implements PatternDetectorAlgorithmInterfa
     /**
      * Filter out the contours in contour whose contourArea is smaller than dis*600 or larger than dis*10.
      *
-     * @param dis
+     * @param size
      * @param contour List of contours
      * @return
      */
-    private List<MatOfPoint> getContoursBySize(int dis, List<MatOfPoint> contour) {
+    private List<MatOfPoint> getContoursBySize(int size, List<MatOfPoint> contour) {
         List<MatOfPoint> con_in_range = new ArrayList<MatOfPoint>();
         Iterator<MatOfPoint> each = contour.iterator();
         while (each.hasNext()) {
             MatOfPoint contours = each.next();
-            if ((Imgproc.contourArea(contours) < (dis * 600)) & (Imgproc.contourArea(contours) > (dis * 10))) {
+            if ((Imgproc.contourArea(contours) < (size * 600)) & (Imgproc.contourArea(contours) > (size * 10))) {
                 con_in_range.add(contours);
             }
         }
