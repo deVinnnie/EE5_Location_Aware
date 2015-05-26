@@ -26,7 +26,7 @@
         android:key="sample_rate"
         android:title="Sample rate"
         android:inputType="number"
-        android:defaultValue="500"
+        android:defaultValue="150"
        />
 
     <ListPreference
@@ -47,9 +47,9 @@
 
     <EditTextPreference
         android:key="pattern_size"
-        android:title="Width of Pattern"
+        android:title="Width of Pattern (cm)"
         android:inputType="numberDecimal"
-        android:defaultValue="11.75"
+        android:defaultValue="20.8"
         />
 
     <SwitchPreference
