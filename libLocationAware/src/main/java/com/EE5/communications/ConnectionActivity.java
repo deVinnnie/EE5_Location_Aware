@@ -136,16 +136,19 @@ public class ConnectionActivity extends Activity {
         });
     }
 
-    @Override
-    protected void onSaveInstanceState(final Bundle outState) {
-        //outState.putSerializable("someExpensiveObject", 1);
-    }
-
+    /**
+     * Reload preferences.
+     *
+     * This method should be used with a OnSharedPreferenceChangeListener to ensure preferences
+     * are reread after a change.
+     *
+     * In the most recent version of the project this method is less
+     * important because preferences are read out right before the initialisation of the connection.
+     */
     private void loadPreferences(){
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String ipAddress = sharedPref.getString("server_ip", "127.0.0.1"); //Second param is default value.
-        //this.port = Integer.parseInt(sharedPref.getString("server_port", "8080"));
 
+        String ipAddress = sharedPref.getString("server_ip", "127.0.0.1"); //Second param is default value.
         TextView txtIPAddress = (TextView) findViewById(R.id.txtIPAddress);
         txtIPAddress.setText("Server IP = " + ipAddress);
     }
