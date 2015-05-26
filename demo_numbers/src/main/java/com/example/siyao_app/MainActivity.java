@@ -31,7 +31,6 @@ public class MainActivity extends Activity {
         et1 = (EditText)findViewById(R.id.number1);
 
         bt1 = (Button)findViewById(R.id.button_start);
-
         bt2 = (Button)findViewById(R.id.button_send);
 
         bt1.setOnClickListener(new View.OnClickListener() {
@@ -53,9 +52,9 @@ public class MainActivity extends Activity {
                 number3 = number1 + parsedNumber;
                 number4 = number1 * parsedNumber;
 
-                // double distance = Calc.getDistance(ownPosition,otherPosition);
-                // int distance=15;
                 double distance = Calc.getDistance(ownPosition, otherPosition);
+                //Display the multiplication if the distance is larger than 20,
+                // if it is smaller then display the addition.
                 if (distance < 20) {
                     display(number3);
                 } else {
