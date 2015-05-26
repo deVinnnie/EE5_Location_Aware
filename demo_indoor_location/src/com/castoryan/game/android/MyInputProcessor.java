@@ -1,5 +1,8 @@
 package com.castoryan.game.android;
 
+import android.content.Intent;
+
+import com.EE5.SetupActivity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
@@ -7,6 +10,13 @@ import com.badlogic.gdx.InputProcessor;
  * Created by CastorYan on 5/14/2015.
  */
 public class MyInputProcessor implements InputProcessor {
+    Game game;
+
+    public MyInputProcessor(Game game){
+        this.game = game;
+    }
+
+
     @Override
     public boolean keyDown (int keycode) {
         return true;
@@ -26,13 +36,15 @@ public class MyInputProcessor implements InputProcessor {
     public boolean touchDown (int x, int y, int pointer, int button) {
         System.out.println("touch down at x=" + Gdx.input.getX()
                 + ", y=" + Gdx.input.getY());
+        if((x > 0)&(x<100)&(y>1700)&(y<1800)){
+            game.launcher.returnToSetupActivity();
+        }
         return true;
     }
 
     @Override
     public boolean touchUp (int x, int y, int pointer, int button) {
-        System.out.println("touch up at x=" + Gdx.input.getX()
-                + ", y=" + Gdx.input.getY());
+
         return true;
     }
 
