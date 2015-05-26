@@ -18,7 +18,6 @@ import com.EE5.server.data.Position;
 import com.EE5.util.Axis;
 import com.EE5.util.GlobalResources;
 import com.EE5.util.Tuple;
-import com.EE5.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,7 +60,7 @@ public class SetupActivity extends Activity {
 
         return true;
     }
-    
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -88,10 +87,6 @@ public class SetupActivity extends Activity {
             try {
                 RelativeLayout r = (RelativeLayout) findViewById(R.id.test_canvas);
                 Position devicePosition = GlobalResources.getInstance().getDevice().getPosition();
-                //devicePosition = new Position(50,0,0,0);
-                //devicePosition = new Position(-50,0,0,0);
-                //devicePosition = new Position(0,50,0,0);
-                //devicePosition = new Position(0,-50,0,0);
                 int size = 100;
                 RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(size,size);
                 Axis iv = (Axis) findViewById(R.id.pushpin_device);
@@ -99,8 +94,6 @@ public class SetupActivity extends Activity {
                         (int) ((r.getHeight() / 2.0) - devicePosition.getY() - (size / 2.0))
                         , 0, 0);
 
-                //iv.setxVector(new Vector(1, 0));
-                //iv.setyVector(new Vector(0, 1));
                 iv.setLayoutParams(rp);
                 iv.setRotation((float) devicePosition.getRotation());
 
@@ -123,8 +116,6 @@ public class SetupActivity extends Activity {
                             (int) ((r.getHeight() / 2.0) - otherPosition.getY() - (size / 2.0))
                             , 0, 0);
 
-                    axis.setxVector(new Vector(1, 0));
-                    axis.setyVector(new Vector(0, 1));
                     axis.setLayoutParams(rp2);
                     axis.setRotation((float)otherPosition.getRotation());
                 }
