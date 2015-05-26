@@ -14,6 +14,9 @@ import com.EE5.util.ConnectionException;
 import java.util.Set;
 
 public class BluetoothConnection extends Connection{
+    /**
+     * Index of the target device in the mBluetoothAdapter.getBondedDevices().
+     */
     private int device;
 
     public BluetoothConnection(int sampleRate, ArrayAdapter<String> historyAdapter, SocketTaskType socketTaskType, Context context){
@@ -26,10 +29,9 @@ public class BluetoothConnection extends Connection{
             //Setup Client Connection
             final Object mutex = new Object();
             BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            Set bondendDevices = mBluetoothAdapter.getBondedDevices();
-            Object[] deviceArray = bondendDevices.toArray();
-            BluetoothDevice mmDevice = (BluetoothDevice) deviceArray[this.device]; //Get the first paired device.
-            //TODO: Choose Bluetooth Device.
+            Set bondedDevices = mBluetoothAdapter.getBondedDevices();
+            Object[] deviceArray = bondedDevices.toArray();
+            BluetoothDevice mmDevice = (BluetoothDevice) deviceArray[this.device];
 
             Log.i("Devices", mmDevice.getAddress());
 
