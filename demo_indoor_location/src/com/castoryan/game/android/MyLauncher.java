@@ -7,6 +7,7 @@ package com.castoryan.game.android;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.EE5.SetupActivity;
 import com.EE5.image_manipulation.PatternDetector;
 import com.EE5.util.GlobalResources;
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -20,20 +21,22 @@ public class MyLauncher extends AndroidApplication {
         super.onCreate(savedInstanceState);
 
         //Start new Activity and block until it returns.
-        startActivityForResult(new Intent("com.EE5.image_manipulation.ImageManipulationsActivity"),0);
+        startActivityForResult(new Intent(getApplicationContext(), com.EE5.SetupActivity.class),0);
         //----------------------------------------------
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new Game(), config);
+        Game game = new Game();
+        game.setLauncher(this);
+        initialize(game, config);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
+        /*PatternDetector patternDetector = GlobalResources.getInstance().getPatternDetector();
         if(patternDetector != null) {
             patternDetector.destroy();
-        }
+        }*/
     }
 
     @Override
@@ -52,6 +55,11 @@ public class MyLauncher extends AndroidApplication {
         if(patternDetector != null) {
             patternDetector.setup();
         }
+    }
+
+    public void returnToSetupActivity(){
+        Intent intent = new Intent(this, SetupActivity.class);
+        startActivity(intent);
     }
 }
 

@@ -76,8 +76,8 @@ public class PatternDetector {
                                 //Do no filtering and display the captured image unaltered on the screen.
                                 break;
 
-                            case PatternDetector.VIEW_MODE_CANNY:
-                                //Apply the Canny Edge Detection and find the contours of the pattern.
+                            case PatternDetector.VIEW_MODE_DETECTION:
+                                //Apply Detection Algorithm and find the contours of the pattern.
                                 patternCoordinates = patternDetectorAlgorithm.find(rgba, gray);
                                 break;
                         }
@@ -105,7 +105,7 @@ public class PatternDetector {
     private int camera = 1;
 
     public static final int VIEW_MODE_RGBA = 0;
-    public static final int VIEW_MODE_CANNY = 2; //Canny edge detector
+    public static final int VIEW_MODE_DETECTION = 2; //detector
     private int viewMode = VIEW_MODE_RGBA;
 
     public PatternDetector() {

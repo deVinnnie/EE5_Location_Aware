@@ -20,7 +20,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.castoryan.game.android.MyInputProcessor;
 
 import java.util.ArrayList;
@@ -43,14 +46,35 @@ public class Game extends ApplicationAdapter {
     double steplength;
     final double vof_length = 182;
     final double vof_width  = 134;
+    Stage stage;
+
+    MyLauncher launcher;
+
+    public void setLauncher(MyLauncher launcher) {
+        this.launcher = launcher;
+    }
+
+
     @Override
     public void create () {
+
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Log.i("","Down");
+                launcher.returnToSetupActivity();
+                return true;
+            }
+        });
+
         sp_list = new HashMap<String, Sprite>();
         batch = new SpriteBatch();
         background = new Texture("axis.png");
 
         myphone = new Texture("myphone.png");
-        phone = new Texture("p4013.png");
+        phone = new Texture("otherphone.png");
 
 
         sp_phone = new Sprite(phone);
@@ -59,7 +83,7 @@ public class Game extends ApplicationAdapter {
         sp_myphone.setSize(Gdx.graphics.getHeight()*0.1f,Gdx.graphics.getWidth()*0.1f);
         font = new BitmapFont();
         font.setColor(Color.RED);
-        font.setScale(2, 2);
+        font.setScale(1, 1);
 
         steplength = Gdx.graphics.getHeight()/vof_length;
     }
@@ -91,20 +115,21 @@ public class Game extends ApplicationAdapter {
         String st = "ownPosition is x=" + ownPosition.getX() +
                 ", y = " + ownPosition.getY();
         String st2 ="device number is "+GlobalResources.getInstance().getDevices().getAll().size(); //"angle is " + ownPosition.getRotation()+"image width is"+Gdx.graphics.getWidth();
-        font.draw(batch, st, 200, 200);
-        font.draw(batch, st2, 200, 160);
+        String st3 = "screenX =" + String.valueOf(200 + (int) (steplength * ownPosition.getX())) +
+                ", screenY = " + String.valueOf(200 + (int) (steplength * ownPosition.getY()));
+        font.draw(batch, st, 20, 200);
+        font.draw(batch, st2, 20, 170);
+        font.draw(batch, st3, 20, 140);
 
 
 
         MyInputProcessor inputProcessor = new MyInputProcessor();
         Gdx.input.setInputProcessor(inputProcessor);
 
-        sp_myphone.setCenterX(Gdx.graphics.getWidth() / 2 + (int) (steplength * ownPosition.getX()));
-        sp_myphone.setCenterY(Gdx.graphics.getHeight() / 2 + (int) (steplength * ownPosition.getY()));
-//        if(inputProcessor.touchDragged(xx,yy,zz)){
-//            sprite.setX(Gdx.input.getX());
-//            sprite.setY(900-Gdx.input.getY());
-//        }
+        //sp_myphone.setCenterX(Gdx.graphics.getWidth() / 2 + (int) (steplength * ownPosition.getX()));
+        //sp_myphone.setCenterY(Gdx.graphics.getHeight() / 2 + (int) (steplength * ownPosition.getY()));
+        sp_myphone.setCenterX(200 + (int) (steplength * ownPosition.getX()));
+        sp_myphone.setCenterY(200 + (int) (steplength * ownPosition.getY()));
 
         calc = new Calculator();
 
@@ -124,14 +149,14 @@ public class Game extends ApplicationAdapter {
              pAngle = entry.getValue().element1.getRotation();
              sp_phone = sp_list.get(name);
              sp_phone.setSize(Gdx.graphics.getHeight()*0.1f,Gdx.graphics.getWidth()*0.1f);
-             sp_phone.setCenterX(Gdx.graphics.getWidth() / 2 + (int) (steplength * pX2));
-             sp_phone.setCenterY(Gdx.graphics.getHeight() / 2 + (int) (steplength * pY2));
+             sp_phone.setCenterX(200 + (int) (steplength * pX2));
+             sp_phone.setCenterY(200 + (int) (steplength * pY2));
              sp_phone.setRotation( -(int)pAngle );
              sp_phone.draw(batch);
             //break; //Only read the position of the first device.
         }
 
-
+        stage.draw();
 
 //
 //        calc.rotation = ownPosition.getRotation();

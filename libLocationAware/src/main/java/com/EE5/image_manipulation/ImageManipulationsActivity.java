@@ -193,7 +193,7 @@ public class ImageManipulationsActivity extends Activity {
     private void setupCamera(){
         if(this.patternDetector != null) {
             this.patternDetector.setup();
-            this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_CANNY);
+            this.patternDetector.setViewMode(PatternDetector.VIEW_MODE_DETECTION);
         }
     }
 
