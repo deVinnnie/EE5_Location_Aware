@@ -1,11 +1,11 @@
 package com.example.david.demo_height_sound;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +17,7 @@ import com.EE5.server.data.Position;
 import com.EE5.util.GlobalResources;
 
 /**Class for the implementation of app with its buttons and data for height --> linked to the sound**/
-public class height_sound_app extends AppCompatActivity {
+public class height_sound_app extends Activity {
 
     protected MediaPlayer sound1;
     protected MediaPlayer sound2;
