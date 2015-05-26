@@ -28,3 +28,6 @@ proguard/
 /.idea/*
 *.iml
 /openCVLibrary2410/.idea/*
+
+#Who needs Thumbs.db files?
+Thumbs.db
