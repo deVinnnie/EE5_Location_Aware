@@ -1,6 +1,7 @@
 package com.EE5.communications;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -62,7 +63,14 @@ public class ServerActivity extends Activity {
         this.server = GlobalResources.getInstance().getServer();
         if(this.server == null) {
             if (type.equals("Bluetooth")) {
-                this.server = new BluetoothServer(socketTaskType, handler);
+                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+                    //Check if bluetooth is enabled before starting the server, this prevents an application crash.
+                    Toast.makeText(this.getApplicationContext(), "[Server] Bluetooth not active", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    this.server = new BluetoothServer(socketTaskType, handler);
+                }
             }
             else {
                 try {
@@ -85,14 +93,18 @@ public class ServerActivity extends Activity {
                     Toast.makeText(this.getApplicationContext(), text, Toast.LENGTH_SHORT).show();
                 }
             }
-            this.server.start();
-            GlobalResources.getInstance().setServer(this.server);
 
-            //Also store the values of this device on the server.
-            ServerPassThrough passThrough = new ServerPassThrough();
-            passThrough.startPolling();
+            if(this.server != null) {
+                this.server.start();
+                GlobalResources.getInstance().setServer(this.server);
+
+                //Also store the values of this device on the server.
+                ServerPassThrough passThrough = new ServerPassThrough();
+                passThrough.startPolling();
+            }
         }
         else{
+            //Connect to existing server instance.
             this.server.setHandler(handler);
         }
     }
@@ -122,7 +134,7 @@ public class ServerActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getTitle().equals("Stop")){
+        if(item.getTitle().equals("Stop") && this.server != null){
             //Stop Server.
             //TODO: More robust checking.
             try {

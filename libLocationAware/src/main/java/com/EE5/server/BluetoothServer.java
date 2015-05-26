@@ -34,7 +34,7 @@ public class BluetoothServer extends Server {
         try {
             // Keep listening until exception occurs or a socket is returned
             Log.i("Bluetooth", "[ OK ] Listening for incoming connections.");
-            while (true) {
+            while (this.isStarted()) {
                 BluetoothSocket socket = mmServerSocket.accept();
                 Log.i("BS", "New Connection");
                 // If a connection was accepted
@@ -46,6 +46,9 @@ public class BluetoothServer extends Server {
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch(Exception e){
             e.printStackTrace();
         }
     }
