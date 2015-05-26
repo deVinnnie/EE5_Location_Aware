@@ -18,15 +18,9 @@ public class TCPServer extends Server{
         super(socketTaskType);
     }
 
-    public TCPServer(int SERVER_PORT, SocketTaskType socketTaskType, Handler handler) {
+    public TCPServer(int SERVER_PORT, SocketTaskType socketTaskType, Handler handler) throws IOException {
         super(socketTaskType,handler);
-        try {
-            serverSocket = new ServerSocket(SERVER_PORT);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            quit();
-        }
+        serverSocket = new ServerSocket(SERVER_PORT);
     }
 
     /**
@@ -58,15 +52,11 @@ public class TCPServer extends Server{
     /**
      * Safely shut down server.
      */
-    public void quit() {
-        try {
-            this.setStarted(false);
-            if(serverSocket != null) {
-                serverSocket.close();
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
+    @Override
+    public void quit() throws IOException{
+        super.quit();
+        if(serverSocket != null) {
+            serverSocket.close();
         }
     }
 }

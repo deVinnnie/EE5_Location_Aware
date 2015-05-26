@@ -61,7 +61,7 @@ public class PrimitiveSocketTask extends SocketTask {
             this.getServer().getDevices().add(uuid, new Position(0,0,0,0), "");
 
             //Keep reading from socket.
-            while(true){
+            while(this.getServer().isStarted()){
                 double x = id.readDouble();
                 double y = id.readDouble();
                 double z = id.readDouble();

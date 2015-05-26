@@ -53,7 +53,7 @@ public class ObjectSocketTask extends SocketTask{
 
             DeviceList devices = this.getServer().getDevices();
             //Keep reading from socket.
-            while(true){
+            while(this.getServer().isStarted()){
                 Device device = (Device) oInputStream.readObject(); //Will block until it has received a new object.
                 String data = (String) oInputStream.readObject();
                 if(device == null){

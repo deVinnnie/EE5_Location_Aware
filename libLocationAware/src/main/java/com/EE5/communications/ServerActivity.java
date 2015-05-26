@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.EE5.R;
 import com.EE5.server.BluetoothServer;
@@ -25,6 +26,7 @@ import com.EE5.server.socketTask.SocketTaskType;
 import com.EE5.util.GlobalResources;
 import com.EE5.util.Tuple;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -63,19 +65,25 @@ public class ServerActivity extends Activity {
                 this.server = new BluetoothServer(socketTaskType, handler);
             }
             else {
-                //TCP - default.
-                //The TCP connection needs some more information to setup.
-                int port = Integer.parseInt(sharedPref.getString("server_port", "8080"));
-                this.server = new TCPServer(port, socketTaskType, handler);
+                try {
+                    //TCP - default.
+                    //The TCP connection needs some more information to setup.
+                    int port = Integer.parseInt(sharedPref.getString("server_port", "8080"));
+                    this.server = new TCPServer(port, socketTaskType, handler);
 
-                //Get the IP address of the server from the Android WifiManager.
-                WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-                int ipAddress = wm.getConnectionInfo().getIpAddress();
-                //Format the IP address into something that is readable for humans.
-                String ip = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
-                //Display the IP address in a TextView in large friendly letters.
-                TextView txtIPAddress = (TextView) findViewById(R.id.txtServerIP);
-                txtIPAddress.setText("Server IP = " + ip);
+                    //Get the IP address of the server from the Android WifiManager.
+                    WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+                    int ipAddress = wm.getConnectionInfo().getIpAddress();
+                    //Format the IP address into something that is readable for humans.
+                    String ip = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
+                    //Display the IP address in a TextView in large friendly letters.
+                    TextView txtIPAddress = (TextView) findViewById(R.id.txtServerIP);
+                    txtIPAddress.setText("Server IP = " + ip);
+                }
+                catch(IOException e){
+                    CharSequence text = "[Server] Starting Server Failed\n"+e.getMessage();
+                    Toast.makeText(this.getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                }
             }
             this.server.start();
             GlobalResources.getInstance().setServer(this.server);
@@ -108,11 +116,25 @@ public class ServerActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_server, menu);
+        menu.add("Stop");
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getTitle().equals("Stop")){
+            //Stop Server.
+            //TODO: More robust checking.
+            try {
+                this.server.quit();
+                Toast.makeText(this.getApplicationContext(), "[Server] Server Stopped", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                CharSequence text = "[Server] Quitting Server Failed\n"+e.getMessage();
+                Toast.makeText(this.getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        }
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.

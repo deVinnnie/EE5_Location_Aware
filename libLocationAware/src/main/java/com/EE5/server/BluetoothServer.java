@@ -56,4 +56,10 @@ public class BluetoothServer extends Server {
             mmServerSocket.close();
         } catch (IOException e) { }
     }
+
+    @Override
+    public void quit() throws IOException{
+        super.quit();
+        mmServerSocket.close();
+    }
 }

@@ -6,6 +6,7 @@ import android.os.Message;
 import com.EE5.server.data.DeviceList;
 import com.EE5.server.socketTask.SocketTaskType;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -92,4 +93,14 @@ public class Server extends Thread{
         this.handler = handler;
     }
     //</editor-fold>
+
+    /**
+     * Safely shutdown and cleanup.
+     *
+     * @throws IOException
+     */
+    public void quit()throws IOException{
+        this.setStarted(false);
+        this.getExecutorService().shutdownNow();
+    }
 }
