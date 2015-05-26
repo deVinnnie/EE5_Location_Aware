@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter;
 import com.EE5.client.AbstractClientOutputThread;
 import com.EE5.client.Client;
 import com.EE5.server.data.Device;
-import com.EE5.server.data.Position;
 import com.EE5.server.socketTask.SocketTaskType;
 import com.EE5.util.ConnectionException;
 import com.EE5.util.GlobalResources;
@@ -26,24 +25,18 @@ public abstract class Connection {
     private ArrayAdapter<String> historyAdapter;
     private SocketTaskType socketTaskType;
 
-    private Position currentPosition = new Position(0,10,3.14,5);
-
-    //Runs without a timer by reposting this handler at the end of the runnable
+    /**
+     * The Handler stuff allows you to run code at specified times or time intervals.
+     * Use in combination with runnable.
+     */
     private Handler timerHandler = new Handler();
     private Runnable timerRunnable = new Runnable(){
         @Override
         public void run() {
             try {
                 Device device = GlobalResources.getInstance().getDevice();
-                /*currentPosition =
-                currentPosition = new Position(pc.getNum1().x, pc.getNum1().y, currentPosition.getRotation(), currentPosition.getHeight());*/
-                //Device device = Client.currentDevice;
-                /*device.setPosition(currentPosition);
-                device.setPattern(pc);*/
                 ((AbstractClientOutputThread) client.getClientOutputThread()).setDevice(device);
-
-                /*TextView txtIPAddress = (TextView) findViewById(R.id.txtPosition);
-                txtIPAddress.setText("Position: (" + currentPosition.getX() + "," + currentPosition.getY() + ")");*/
+                //setDevice() will automatically trigger a transmission.
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -111,14 +104,6 @@ public abstract class Connection {
         this.socketTaskType = socketTaskType;
     }
 
-    public Position getCurrentPosition() {
-        return currentPosition;
-    }
-
-    public void setCurrentPosition(Position currentPosition) {
-        this.currentPosition = currentPosition;
-    }
-
     public Context getContext() {
         return context;
     }
@@ -128,6 +113,13 @@ public abstract class Connection {
     }
     //</editor-fold>
 
+    /**
+     * Block code execution until the connection is up and running.
+     *
+     * @param client
+     * @param mutex
+     * @throws ConnectionException
+     */
     protected void waitForConnection(Client client, Object mutex) throws ConnectionException {
         client.execute();
 
