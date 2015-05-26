@@ -20,7 +20,6 @@ public class TCPConnection extends Connection{
 
     @Override
     public Client connect() throws ConnectionException {
-        //Setup Client Connection
         final Object mutex = new Object();
         Client client = new TCPClient(this.ipAddress,this.port, mutex, this.getHistoryAdapter(), this.getSocketTaskType(), this.getContext());
         this.waitForConnection(client, mutex);

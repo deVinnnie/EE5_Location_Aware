@@ -26,7 +26,6 @@ public class BluetoothConnection extends Connection{
     @Override
     public Client connect() throws ConnectionException{
         try {
-            //Setup Client Connection
             final Object mutex = new Object();
             BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             Set bondedDevices = mBluetoothAdapter.getBondedDevices();
